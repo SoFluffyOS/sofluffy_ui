@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 14.5628C20 10.7368 17.3333 8.50487 16 7.86719C16 9.78023 16 15.9976 12 15.9976H18L20 14.5628Z" fill="white"/>
+<path d="M7 19C8.65685 19 10 17.6569 10 16H4C4 17.6569 5.34315 19 7 19Z" fill="white"/>
+<path d="M2 16C2 12.8182 4.23858 11 7 11C9.76142 11 12 12.8182 12 16H2Z" fill="#D4D7E0"/>
+<path d="M2 16C2 12.8182 4.23858 11 7 11C9.76142 11 12 12.8182 12 16H2Z" stroke="#141B34" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M5 8H9" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 16C10 17.6569 8.65685 19 7 19C5.34315 19 4 17.6569 4 16" stroke="#141B34" stroke-width="1.5"/>
+<circle cx="20" cy="17" r="2" fill="white"/>
+<circle cx="20" cy="17" r="2" stroke="#141B34" stroke-width="1.5"/>
+<path d="M16.8036 5H16V7.86957H18.4584C19.1599 7.86957 19.6108 7.12502 19.2859 6.5034C18.8028 5.57927 17.8464 5 16.8036 5Z" fill="#D4D7E0"/>
+<path d="M16 5H16.8036C17.8464 5 18.8028 5.57927 19.2859 6.5034C19.6108 7.12502 19.1599 7.86957 18.4584 7.86957H16M16 5V7.86957M16 5H13M16 7.86957C17.3333 8.50725 20 10.7391 20 14.5652M16 7.86957C16 9.78261 16 16 12 16H18" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
