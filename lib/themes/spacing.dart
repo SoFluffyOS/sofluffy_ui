@@ -80,11 +80,15 @@ class Spacing {
 
   static Widget get h4 => horizontal(d4);
 
+  static Widget get h8 => horizontal(d8);
+
   static Widget get h16 => horizontal(d16);
 
   static Widget get h24 => horizontal(d24);
 
   static Widget get v4 => vertical(d4);
+
+  static Widget get v8 => vertical(d8);
 
   static Widget get v16 => vertical(d16);
 

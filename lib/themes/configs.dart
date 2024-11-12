@@ -21,7 +21,7 @@ class ThemeConfigs {
 
   Future<void> load(String themeName) async {
     final themeData = await rootBundle.loadString(
-      'assets/themes/$themeName.json',
+      'themes/$themeName.json',
       cache: false,
     );
     final themeJson = jsonDecode(themeData);
