@@ -8,11 +8,11 @@ extension ThemeDataExt on AppTheme {
       primary: colors.primary,
       secondary: colors.secondary,
       surface: isDark ? colors.neutral7 : colors.neutral1,
-      background: isDark ? colors.neutral5 : colors.neutral2,
+      surfaceContainer: isDark ? colors.neutral5 : colors.neutral2,
       onPrimary: isDark ? colors.neutral1 : colors.neutral7,
       onSecondary: isDark ? colors.neutral1 : colors.neutral7,
       onSurface: isDark ? colors.neutral1 : colors.neutral7,
-      onBackground: isDark ? colors.neutral7 : colors.neutral1,
+      onSurfaceVariant: isDark ? colors.neutral7 : colors.neutral1,
       surfaceTint: Colors.transparent,
       error: Colors.red,
       onError: isDark ? colors.neutral1 : colors.neutral7,
@@ -27,9 +27,11 @@ extension ThemeDataExt on AppTheme {
       dividerColor: isDark ? colors.neutral4 : colors.neutral3,
       disabledColor: isDark ? colors.neutral5 : colors.neutral4,
       hintColor: isDark ? colors.neutral4 : colors.neutral5,
-      dialogBackgroundColor: isDark ? colors.neutral7 : colors.neutral1,
-      dialogTheme: DialogThemeData(surfaceTintColor: Colors.transparent),
-      indicatorColor: colors.secondary,
+      dialogTheme: DialogThemeData(
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: isDark ? colors.neutral7 : colors.neutral1,
+      ),
+      tabBarTheme: TabBarThemeData(indicatorColor: colors.secondary),
       colorScheme: colorScheme,
       appBarTheme: AppBarTheme(
         backgroundColor: isDark ? colors.neutral7 : colors.neutral1,
@@ -66,15 +68,15 @@ extension ThemeDataExt on AppTheme {
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return colors.primary;
           }
           return isDark ? colors.neutral5 : colors.neutral3;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
-            return colors.primary.withOpacity(0.5);
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colors.primary.withValues(alpha: 0.5);
           }
           return isDark ? colors.neutral4 : colors.neutral4;
         }),
