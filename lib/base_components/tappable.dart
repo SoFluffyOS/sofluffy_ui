@@ -104,10 +104,9 @@ class _TappableState extends State<Tappable> {
     return Tooltip(
       message: widget.tooltip ?? '',
       child: MouseRegion(
-        cursor:
-            _isInteractive
-                ? SystemMouseCursors.click
-                : SystemMouseCursors.basic,
+        cursor: _isInteractive
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.basic,
         onHover: (_) {
           if (widget.enableHover && _state != TappableState.focus) {
             hover();
@@ -213,22 +212,22 @@ class _TappableState extends State<Tappable> {
                         duration: const Duration(
                           milliseconds: _animationDuration,
                         ),
-                        decoration:
-                            _shouldShowBackground
-                                ? BoxDecoration(
-                                  color: (widget.hoverOverlayColorTint ??
-                                          context.theme.primaryColor)
-                                      .withValues(
-                                        alpha: _state.backgroundOpacity,
-                                      ),
-                                  borderRadius:
-                                      widget.hoverOverlayBorderRadius != null
-                                          ? BorderRadius.circular(
-                                            widget.hoverOverlayBorderRadius!,
-                                          )
-                                          : null,
-                                )
-                                : null,
+                        decoration: _shouldShowBackground
+                            ? BoxDecoration(
+                                color:
+                                    (widget.hoverOverlayColorTint ??
+                                            context.theme.primaryColor)
+                                        .withValues(
+                                          alpha: _state.backgroundOpacity,
+                                        ),
+                                borderRadius:
+                                    widget.hoverOverlayBorderRadius != null
+                                    ? BorderRadius.circular(
+                                        widget.hoverOverlayBorderRadius!,
+                                      )
+                                    : null,
+                              )
+                            : null,
                       ),
                     ),
                   ),
@@ -243,12 +242,11 @@ class _TappableState extends State<Tappable> {
                             color: context.theme.focusColor,
                             width: Spacing.d2,
                           ),
-                          borderRadius:
-                              widget.hoverOverlayBorderRadius != null
-                                  ? BorderRadius.circular(
-                                    widget.hoverOverlayBorderRadius!,
-                                  )
-                                  : null,
+                          borderRadius: widget.hoverOverlayBorderRadius != null
+                              ? BorderRadius.circular(
+                                  widget.hoverOverlayBorderRadius!,
+                                )
+                              : null,
                         ),
                       ),
                     ),

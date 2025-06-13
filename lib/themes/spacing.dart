@@ -97,30 +97,30 @@ class Spacing {
   static BorderRadius get r12 => BorderRadius.circular(12.0);
 
   static SmoothBorderRadius get smoothR10 => const SmoothBorderRadius.all(
-        SmoothRadius(
-          cornerRadius: 10.0,
-          cornerSmoothing: 1.0,
-        ),
-      );
+    SmoothRadius(
+      cornerRadius: 10.0,
+      cornerSmoothing: 1.0,
+    ),
+  );
 
   static SmoothBorderRadius get smoothR12 => const SmoothBorderRadius.all(
-        SmoothRadius(
-          cornerRadius: 12.0,
-          cornerSmoothing: 1.0,
-        ),
-      );
+    SmoothRadius(
+      cornerRadius: 12.0,
+      cornerSmoothing: 1.0,
+    ),
+  );
 
   static SmoothBorderRadius get smoothR16 => const SmoothBorderRadius.all(
-        SmoothRadius(
-          cornerRadius: 16.0,
-          cornerSmoothing: 1.0,
-        ),
-      );
+    SmoothRadius(
+      cornerRadius: 16.0,
+      cornerSmoothing: 1.0,
+    ),
+  );
 
   static SmoothBorderRadius get smoothR24 => const SmoothBorderRadius.all(
-        SmoothRadius(
-          cornerRadius: 24.0,
-          cornerSmoothing: 1.0,
-        ),
-      );
+    SmoothRadius(
+      cornerRadius: 24.0,
+      cornerSmoothing: 1.0,
+    ),
+  );
 }

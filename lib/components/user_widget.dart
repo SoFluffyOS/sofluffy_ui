@@ -63,7 +63,7 @@ class UserWidget extends StatelessWidget {
                 ],
               ],
             ),
-          )
+          ),
         ],
       ],
     );

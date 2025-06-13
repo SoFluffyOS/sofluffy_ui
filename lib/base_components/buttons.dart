@@ -106,10 +106,9 @@ enum ButtonVariant {
       /// ButtonVariant.ghost.
       case ButtonVariant.ghost:
         if (state == ButtonState.hover || state == ButtonState.pressing) {
-          final baseColor =
-              isDark
-                  ? ThemeConfigs().theme.colors.neutral5
-                  : ThemeConfigs().theme.colors.neutral3;
+          final baseColor = isDark
+              ? ThemeConfigs().theme.colors.neutral5
+              : ThemeConfigs().theme.colors.neutral3;
           if (fillColor != null) {
             return Color.lerp(
               context.theme.colorScheme.surface,
@@ -206,8 +205,9 @@ class _ButtonState extends State<Button> {
   void didUpdateWidget(covariant Button oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.enable != oldWidget.enable) {
-      stateNotifier.value =
-          widget.enable ? ButtonState.normal : ButtonState.disabled;
+      stateNotifier.value = widget.enable
+          ? ButtonState.normal
+          : ButtonState.disabled;
     }
   }
 
@@ -263,13 +263,12 @@ class _ButtonState extends State<Button> {
             enableHoverOverlay: false,
             enableFocusBorder: false,
             tooltip: widget.tooltip,
-            onTap:
-                widget.enable
-                    ? () {
-                      HapticFeedback.lightImpact();
-                      widget.onPressed?.call();
-                    }
-                    : null,
+            onTap: widget.enable
+                ? () {
+                    HapticFeedback.lightImpact();
+                    widget.onPressed?.call();
+                  }
+                : null,
             enableHover: widget.enableHover,
             hoverOverlayBorderRadius: widget.radius ?? Spacing.d12,
             hoverOverlayColorTint:

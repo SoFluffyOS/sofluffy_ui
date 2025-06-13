@@ -32,8 +32,9 @@ class _RoundButtonState extends State<RoundButton> {
   void didUpdateWidget(covariant RoundButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.enable != oldWidget.enable) {
-      stateNotifier.value =
-          widget.enable ? ButtonState.normal : ButtonState.disabled;
+      stateNotifier.value = widget.enable
+          ? ButtonState.normal
+          : ButtonState.disabled;
     }
   }
 
@@ -47,60 +48,57 @@ class _RoundButtonState extends State<RoundButton> {
         valueListenable: stateNotifier,
         builder: (context, state, _) {
           final isDark = context.theme.brightness == Brightness.dark;
-          final borderColor =
-              isDark
-                  ? switch (state) {
-                    ButtonState.pressing ||
-                    ButtonState.focus ||
-                    ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
-                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral4
-                        .withValues(alpha: 0.2),
-                    _ => ThemeConfigs().theme.colors.neutral4.withValues(
-                      alpha: 0.25,
-                    ),
-                  }
-                  : switch (state) {
-                    ButtonState.pressing ||
-                    ButtonState.focus ||
-                    ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
-                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral2
-                        .withValues(alpha: 0.2),
-                    _ => ThemeConfigs().theme.colors.neutral2,
-                  };
-          final backgroundColor =
-              isDark
-                  ? switch (state) {
-                    ButtonState.pressing ||
-                    ButtonState.focus ||
-                    ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
-                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral7
-                        .withValues(alpha: 0.2),
-                    _ => ThemeConfigs().theme.colors.neutral7,
-                  }
-                  : switch (state) {
-                    ButtonState.pressing ||
-                    ButtonState.focus ||
-                    ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
-                    _ => ThemeConfigs().theme.colors.neutral2,
-                  };
-          final iconColor =
-              isDark
-                  ? switch (state) {
-                    ButtonState.pressing ||
-                    ButtonState.focus ||
-                    ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
-                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral4
-                        .withValues(alpha: 0.2),
-                    _ => ThemeConfigs().theme.colors.neutral4,
-                  }
-                  : switch (state) {
-                    ButtonState.pressing ||
-                    ButtonState.focus ||
-                    ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
-                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral5
-                        .withValues(alpha: 0.2),
-                    _ => ThemeConfigs().theme.colors.neutral5,
-                  };
+          final borderColor = isDark
+              ? switch (state) {
+                  ButtonState.pressing ||
+                  ButtonState.focus ||
+                  ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
+                  ButtonState.disabled =>
+                    ThemeConfigs().theme.colors.neutral4.withValues(alpha: 0.2),
+                  _ => ThemeConfigs().theme.colors.neutral4.withValues(
+                    alpha: 0.25,
+                  ),
+                }
+              : switch (state) {
+                  ButtonState.pressing ||
+                  ButtonState.focus ||
+                  ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
+                  ButtonState.disabled =>
+                    ThemeConfigs().theme.colors.neutral2.withValues(alpha: 0.2),
+                  _ => ThemeConfigs().theme.colors.neutral2,
+                };
+          final backgroundColor = isDark
+              ? switch (state) {
+                  ButtonState.pressing ||
+                  ButtonState.focus ||
+                  ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
+                  ButtonState.disabled =>
+                    ThemeConfigs().theme.colors.neutral7.withValues(alpha: 0.2),
+                  _ => ThemeConfigs().theme.colors.neutral7,
+                }
+              : switch (state) {
+                  ButtonState.pressing ||
+                  ButtonState.focus ||
+                  ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
+                  _ => ThemeConfigs().theme.colors.neutral2,
+                };
+          final iconColor = isDark
+              ? switch (state) {
+                  ButtonState.pressing ||
+                  ButtonState.focus ||
+                  ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
+                  ButtonState.disabled =>
+                    ThemeConfigs().theme.colors.neutral4.withValues(alpha: 0.2),
+                  _ => ThemeConfigs().theme.colors.neutral4,
+                }
+              : switch (state) {
+                  ButtonState.pressing ||
+                  ButtonState.focus ||
+                  ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
+                  ButtonState.disabled =>
+                    ThemeConfigs().theme.colors.neutral5.withValues(alpha: 0.2),
+                  _ => ThemeConfigs().theme.colors.neutral5,
+                };
           return Tappable(
             onTap: widget.enable ? widget.onPressed : null,
             enableHover: widget.enable,

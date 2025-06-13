@@ -22,7 +22,9 @@ class InnerShadow extends SingleChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, _RenderInnerShadow renderObject) {
+    BuildContext context,
+    _RenderInnerShadow renderObject,
+  ) {
     renderObject;
     renderObject.enable = enable;
   }

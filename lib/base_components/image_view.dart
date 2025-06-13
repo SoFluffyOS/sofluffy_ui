@@ -31,10 +31,10 @@ class ImageView extends StatelessWidget {
     this.blurHash,
     this.assetPackage = 'design_system',
   }) : assert(
-          (size == null && (width != null || height != null)) ||
-              (size != null && width == null && height == null),
-          'Either size or width and height must be provided',
-        );
+         (size == null && (width != null || height != null)) ||
+             (size != null && width == null && height == null),
+         'Either size or width and height must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {

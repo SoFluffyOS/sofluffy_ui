@@ -50,8 +50,8 @@ class _CheckBoxState extends State<CheckBox> {
         state: _currentValue
             ? CheckBoxIconState.checked
             : _isHovering
-                ? CheckBoxIconState.hover
-                : CheckBoxIconState.unchecked,
+            ? CheckBoxIconState.hover
+            : CheckBoxIconState.unchecked,
       ),
     );
   }
@@ -111,12 +111,14 @@ class CheckBoxIcon extends StatelessWidget {
     final isDark = context.theme.brightness == Brightness.dark;
     return switch (state) {
       CheckBoxIconState.checked => ThemeConfigs().theme.colors.primary,
-      CheckBoxIconState.unchecked => isDark
-          ? ThemeConfigs().theme.colors.neutral7
-          : ThemeConfigs().theme.colors.neutral1,
-      CheckBoxIconState.hover => isDark
-          ? ThemeConfigs().theme.colors.neutral6
-          : ThemeConfigs().theme.colors.neutral3,
+      CheckBoxIconState.unchecked =>
+        isDark
+            ? ThemeConfigs().theme.colors.neutral7
+            : ThemeConfigs().theme.colors.neutral1,
+      CheckBoxIconState.hover =>
+        isDark
+            ? ThemeConfigs().theme.colors.neutral6
+            : ThemeConfigs().theme.colors.neutral3,
     };
   }
 
@@ -124,9 +126,10 @@ class CheckBoxIcon extends StatelessWidget {
     final isDark = context.theme.brightness == Brightness.dark;
     return switch (state) {
       CheckBoxIconState.checked => ThemeConfigs().theme.colors.primary,
-      _ => isDark
-          ? ThemeConfigs().theme.colors.neutral6
-          : ThemeConfigs().theme.colors.neutral3,
+      _ =>
+        isDark
+            ? ThemeConfigs().theme.colors.neutral6
+            : ThemeConfigs().theme.colors.neutral3,
     };
   }
 }

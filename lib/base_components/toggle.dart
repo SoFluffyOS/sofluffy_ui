@@ -49,8 +49,9 @@ class _ToggleState extends State<Toggle> {
             color: _getBackgroundColor(context),
             shape: SmoothRectangleBorder(borderRadius: Spacing.smoothR12),
           ),
-          alignment:
-              _currentValue ? Alignment.centerRight : Alignment.centerLeft,
+          alignment: _currentValue
+              ? Alignment.centerRight
+              : Alignment.centerLeft,
           padding: EdgeInsets.symmetric(horizontal: Spacing.d2),
           child: Tappable(
             enableAnimation: true,

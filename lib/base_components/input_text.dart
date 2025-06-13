@@ -165,14 +165,12 @@ class _InputTextState extends State<InputText> {
                 enableIMEPersonalizedLearning: !widget.isPasswordField,
                 enableSuggestions: !widget.isPasswordField,
                 enableInteractiveSelection: !widget.isPasswordField,
-                autofillHints:
-                    widget.isPasswordField
-                        ? [AutofillHints.password]
-                        : widget.autoFillHints,
-                keyboardType:
-                    widget.isPasswordField
-                        ? TextInputType.visiblePassword
-                        : widget.keyboardType,
+                autofillHints: widget.isPasswordField
+                    ? [AutofillHints.password]
+                    : widget.autoFillHints,
+                keyboardType: widget.isPasswordField
+                    ? TextInputType.visiblePassword
+                    : widget.keyboardType,
                 placeholder: widget.hintText,
                 maxLength: widget.maxLength,
                 placeholderStyle: ThemeConfigs().theme.typography.base2
@@ -187,35 +185,33 @@ class _InputTextState extends State<InputText> {
                   top: Spacing.d14,
                   bottom: Spacing.d14,
                 ),
-                prefix:
-                    widget.prefixIcon == null
-                        ? null
-                        : Padding(
-                          padding: EdgeInsets.only(left: Spacing.d16),
-                          child: ImageView(
-                            widget.prefixIcon,
-                            size: Spacing.d24,
-                            fit: BoxFit.contain,
-                            color: getIconColor(context),
-                          ),
+                prefix: widget.prefixIcon == null
+                    ? null
+                    : Padding(
+                        padding: EdgeInsets.only(left: Spacing.d16),
+                        child: ImageView(
+                          widget.prefixIcon,
+                          size: Spacing.d24,
+                          fit: BoxFit.contain,
+                          color: getIconColor(context),
                         ),
-                suffix:
-                    widget.suffix == null && widget.suffixIcon == null
-                        ? null
-                        : Padding(
-                          padding: EdgeInsets.only(right: Spacing.d16),
-                          child:
-                              widget.suffix ??
-                              Tappable(
-                                onTap: widget.onSuffixTap,
-                                child: ImageView(
-                                  widget.suffixIcon,
-                                  size: Spacing.d24,
-                                  fit: BoxFit.contain,
-                                  color: getIconColor(context),
-                                ),
+                      ),
+                suffix: widget.suffix == null && widget.suffixIcon == null
+                    ? null
+                    : Padding(
+                        padding: EdgeInsets.only(right: Spacing.d16),
+                        child:
+                            widget.suffix ??
+                            Tappable(
+                              onTap: widget.onSuffixTap,
+                              child: ImageView(
+                                widget.suffixIcon,
+                                size: Spacing.d24,
+                                fit: BoxFit.contain,
+                                color: getIconColor(context),
                               ),
-                        ),
+                            ),
+                      ),
               ),
             ),
           ),
