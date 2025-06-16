@@ -99,7 +99,7 @@ class CheckBoxIcon extends StatelessWidget {
       child: state != CheckBoxIconState.checked
           ? null
           : ImageView(
-              Assets.solidCheckValidationTick02,
+              Assets.hugeicons.solid.checkValidation.tick02,
               width: Spacing.d18,
               height: Spacing.d18,
               color: ThemeConfigs().theme.colors.neutral1,

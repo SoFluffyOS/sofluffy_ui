@@ -35,7 +35,7 @@ flutter:
     - assets/Hugeicons/Bulk/Energy/
     - assets/Hugeicons/Bulk/Geometric Shapes/
     - assets/Hugeicons/Bulk/Food Drinks/
-    - assets/Hugeicons/Bulk/Game & Sports/
+    - assets/Hugeicons/Bulk/Game and Sports/
     - assets/Hugeicons/Bulk/Education/
     - assets/Hugeicons/Bulk/Mouse Cursors/
     - assets/Hugeicons/Bulk/Mathematics/
@@ -93,7 +93,7 @@ flutter:
     - assets/Hugeicons/Twotone/Edit Formatting/
     - assets/Hugeicons/Twotone/Gym Fitness/
     - assets/Hugeicons/Twotone/Food Drinks/
-    - assets/Hugeicons/Twotone/Game & Sports/
+    - assets/Hugeicons/Twotone/Game and Sports/
     - assets/Hugeicons/Twotone/Education/
     - assets/Hugeicons/Twotone/Mouse Cursors/
     - assets/Hugeicons/Twotone/Mathematics/
@@ -151,7 +151,7 @@ flutter:
     - assets/Hugeicons/Stroke/Energy/
     - assets/Hugeicons/Stroke/Geometric Shapes/
     - assets/Hugeicons/Stroke/Food Drinks/
-    - assets/Hugeicons/Stroke/Game & Sports/
+    - assets/Hugeicons/Stroke/Game and Sports/
     - assets/Hugeicons/Stroke/Education/
     - assets/Hugeicons/Stroke/Mouse Cursors/
     - assets/Hugeicons/Stroke/Mathematics/
@@ -209,7 +209,7 @@ flutter:
     - assets/Hugeicons/Solid/Energy/
     - assets/Hugeicons/Solid/Geometric Shapes/
     - assets/Hugeicons/Solid/Food Drinks/
-    - assets/Hugeicons/Solid/Game & Sports/
+    - assets/Hugeicons/Solid/Game and Sports/
     - assets/Hugeicons/Solid/Education/
     - assets/Hugeicons/Solid/Mouse Cursors/
     - assets/Hugeicons/Solid/Mathematics/
@@ -267,7 +267,7 @@ flutter:
     - assets/Hugeicons/Duotone/Energy/
     - assets/Hugeicons/Duotone/Geometric Shapes/
     - assets/Hugeicons/Duotone/Food Drinks/
-    - assets/Hugeicons/Duotone/Game & Sports/
+    - assets/Hugeicons/Duotone/Game and Sports/
     - assets/Hugeicons/Duotone/Education/
     - assets/Hugeicons/Duotone/Mouse Cursors/
     - assets/Hugeicons/Duotone/Mathematics/
@@ -310,3 +310,11 @@ flutter:
     - assets/Hugeicons/Duotone/Hierarchy/
     - assets/Hugeicons/Duotone/Devices/
     - assets/Hugeicons/Duotone/Media/
+
+flutter_gen:
+  output: lib/
+  integrations:
+    image: false
+    flutter_svg: false
+    rive: false
+    lottie: false
