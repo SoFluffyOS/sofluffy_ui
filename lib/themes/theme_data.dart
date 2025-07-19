@@ -9,13 +9,13 @@ extension ThemeDataExt on AppTheme {
       secondary: colors.secondary,
       surface: isDark ? colors.neutral7 : colors.neutral1,
       surfaceContainer: isDark ? colors.neutral5 : colors.neutral2,
-      onPrimary: isDark ? colors.neutral1 : colors.neutral7,
-      onSecondary: isDark ? colors.neutral1 : colors.neutral7,
+      onPrimary: colors.neutral1,
+      onSecondary: colors.neutral1,
       onSurface: isDark ? colors.neutral1 : colors.neutral7,
-      onSurfaceVariant: isDark ? colors.neutral7 : colors.neutral1,
+      onSurfaceVariant: isDark ? colors.neutral1 : colors.neutral7,
       surfaceTint: Colors.transparent,
       error: Colors.red,
-      onError: isDark ? colors.neutral1 : colors.neutral7,
+      onError: colors.neutral1,
     );
     return baseTheme.copyWith(
       primaryColor: colors.primary,
@@ -25,6 +25,9 @@ extension ThemeDataExt on AppTheme {
       scaffoldBackgroundColor: isDark ? colors.neutral6 : colors.neutral2,
       cardColor: isDark ? colors.neutral7 : colors.neutral1,
       dividerColor: isDark ? colors.neutral4 : colors.neutral3,
+      dividerTheme: DividerThemeData(
+        color: isDark ? colors.neutral4 : colors.neutral3,
+      ),
       disabledColor: isDark ? colors.neutral5 : colors.neutral4,
       hintColor: isDark ? colors.neutral4 : colors.neutral5,
       dialogTheme: DialogThemeData(
@@ -46,6 +49,14 @@ extension ThemeDataExt on AppTheme {
         backgroundColor: isDark ? colors.neutral7 : colors.neutral1,
         selectedItemColor: colors.primary,
         unselectedItemColor: isDark ? colors.neutral4 : colors.neutral5,
+      ),
+      iconTheme: IconThemeData(
+        color: isDark ? colors.neutral1 : colors.neutral7,
+        opacity: isDark ? 0.8 : 1.0,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colors.primary,
+        foregroundColor: isDark ? colors.neutral1 : colors.neutral7,
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
