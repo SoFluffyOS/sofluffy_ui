@@ -1,4 +1,5 @@
 import 'package:design_system/design_system.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 
 extension ThemeDataExt on AppTheme {
@@ -18,6 +19,12 @@ extension ThemeDataExt on AppTheme {
       onError: colors.neutral1,
     );
     return baseTheme.copyWith(
+      extensions: [
+        ...baseTheme.extensions.values,
+        isDark
+            ? getFlashBarDarkTheme(colorScheme)
+            : getFlashBarTheme(colorScheme),
+      ],
       primaryColor: colors.primary,
       primaryColorDark: colors.primary,
       primaryColorLight: colors.primary,
@@ -91,6 +98,60 @@ extension ThemeDataExt on AppTheme {
           }
           return isDark ? colors.neutral4 : colors.neutral4;
         }),
+      ),
+    );
+  }
+
+  FlashBarTheme getFlashBarTheme(ColorScheme colorScheme) {
+    return FlashBarTheme(
+      margin: EdgeInsets.symmetric(
+        horizontal: Spacing.d16,
+        vertical: Spacing.d16,
+      ),
+      padding: EdgeInsets.all(Spacing.d16),
+      shape: const SmoothRectangleBorder(
+        borderRadius: SmoothBorderRadius.all(
+          SmoothRadius(
+            cornerRadius: 12.0,
+            cornerSmoothing: 1.0,
+          ),
+        ),
+        side: BorderSide.none,
+      ),
+      backgroundColor: colorScheme.surface,
+      contentTextStyle: TextStyle(
+        color: colorScheme.onSurface,
+        fontWeight: FontWeight.w500,
+      ),
+      titleTextStyle: TextStyle(
+        color: colorScheme.onSurface,
+      ),
+    );
+  }
+
+  FlashBarTheme getFlashBarDarkTheme(ColorScheme colorScheme) {
+    return FlashBarTheme(
+      margin: EdgeInsets.symmetric(
+        horizontal: Spacing.d16,
+        vertical: Spacing.d16,
+      ),
+      padding: EdgeInsets.all(Spacing.d16),
+      shape: const SmoothRectangleBorder(
+        borderRadius: SmoothBorderRadius.all(
+          SmoothRadius(
+            cornerRadius: 12.0,
+            cornerSmoothing: 1.0,
+          ),
+        ),
+        side: BorderSide.none,
+      ),
+      backgroundColor: colorScheme.surface,
+      contentTextStyle: TextStyle(
+        color: colorScheme.onSurface,
+        fontWeight: FontWeight.w500,
+      ),
+      titleTextStyle: TextStyle(
+        color: colorScheme.onSurface,
       ),
     );
   }
