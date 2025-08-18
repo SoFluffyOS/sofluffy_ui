@@ -166,6 +166,8 @@ class Button extends StatefulWidget {
   final MainAxisSize? mainAxisSize;
   final MainAxisAlignment? mainAxisAlignment;
 
+  final TextAlign? labelTextAlign;
+
   const Button({
     super.key,
     required this.variant,
@@ -187,6 +189,7 @@ class Button extends StatefulWidget {
     this.padding,
     this.mainAxisSize,
     this.mainAxisAlignment,
+    this.labelTextAlign,
   }) : assert(
          (label != null && child == null) || (label == null && child != null),
          'Either label or child must be provided',
@@ -228,7 +231,7 @@ class _ButtonState extends State<Button> {
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
+        textAlign: widget.labelTextAlign ?? TextAlign.center,
       );
     }
     return Semantics(
