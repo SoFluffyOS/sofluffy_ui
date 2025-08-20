@@ -1,6 +1,7 @@
 library;
 
 export 'package:figma_squircle/figma_squircle.dart';
+export 'package:reorderables/reorderables.dart';
 
 export 'assets.gen.dart';
 export 'base_components/base_components.dart';

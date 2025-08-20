@@ -11,6 +11,7 @@ dependencies:
   flutter_svg: ^2.1.0
   figma_squircle: ^0.6.3
   table_calendar: ^3.2.0
+  reorderables: ^0.6.0
   flash: ^3.1.1
 
 dev_dependencies:
