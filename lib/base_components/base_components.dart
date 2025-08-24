@@ -5,6 +5,7 @@ export 'date_picker.dart';
 export 'image_view.dart';
 export 'inner_shadow_wrapper.dart';
 export 'input_text.dart';
+export 'stepper.dart';
 export 'tag.dart';
 export 'tappable.dart';
 export 'toggle.dart';
