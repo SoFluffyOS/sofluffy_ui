@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 extension BuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
 
+  NavigatorState get navigator => Navigator.of(this);
+
   void toast(
     dynamic message, {
     MessageType type = MessageType.info,
