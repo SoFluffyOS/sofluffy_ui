@@ -31,7 +31,7 @@ class StepperWidget extends StatelessWidget {
               horizontal: Spacing.d4,
             ),
             decoration: BoxDecoration(
-              color: i < currentStep
+              color: i <= currentStep
                   ? activeColor ?? context.theme.colorScheme.primary
                   : Colors.transparent,
               shape: BoxShape.circle,
