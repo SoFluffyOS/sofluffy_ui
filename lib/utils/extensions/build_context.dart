@@ -35,7 +35,6 @@ extension BuildContextExtension on BuildContext {
       return await showFlash(
         context: this,
         duration: duration,
-        barrierDismissible: true,
         builder: (context, controller) {
           return FlashBar(
             controller: controller,
@@ -43,6 +42,7 @@ extension BuildContextExtension on BuildContext {
             position: FlashPosition.top,
             behavior: FlashBehavior.floating,
             padding: EdgeInsets.zero,
+            shadowColor: type.color.withValues(alpha: 0.05),
             content: Container(
               decoration: ShapeDecoration(
                 color: type.color.withValues(alpha: 0.05),
