@@ -1,6 +1,6 @@
 export 'bottom_spacer.dart';
 export 'buttons.dart';
-export 'checkbox.dart';
+export 'check_box.dart';
 export 'date_picker.dart';
 export 'empty_widget.dart';
 export 'image_view.dart';

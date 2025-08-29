@@ -1,13 +1,15 @@
 import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
+part 'check_box_list_tile.dart';
+
 class CheckBox extends StatefulWidget {
-  final bool initialValue;
+  final bool value;
   final ValueChanged<bool> onChanged;
 
   const CheckBox({
     super.key,
-    required this.initialValue,
+    required this.value,
     required this.onChanged,
   });
 
@@ -16,7 +18,7 @@ class CheckBox extends StatefulWidget {
 }
 
 class _CheckBoxState extends State<CheckBox> {
-  late bool _currentValue = widget.initialValue;
+  late bool _currentValue = widget.value;
   bool _isHovering = false;
 
   void _onChanged(bool value) {
@@ -28,8 +30,8 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   void didUpdateWidget(covariant CheckBox oldWidget) {
-    if (oldWidget.initialValue != widget.initialValue) {
-      _currentValue = widget.initialValue;
+    if (oldWidget.value != widget.value) {
+      _currentValue = widget.value;
       setState(() {});
     }
     super.didUpdateWidget(oldWidget);
@@ -46,12 +48,15 @@ class _CheckBoxState extends State<CheckBox> {
         });
       },
       onTap: () => _onChanged(!_currentValue),
-      child: CheckBoxIcon(
-        state: _currentValue
-            ? CheckBoxIconState.checked
-            : _isHovering
-            ? CheckBoxIconState.hover
-            : CheckBoxIconState.unchecked,
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.d8),
+        child: CheckBoxIcon(
+          state: _currentValue
+              ? CheckBoxIconState.checked
+              : _isHovering
+              ? CheckBoxIconState.hover
+              : CheckBoxIconState.unchecked,
+        ),
       ),
     );
   }
