@@ -71,6 +71,18 @@ extension ThemeDataExt on AppTheme {
           surfaceTintColor: Colors.transparent,
         ),
       ),
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll(
+            isDark ? colors.neutral7 : colors.neutral1,
+          ),
+          shape: WidgetStatePropertyAll(
+            SmoothRectangleBorder(
+              borderRadius: Spacing.smoothR12,
+            ),
+          ),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: colors.primary,
