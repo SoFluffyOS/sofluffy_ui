@@ -17,7 +17,8 @@ class CheckBoxListTile extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
 
-  final String? label;
+  final String? title;
+  final String? subtitle;
   final Widget? child;
 
   const CheckBoxListTile({
@@ -26,9 +27,13 @@ class CheckBoxListTile extends StatelessWidget {
     this.style = CheckBoxListTileStyle.standard,
     required this.value,
     required this.onChanged,
-    this.label,
+    this.title,
+    this.subtitle,
     this.child,
-  });
+  }) : assert(
+         subtitle == null || style != CheckBoxListTileStyle.compact,
+         'Not allow [subtitle] when using [CheckBoxListTileStyle.compact]',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +41,28 @@ class CheckBoxListTile extends StatelessWidget {
       CheckBoxListTileStyle.compact => const SizedBox.shrink(),
       CheckBoxListTileStyle.standard => Spacing.h8,
     };
-    final labelWidget = switch (label) {
-      String label when label.isNotEmpty => Text(
-        label,
-        style: switch (style) {
-          CheckBoxListTileStyle.compact => context.theme.textTheme.bodySmall,
-          CheckBoxListTileStyle.standard => context.theme.textTheme.bodyLarge,
-        },
+    final titleWidget = switch (title) {
+      String title when title.isNotEmpty => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: switch (style) {
+              CheckBoxListTileStyle.compact =>
+                context.theme.textTheme.bodySmall,
+              CheckBoxListTileStyle.standard =>
+                context.theme.textTheme.bodyLarge,
+            },
+          ),
+          if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
+            Spacing.v4,
+            Text(
+              subtitle,
+              style: context.theme.textTheme.bodySmall,
+            ),
+          ],
+        ],
       ),
       null when child is Widget => child,
       _ => null,
@@ -58,22 +78,30 @@ class CheckBoxListTile extends StatelessWidget {
             CheckBoxListTileStyle.compact => Spacing.d4,
             CheckBoxListTileStyle.standard => Spacing.d8,
           },
+          horizontal: switch (style) {
+            CheckBoxListTileStyle.compact => 0.0,
+            CheckBoxListTileStyle.standard
+                when alignment == CheckBoxAlignment.left =>
+              Spacing.d8,
+            CheckBoxListTileStyle.standard => Spacing.d16,
+          },
         ),
         child: Row(
           children: [
-            if (labelWidget != null &&
+            if (titleWidget != null &&
                 alignment == CheckBoxAlignment.right) ...[
-              Expanded(child: labelWidget),
+              Expanded(child: titleWidget),
               spacer,
             ],
             CheckBox(
               value: value,
               onChanged: onChanged,
             ),
-            if (labelWidget != null && alignment == CheckBoxAlignment.left) ...[
+            if (titleWidget != null && alignment == CheckBoxAlignment.left) ...[
               spacer,
-              Flexible(child: labelWidget),
+              Flexible(child: titleWidget),
             ],
+            spacer,
           ],
         ),
       ),
