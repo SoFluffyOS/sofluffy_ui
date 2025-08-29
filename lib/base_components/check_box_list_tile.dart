@@ -87,6 +87,10 @@ class CheckBoxListTile extends StatelessWidget {
           },
         ),
         child: Row(
+          mainAxisSize: switch (style) {
+            CheckBoxListTileStyle.compact => MainAxisSize.min,
+            CheckBoxListTileStyle.standard => MainAxisSize.max,
+          },
           children: [
             if (titleWidget != null &&
                 alignment == CheckBoxAlignment.right) ...[
