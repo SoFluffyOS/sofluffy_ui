@@ -22,6 +22,8 @@ class RadioIconListTile<T> extends StatelessWidget {
   final String? subtitle;
   final Widget? child;
 
+  final bool? expanded;
+
   const RadioIconListTile({
     super.key,
     this.alignment = RadioIconAlignment.left,
@@ -31,6 +33,7 @@ class RadioIconListTile<T> extends StatelessWidget {
     required this.onChanged,
     this.title,
     this.subtitle,
+    this.expanded,
     this.child,
   }) : assert(
          subtitle == null || style != RadioIconListTileStyle.compact,
@@ -87,6 +90,8 @@ class RadioIconListTile<T> extends StatelessWidget {
         ),
         child: Row(
           mainAxisSize: switch (style) {
+            RadioIconListTileStyle.compact when expanded == true =>
+              MainAxisSize.max,
             RadioIconListTileStyle.compact => MainAxisSize.min,
             RadioIconListTileStyle.standard => MainAxisSize.max,
           },
