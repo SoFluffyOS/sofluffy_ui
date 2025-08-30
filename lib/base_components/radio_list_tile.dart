@@ -24,7 +24,7 @@ class RadioIconListTile<T> extends StatelessWidget {
 
   const RadioIconListTile({
     super.key,
-    this.alignment = RadioIconAlignment.right,
+    this.alignment = RadioIconAlignment.left,
     this.style = RadioIconListTileStyle.standard,
     required this.value,
     required this.groupValue,
@@ -82,9 +82,6 @@ class RadioIconListTile<T> extends StatelessWidget {
           },
           horizontal: switch (style) {
             RadioIconListTileStyle.compact => 0.0,
-            RadioIconListTileStyle.standard
-                when alignment == RadioIconAlignment.left =>
-              Spacing.d8,
             RadioIconListTileStyle.standard => Spacing.d16,
           },
         ),
@@ -109,7 +106,6 @@ class RadioIconListTile<T> extends StatelessWidget {
               spacer,
               Flexible(child: titleWidget),
             ],
-            spacer,
           ],
         ),
       ),

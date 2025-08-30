@@ -127,8 +127,8 @@ class _RadioIconView extends StatelessWidget {
       RadioIconState.checked => ThemeConfigs().theme.colors.primary,
       _ =>
         isDark
-            ? ThemeConfigs().theme.colors.neutral6
-            : ThemeConfigs().theme.colors.neutral3,
+            ? ThemeConfigs().theme.colors.neutral3
+            : ThemeConfigs().theme.colors.neutral4,
     };
   }
 }

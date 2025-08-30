@@ -64,8 +64,8 @@ class ListItem extends StatelessWidget {
     };
     return Tappable(
       behavior: HitTestBehavior.translucent,
-      enableAnimation: false,
-      enableHover: false,
+      enableAnimation: true,
+      enableHover: true,
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(

@@ -23,7 +23,7 @@ class CheckBoxListTile extends StatelessWidget {
 
   const CheckBoxListTile({
     super.key,
-    this.alignment = CheckBoxAlignment.right,
+    this.alignment = CheckBoxAlignment.left,
     this.style = CheckBoxListTileStyle.standard,
     required this.value,
     required this.onChanged,
@@ -80,9 +80,6 @@ class CheckBoxListTile extends StatelessWidget {
           },
           horizontal: switch (style) {
             CheckBoxListTileStyle.compact => 0.0,
-            CheckBoxListTileStyle.standard
-                when alignment == CheckBoxAlignment.left =>
-              Spacing.d8,
             CheckBoxListTileStyle.standard => Spacing.d16,
           },
         ),
@@ -105,7 +102,6 @@ class CheckBoxListTile extends StatelessWidget {
               spacer,
               Flexible(child: titleWidget),
             ],
-            spacer,
           ],
         ),
       ),

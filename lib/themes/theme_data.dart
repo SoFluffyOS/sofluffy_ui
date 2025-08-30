@@ -29,8 +29,8 @@ extension ThemeDataExt on AppTheme {
       primaryColorDark: colors.primary,
       primaryColorLight: colors.primary,
       secondaryHeaderColor: colors.secondary,
-      scaffoldBackgroundColor: isDark ? colors.neutral6 : colors.neutral2,
-      cardColor: isDark ? colors.neutral7 : colors.neutral1,
+      scaffoldBackgroundColor: isDark ? colors.neutral7 : colors.neutral1,
+      cardColor: isDark ? colors.neutral6 : colors.neutral2,
       dividerColor: isDark ? colors.neutral4 : colors.neutral3,
       dividerTheme: DividerThemeData(
         color: isDark ? colors.neutral4 : colors.neutral3,
@@ -49,7 +49,7 @@ extension ThemeDataExt on AppTheme {
         surfaceTintColor: Colors.transparent,
       ),
       cardTheme: CardThemeData(
-        color: isDark ? colors.neutral7 : colors.neutral1,
+        color: isDark ? colors.neutral6 : colors.neutral2,
         surfaceTintColor: Colors.transparent,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -74,7 +74,7 @@ extension ThemeDataExt on AppTheme {
       menuTheme: MenuThemeData(
         style: MenuStyle(
           backgroundColor: WidgetStatePropertyAll(
-            isDark ? colors.neutral7 : colors.neutral1,
+            isDark ? colors.neutral6 : colors.neutral2,
           ),
           shape: WidgetStatePropertyAll(
             SmoothRectangleBorder(
