@@ -51,7 +51,6 @@ class ListItem extends StatelessWidget {
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
-            Spacing.v4,
             Text(
               subtitle,
               style: context.theme.textTheme.bodySmall,
