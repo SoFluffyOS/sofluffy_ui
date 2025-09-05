@@ -2,14 +2,16 @@ import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
 class ContentDialog {
-  static Future<void> show(
+  static Future<ConfirmAction> show(
     BuildContext context, {
     String? title,
     required String content,
-    required String closeText,
+    String? negativeText,
+    String? positiveText,
+    String? neutralText,
     bool useHtmlWidget = false,
   }) async {
-    await showDialog(
+    final result = await showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
@@ -27,25 +29,63 @@ class ContentDialog {
           actions: <Widget>[
             Row(
               children: [
-                Expanded(
-                  child: Button(
-                    variant: ButtonVariant.primary,
-                    child: Text(
-                      closeText,
-                      style: TextStyle(
-                        color: context.theme.colorScheme.onPrimary,
-                      ),
+                if (negativeText case String negativeText)
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.ghost,
+                      child: Text(negativeText),
+                      onPressed: () {
+                        context.navigator.pop(ConfirmAction.negative);
+                      },
                     ),
-                    onPressed: () {
-                      context.navigator.pop();
-                    },
                   ),
-                ),
+                if (negativeText != null && positiveText != null) Spacing.h8,
+                if (positiveText case String positiveText)
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.primary,
+                      child: Text(
+                        positiveText,
+                        style: TextStyle(
+                          color: context.theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                      onPressed: () {
+                        context.navigator.pop(ConfirmAction.positive);
+                      },
+                    ),
+                  ),
               ],
             ),
+            if (negativeText != null || positiveText != null) Spacing.v8,
+            if (neutralText case String neutralText)
+              Row(
+                children: [
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.primary,
+                      child: Text(
+                        neutralText,
+                        style: TextStyle(
+                          color: context.theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                      onPressed: () {
+                        context.navigator.pop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
           ],
         );
       },
     );
+
+    if (result is! ConfirmAction) {
+      return ConfirmAction.dismiss;
+    }
+
+    return result;
   }
 }
