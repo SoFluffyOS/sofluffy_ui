@@ -17,7 +17,7 @@ class ImageView extends StatelessWidget {
 
   final Color? color;
 
-  final String assetPackage;
+  final String? assetPackage;
 
   const ImageView(
     this.data, {
