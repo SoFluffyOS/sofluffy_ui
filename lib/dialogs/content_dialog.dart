@@ -32,8 +32,15 @@ class ContentDialog {
                 if (negativeText case String negativeText)
                   Expanded(
                     child: Button(
+                      tooltip: negativeText,
                       variant: ButtonVariant.ghost,
-                      child: Text(negativeText),
+                      child: Flexible(
+                        child: Text(
+                          negativeText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       onPressed: () {
                         context.navigator.pop(ConfirmAction.negative);
                       },
@@ -43,11 +50,16 @@ class ContentDialog {
                 if (positiveText case String positiveText)
                   Expanded(
                     child: Button(
+                      tooltip: positiveText,
                       variant: ButtonVariant.primary,
-                      child: Text(
-                        positiveText,
-                        style: TextStyle(
-                          color: context.theme.colorScheme.onPrimary,
+                      child: Flexible(
+                        child: Text(
+                          positiveText,
+                          style: TextStyle(
+                            color: context.theme.colorScheme.onPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       onPressed: () {
@@ -64,10 +76,15 @@ class ContentDialog {
                   Expanded(
                     child: Button(
                       variant: ButtonVariant.primary,
-                      child: Text(
-                        neutralText,
-                        style: TextStyle(
-                          color: context.theme.colorScheme.onPrimary,
+                      tooltip: neutralText,
+                      child: Flexible(
+                        child: Text(
+                          neutralText,
+                          style: TextStyle(
+                            color: context.theme.colorScheme.onPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       onPressed: () {

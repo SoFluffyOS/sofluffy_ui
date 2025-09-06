@@ -86,7 +86,14 @@ class RadioOptionsDialog {
                     Expanded(
                       child: Button(
                         variant: ButtonVariant.ghost,
-                        child: Text(cancelText),
+                        tooltip: cancelText,
+                        child: Flexible(
+                          child: Text(
+                            cancelText,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         onPressed: () {
                           context.navigator.pop();
                         },
@@ -97,10 +104,15 @@ class RadioOptionsDialog {
                       child: Button(
                         enable: groupValue != null,
                         variant: ButtonVariant.primary,
-                        child: Text(
-                          confirmText,
-                          style: TextStyle(
-                            color: context.theme.colorScheme.onPrimary,
+                        tooltip: confirmText,
+                        child: Flexible(
+                          child: Text(
+                            confirmText,
+                            style: TextStyle(
+                              color: context.theme.colorScheme.onPrimary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         onPressed: () {
