@@ -18,19 +18,16 @@ enum MessageType {
 
   Widget get icon {
     final path = switch (this) {
-      MessageType.info =>
-        Assets.hugeicons.stroke.alertNotification.informationCircle,
-      MessageType.error =>
-        Assets.hugeicons.stroke.alertNotification.alertCircle,
-      MessageType.warning =>
-        Assets.hugeicons.stroke.alertNotification.alertCircle,
-      MessageType.success =>
-        Assets.hugeicons.stroke.alertNotification.informationCircle,
+      MessageType.info => DesignSystemAssets.icons.informationCircle,
+      MessageType.error => DesignSystemAssets.icons.alertCircle,
+      MessageType.warning => DesignSystemAssets.icons.alertCircle,
+      MessageType.success => DesignSystemAssets.icons.informationCircle,
     };
     return ImageView(
       path,
       color: color,
       size: Spacing.d16,
+      assetPackage: kDesignSystemPackageName,
     );
   }
 }

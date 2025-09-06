@@ -29,7 +29,7 @@ class ImageView extends StatelessWidget {
     this.alignment,
     this.color,
     this.blurHash,
-    this.assetPackage = 'design_system',
+    this.assetPackage = 'icons',
   }) : assert(
          (size == null && (width != null || height != null)) ||
              (size != null && width == null && height == null),
