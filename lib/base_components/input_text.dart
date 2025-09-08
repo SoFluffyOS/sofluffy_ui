@@ -30,6 +30,9 @@ class InputText extends StatefulWidget {
   final List<String>? autoFillHints;
   final TextInputType? keyboardType;
 
+  final VoidCallback? onEditingComplete;
+  final TextInputAction? textInputAction;
+
   const InputText({
     super.key,
     this.focusNode,
@@ -48,6 +51,8 @@ class InputText extends StatefulWidget {
     this.enableCounter = false,
     this.autoFillHints,
     this.keyboardType,
+    this.onEditingComplete,
+    this.textInputAction,
   });
 
   @override
@@ -176,6 +181,8 @@ class _InputTextState extends State<InputText> {
                 placeholder: widget.hintText,
                 maxLength: widget.maxLength,
                 maxLines: widget.maxLines,
+                onEditingComplete: widget.onEditingComplete,
+                textInputAction: widget.textInputAction,
                 placeholderStyle: ThemeConfigs().theme.typography.base2
                     .copyWith(
                       color: ThemeConfigs().theme.colors.neutral4.withValues(
