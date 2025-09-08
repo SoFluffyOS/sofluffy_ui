@@ -11,19 +11,24 @@ class ContentDialog {
     String? neutralText,
     bool useHtmlWidget = false,
   }) async {
+    final controller = ScrollController();
     final result = await showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: title != null ? Text(title) : null,
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (useHtmlWidget) HtmlWidget(content),
-                if (!useHtmlWidget) Text(content),
-              ],
+          content: Scrollbar(
+            controller: controller,
+            child: SingleChildScrollView(
+              controller: controller,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (useHtmlWidget) HtmlWidget(content),
+                  if (!useHtmlWidget) Text(content),
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
@@ -98,6 +103,7 @@ class ContentDialog {
         );
       },
     );
+    controller.dispose();
 
     if (result is! ConfirmAction) {
       return ConfirmAction.dismiss;
