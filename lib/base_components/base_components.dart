@@ -2,6 +2,7 @@ export 'bottom_spacer.dart';
 export 'buttons.dart';
 export 'check_box.dart';
 export 'date_picker.dart';
+export 'disable_widget.dart';
 export 'empty_widget.dart';
 export 'image_view.dart';
 export 'inner_shadow_wrapper.dart';
