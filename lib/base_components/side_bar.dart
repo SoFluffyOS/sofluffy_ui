@@ -1,15 +1,19 @@
 import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
-class SideBar extends StatefulWidget {
+class SideBar extends StatelessWidget {
   final Widget child;
 
+  final bool isExpanded;
   final Widget Function(bool isExpand)? toggleIconBuilder;
+  final VoidCallback? onToggleExpand;
 
   const SideBar({
     super.key,
     required this.child,
+    required this.isExpanded,
     this.toggleIconBuilder,
+    this.onToggleExpand,
   });
 
   static double get sideBarWidth => Spacing.d280;
@@ -17,48 +21,34 @@ class SideBar extends StatefulWidget {
   static double get sideBarCollapsedWidth => Spacing.d96;
 
   @override
-  State<SideBar> createState() => _SideBarState();
-}
-
-class _SideBarState extends State<SideBar> {
-  final ValueNotifier<bool> _isExpandedNotifier = ValueNotifier(true);
-
-  @override
   Widget build(BuildContext context) {
     return AnimatedSize(
       duration: Durations.medium2,
       curve: Curves.easeOut,
       alignment: Alignment.centerLeft,
-      child: ValueListenableBuilder(
-        valueListenable: _isExpandedNotifier,
-        builder: (context, isExpanded, child) {
-          return SizedBox(
-            width: isExpanded
-                ? SideBar.sideBarWidth
-                : SideBar.sideBarCollapsedWidth,
-            height: double.infinity,
-            child: Stack(
-              children: [
-                if (widget.toggleIconBuilder
-                    case Widget Function(bool isExpand) builder) ...[
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Tappable(
-                      onTap: () {
-                        _isExpandedNotifier.value = !isExpanded;
-                      },
-                      child: builder.call(isExpanded),
-                    ),
-                  ),
-                ],
-                Positioned.fill(
-                  child: widget.child,
+      child: SizedBox(
+        width: isExpanded ? sideBarWidth : sideBarCollapsedWidth,
+        height: double.infinity,
+        child: Stack(
+          children: [
+            if (toggleIconBuilder
+                case Widget Function(bool isExpand) builder) ...[
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Tappable(
+                  onTap: () {
+                    onToggleExpand?.call();
+                  },
+                  child: builder.call(isExpanded),
                 ),
-              ],
+              ),
+            ],
+            Positioned.fill(
+              child: child,
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
