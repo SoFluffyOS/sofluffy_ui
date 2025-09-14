@@ -11,6 +11,7 @@ export 'list_item.dart';
 export 'loading_box.dart';
 export 'radio_icon.dart';
 export 'round_card.dart';
+export 'side_bar.dart';
 export 'stepper.dart';
 export 'tag.dart';
 export 'tappable.dart';
