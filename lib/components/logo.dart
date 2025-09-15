@@ -33,45 +33,96 @@ class LogoWithName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: ShapeDecoration(
-        color: context.theme.primaryColor,
-        shape: const StadiumBorder(),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ImageView(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: context.theme.primaryColor,
+            shape: BoxShape.circle,
+          ),
+          child: ImageView(
             DesignSystemAssets.images.logoTransparent,
             size: Spacing.d64,
             assetPackage: kDesignSystemPackageName,
           ),
-          Spacing.h8,
-          Text.rich(
-            TextSpan(
-              text: 'SoFluffy',
-              children: [
-                TextSpan(
-                  text: ' $name',
-                  style: TextStyle(
-                    fontSize: Spacing.d16,
-                    color: context.theme.colorScheme.onPrimary.withValues(
-                      alpha: 0.5,
-                    ),
-                    fontWeight: FontWeight.w400,
+        ),
+        Spacing.h8,
+        Text.rich(
+          TextSpan(
+            text: 'SoFluffy',
+            children: [
+              TextSpan(
+                text: ' $name',
+                style: TextStyle(
+                  color: context.theme.colorScheme.primary.withValues(
+                    alpha: 0.5,
                   ),
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
-            style: TextStyle(
-              fontSize: Spacing.d16,
-              color: context.theme.colorScheme.onPrimary,
-              fontWeight: FontWeight.w600,
-            ),
+              ),
+            ],
           ),
-          Spacing.h16,
-        ],
-      ),
+          style: TextStyle(
+            fontSize: Spacing.d36,
+            color: context.theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Spacing.h16,
+      ],
+    );
+  }
+}
+
+class LogoWithNameSmaller extends StatelessWidget {
+  final String name;
+
+  const LogoWithNameSmaller({
+    super.key,
+    this.name = '',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: context.theme.primaryColor,
+            shape: BoxShape.circle,
+          ),
+          child: ImageView(
+            DesignSystemAssets.images.logoTransparent,
+            size: Spacing.d48,
+            assetPackage: kDesignSystemPackageName,
+          ),
+        ),
+        Spacing.h4,
+        Text.rich(
+          TextSpan(
+            text: 'SoFluffy',
+            children: [
+              TextSpan(
+                text: ' $name',
+                style: TextStyle(
+                  color: context.theme.colorScheme.primary.withValues(
+                    alpha: 0.5,
+                  ),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          style: TextStyle(
+            fontSize: Spacing.d24,
+            color: context.theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Spacing.h8,
+      ],
     );
   }
 }
