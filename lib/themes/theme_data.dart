@@ -3,7 +3,10 @@ import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 
 extension ThemeDataExt on AppTheme {
-  ThemeData getTheme({required bool isDark}) {
+  ThemeData getTheme({
+    required bool isDark,
+    String? fontFamily,
+  }) {
     final baseTheme = isDark ? ThemeData.dark() : ThemeData.light();
     final colorScheme = baseTheme.colorScheme.copyWith(
       primary: colors.primary,
@@ -25,6 +28,12 @@ extension ThemeDataExt on AppTheme {
             ? getFlashBarDarkTheme(colorScheme)
             : getFlashBarTheme(colorScheme),
       ],
+      textTheme: baseTheme.textTheme.apply(
+        fontFamily: fontFamily,
+      ),
+      primaryTextTheme: baseTheme.primaryTextTheme.apply(
+        fontFamily: fontFamily,
+      ),
       primaryColor: colors.primary,
       primaryColorDark: colors.primary,
       primaryColorLight: colors.primary,
