@@ -48,25 +48,29 @@ class LogoWithName extends StatelessWidget {
           ),
         ),
         Spacing.h8,
-        Text.rich(
-          TextSpan(
-            text: 'SoFluffy',
-            children: [
-              TextSpan(
-                text: ' $name',
-                style: TextStyle(
-                  color: context.theme.colorScheme.primary.withValues(
-                    alpha: 0.5,
+        Flexible(
+          child: Text.rich(
+            TextSpan(
+              text: 'SoFluffy',
+              children: [
+                TextSpan(
+                  text: ' $name',
+                  style: TextStyle(
+                    color: context.theme.colorScheme.primary.withValues(
+                      alpha: 0.5,
+                    ),
+                    fontWeight: FontWeight.w400,
                   ),
-                  fontWeight: FontWeight.w400,
                 ),
-              ),
-            ],
-          ),
-          style: TextStyle(
-            fontSize: Spacing.d36,
-            color: context.theme.colorScheme.primary,
-            fontWeight: FontWeight.w600,
+              ],
+            ),
+            style: TextStyle(
+              fontSize: Spacing.d36,
+              color: context.theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
+              overflow: TextOverflow.ellipsis,
+            ),
+            maxLines: 1,
           ),
         ),
         Spacing.h16,
@@ -100,25 +104,29 @@ class LogoWithNameSmaller extends StatelessWidget {
           ),
         ),
         Spacing.h4,
-        Text.rich(
-          TextSpan(
-            text: 'SoFluffy',
-            children: [
-              TextSpan(
-                text: ' $name',
-                style: TextStyle(
-                  color: context.theme.colorScheme.primary.withValues(
-                    alpha: 0.5,
+        Flexible(
+          child: Text.rich(
+            TextSpan(
+              text: 'SoFluffy',
+              children: [
+                TextSpan(
+                  text: ' $name',
+                  style: TextStyle(
+                    color: context.theme.colorScheme.primary.withValues(
+                      alpha: 0.5,
+                    ),
+                    fontWeight: FontWeight.w400,
                   ),
-                  fontWeight: FontWeight.w400,
                 ),
-              ),
-            ],
-          ),
-          style: TextStyle(
-            fontSize: Spacing.d24,
-            color: context.theme.colorScheme.primary,
-            fontWeight: FontWeight.w600,
+              ],
+            ),
+            style: TextStyle(
+              fontSize: Spacing.d24,
+              color: context.theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
+              overflow: TextOverflow.ellipsis,
+            ),
+            maxLines: 1,
           ),
         ),
         Spacing.h8,
