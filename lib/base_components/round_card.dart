@@ -7,9 +7,12 @@ class RoundCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
 
+  final Color? color;
+
   const RoundCard({
     super.key,
     required this.child,
+    this.color,
     this.margin,
     this.padding,
   });
@@ -20,7 +23,7 @@ class RoundCard extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: ShapeDecoration(
-        color: context.theme.cardColor,
+        color: color ?? context.theme.cardColor,
         shape: SmoothRectangleBorder(
           borderRadius: Spacing.smoothR12,
         ),
