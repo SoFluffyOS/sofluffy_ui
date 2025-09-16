@@ -220,20 +220,18 @@ class _ButtonState extends State<Button> {
     if (widget.child case Widget thisChild) {
       child = thisChild;
     } else if (widget.label case String label) {
-      child = Flexible(
-        child: Text(
-          label,
-          style: ThemeConfigs().theme.typography.base1.copyWith(
-            color: widget.variant.getForegroundColor(
-              context,
-              stateNotifier.value,
-              widget.color,
-            ),
+      child = Text(
+        label,
+        style: ThemeConfigs().theme.typography.base1.copyWith(
+          color: widget.variant.getForegroundColor(
+            context,
+            stateNotifier.value,
+            widget.color,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: widget.labelTextAlign ?? TextAlign.center,
         ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: widget.labelTextAlign ?? TextAlign.center,
       );
     }
     return Semantics(
