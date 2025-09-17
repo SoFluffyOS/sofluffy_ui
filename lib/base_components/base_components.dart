@@ -14,6 +14,7 @@ export 'round_card.dart';
 export 'side_bar.dart';
 export 'sofluffy_tab_bar.dart';
 export 'stepper.dart';
+export 'switch_toggle.dart';
 export 'tag.dart';
 export 'tappable.dart';
 export 'toggle.dart';

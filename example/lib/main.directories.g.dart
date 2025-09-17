@@ -13,6 +13,8 @@
 import 'package:example/components/button.dart' as _example_components_button;
 import 'package:example/components/check_box.dart'
     as _example_components_check_box;
+import 'package:example/components/switch_toggle.dart'
+    as _example_components_switch_toggle;
 import 'package:widgetbook/widgetbook.dart' as _widgetbook;
 
 final directories = <_widgetbook.WidgetbookNode>[
@@ -38,6 +40,15 @@ final directories = <_widgetbook.WidgetbookNode>[
           _widgetbook.WidgetbookUseCase(
             name: 'CheckBoxListTile',
             builder: _example_components_check_box.checkBoxListTile,
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookComponent(
+        name: 'SwitchToggle',
+        useCases: [
+          _widgetbook.WidgetbookUseCase(
+            name: 'SwitchToggle',
+            builder: _example_components_switch_toggle.switchToggle,
           ),
         ],
       ),

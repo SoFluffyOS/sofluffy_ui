@@ -10,6 +10,7 @@ dependencies:
   shimmer: ^3.0.0
   flutter_svg: ^2.1.0
   figma_squircle: ^0.6.3
+  dough: ^2.0.0
   table_calendar: ^3.2.0
   reorderables: ^0.6.0
   flash: ^3.1.1
