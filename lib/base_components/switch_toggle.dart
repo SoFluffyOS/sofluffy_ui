@@ -28,7 +28,6 @@ class _SwitchToggleState extends State<SwitchToggle>
   late bool _currentValue = widget.value;
 
   bool _isPointerDown = false;
-  bool _isDraggingDisabled = false;
   bool _isDragging = false;
   double _dragPositionX = 0;
 
@@ -83,8 +82,6 @@ class _SwitchToggleState extends State<SwitchToggle>
   }
 
   Future<void> _handleTap() async {
-    if (_isDraggingDisabled) return;
-    _isDraggingDisabled = true;
     final newValue = !_currentValue;
     Future.delayed(
       const Duration(milliseconds: 150),
@@ -95,7 +92,6 @@ class _SwitchToggleState extends State<SwitchToggle>
     } else {
       await _animationController.reverse();
     }
-    _isDraggingDisabled = false;
   }
 
   @override
@@ -130,7 +126,6 @@ class _SwitchToggleState extends State<SwitchToggle>
       child: GestureDetector(
         onTap: _handleTap,
         onHorizontalDragStart: (details) {
-          if (_isDraggingDisabled) return;
           final dragStartX = details.localPosition.dx - _outerPadding;
           _animationController.stop();
           if (!_isDragging) setState(() => _isDragging = true);
@@ -154,7 +149,6 @@ class _SwitchToggleState extends State<SwitchToggle>
           );
         },
         onHorizontalDragUpdate: (details) {
-          if (_isDraggingDisabled) return;
           final dragUpdateX = details.localPosition.dx - _outerPadding;
           final newDragPositionX = dragUpdateX.clamp(
             minX - overboundXOffset,
@@ -176,7 +170,6 @@ class _SwitchToggleState extends State<SwitchToggle>
           );
         },
         onHorizontalDragEnd: (details) {
-          if (_isDraggingDisabled) return;
           if (_isDragging) setState(() => _isDragging = false);
           final bool newTargetValue = _dragPositionX > (_containerWidth / 2);
           _doughController.stop();
