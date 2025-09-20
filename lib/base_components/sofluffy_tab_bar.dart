@@ -41,7 +41,7 @@ class SoFluffyTabBar extends StatelessWidget {
     this.tabDivider,
   });
 
-  static double get tabBarSize => Spacing.d36;
+  static double get tabBarSize => Spacing.d32;
 
   @override
   Widget build(BuildContext context) {
