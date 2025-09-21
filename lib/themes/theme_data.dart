@@ -80,6 +80,12 @@ extension ThemeDataExt on AppTheme {
           surfaceTintColor: Colors.transparent,
         ),
       ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        stopIndicatorColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(Spacing.d12),
+        linearTrackColor: isDark ? colors.neutral5 : colors.neutral3,
+        year2023: false,
+      ),
       menuTheme: MenuThemeData(
         style: MenuStyle(
           backgroundColor: WidgetStatePropertyAll(
