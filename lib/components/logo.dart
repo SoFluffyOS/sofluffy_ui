@@ -13,12 +13,18 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageView(
-      isTransparent
-          ? DesignSystemAssets.images.logoTransparent
-          : DesignSystemAssets.images.logo,
-      size: size ?? Spacing.d80,
-      assetPackage: kDesignSystemPackageName,
+    return Container(
+      decoration: BoxDecoration(
+        color: context.theme.primaryColor,
+        shape: BoxShape.circle,
+      ),
+      child: ImageView(
+        isTransparent
+            ? DesignSystemAssets.images.logoTransparent
+            : DesignSystemAssets.images.logo,
+        size: size ?? Spacing.d80,
+        assetPackage: kDesignSystemPackageName,
+      ),
     );
   }
 }
