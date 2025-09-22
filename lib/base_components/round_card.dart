@@ -8,6 +8,7 @@ class RoundCard extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   final Color? color;
+  final List<BoxShadow>? shadow;
 
   const RoundCard({
     super.key,
@@ -15,6 +16,7 @@ class RoundCard extends StatelessWidget {
     this.color,
     this.margin,
     this.padding,
+    this.shadow,
   });
 
   @override
@@ -27,6 +29,7 @@ class RoundCard extends StatelessWidget {
         shape: SmoothRectangleBorder(
           borderRadius: Spacing.smoothR12,
         ),
+        shadows: shadow,
       ),
       child: child,
     );
