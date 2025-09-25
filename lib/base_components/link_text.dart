@@ -5,6 +5,9 @@ class LinkText extends StatefulWidget {
   final String text;
   final VoidCallback? onTap;
 
+  final String? hint;
+  final bool showUnderlineWhenNormal;
+
   final TextStyle? style;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
@@ -20,6 +23,8 @@ class LinkText extends StatefulWidget {
     this.text, {
     super.key,
     this.onTap,
+    this.hint,
+    this.showUnderlineWhenNormal = true,
     this.style,
     this.textAlign,
     this.textDirection,
@@ -42,6 +47,7 @@ class _LinkTextState extends State<LinkText> {
   @override
   Widget build(BuildContext context) {
     return Tappable(
+      tooltip: widget.hint ?? widget.text,
       onTap: widget.onTap,
       enableHover: true,
       onStateChanged: (state) {
@@ -56,7 +62,10 @@ class _LinkTextState extends State<LinkText> {
             style: style.copyWith(
               fontStyle: isHovered ? FontStyle.italic : FontStyle.normal,
               color: isHovered ? context.theme.primaryColor : null,
-              decoration: isHovered ? TextDecoration.underline : TextDecoration.underline,
+              decoration: switch (widget.showUnderlineWhenNormal) {
+                true => TextDecoration.underline,
+                false => isHovered ? TextDecoration.underline : null,
+              },
               decorationColor: isHovered ? context.theme.primaryColor : null,
               decorationThickness: isHovered ? 2.0 : 1.0,
             ),
