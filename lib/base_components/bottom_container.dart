@@ -1,5 +1,6 @@
 import 'package:design_system/design_system.dart'
     show
+        AfterLayoutMixin,
         Spacing,
         BuildContextExtension,
         SmoothRectangleBorder,
@@ -25,7 +26,8 @@ class BottomContainer extends StatefulWidget {
   State<BottomContainer> createState() => _BottomContainerState();
 }
 
-class _BottomContainerState extends State<BottomContainer> {
+class _BottomContainerState extends State<BottomContainer>
+    with AfterLayoutMixin {
   late ScrollController? _scrollController = widget.scrollController;
 
   bool _shouldShowShadow = true;
@@ -43,6 +45,11 @@ class _BottomContainerState extends State<BottomContainer> {
   void initState() {
     super.initState();
     _scrollController?.addListener(_updateShadowVisibility);
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    _updateShadowVisibility();
   }
 
   @override
