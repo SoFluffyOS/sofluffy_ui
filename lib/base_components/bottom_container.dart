@@ -74,7 +74,12 @@ class _BottomContainerState extends State<BottomContainer>
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
       decoration: ShapeDecoration(
-        color: widget.color ?? Colors.white,
+        color:
+            widget.color ??
+            switch (context.theme.brightness) {
+              Brightness.light => context.theme.colorScheme.surface,
+              Brightness.dark => context.theme.cardColor,
+            },
         shape: const SmoothRectangleBorder(
           borderRadius: SmoothBorderRadius.vertical(
             top: SmoothRadius(
