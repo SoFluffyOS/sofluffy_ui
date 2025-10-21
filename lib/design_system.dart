@@ -5,7 +5,6 @@ import 'package:design_system/assets.gen.dart';
 export 'package:dough/dough.dart';
 export 'package:figma_squircle/figma_squircle.dart';
 export 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-export 'package:reorderables/reorderables.dart';
 
 export 'base_components/base_components.dart';
 export 'components/components.dart';
