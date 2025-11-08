@@ -21,6 +21,7 @@ extension ThemeDataExt on AppTheme {
       error: Colors.red,
       onError: colors.neutral1,
     );
+    final dividerColor = isDark ? colors.neutral4 : colors.neutral3;
     return baseTheme.copyWith(
       extensions: [
         ...baseTheme.extensions.values,
@@ -40,10 +41,8 @@ extension ThemeDataExt on AppTheme {
       secondaryHeaderColor: colors.secondary,
       scaffoldBackgroundColor: isDark ? colors.neutral7 : colors.neutral1,
       cardColor: isDark ? colors.neutral6 : colors.neutral2,
-      dividerColor: isDark ? colors.neutral4 : colors.neutral3,
-      dividerTheme: DividerThemeData(
-        color: isDark ? colors.neutral4 : colors.neutral3,
-      ),
+      dividerColor: dividerColor,
+      dividerTheme: DividerThemeData(color: dividerColor),
       disabledColor: isDark ? colors.neutral5 : colors.neutral4,
       hintColor: isDark ? colors.neutral4 : colors.neutral5,
       dialogTheme: DialogThemeData(
