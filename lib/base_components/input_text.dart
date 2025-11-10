@@ -2,6 +2,14 @@ import 'package:design_system/design_system.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+typedef DecorationBuilder =
+    Decoration Function(
+      BuildContext context,
+      bool isHovering,
+      bool hasContent,
+      bool hasFocus,
+    );
+
 class InputText extends StatefulWidget {
   /// Not allow updating.
   final FocusNode? focusNode;
@@ -34,6 +42,13 @@ class InputText extends StatefulWidget {
   final VoidCallback? onEditingComplete;
   final TextInputAction? textInputAction;
 
+  final DecorationBuilder? decorationBuilder;
+  final TextStyle? textStyle;
+
+  final EdgeInsets? inputPadding;
+  final double? cursorHeight;
+  final double cursorWidth;
+
   const InputText({
     super.key,
     this.focusNode,
@@ -55,6 +70,11 @@ class InputText extends StatefulWidget {
     this.onChanged,
     this.onEditingComplete,
     this.textInputAction,
+    this.decorationBuilder,
+    this.textStyle,
+    this.inputPadding,
+    this.cursorHeight,
+    this.cursorWidth = 2.0,
   });
 
   @override
@@ -109,6 +129,8 @@ class _InputTextState extends State<InputText> {
 
   @override
   Widget build(BuildContext context) {
+    final baseTextStyle =
+        widget.textStyle ?? ThemeConfigs().theme.typography.base2;
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
@@ -124,7 +146,7 @@ class _InputTextState extends State<InputText> {
                   Expanded(
                     child: Text(
                       label,
-                      style: ThemeConfigs().theme.typography.base2.copyWith(
+                      style: baseTextStyle.copyWith(
                         color: _getLabelColor(context),
                       ),
                     ),
@@ -154,21 +176,33 @@ class _InputTextState extends State<InputText> {
               });
             },
             child: Container(
-              decoration: ShapeDecoration(
-                color: getBackgroundColor(context),
-                shape: SmoothRectangleBorder(
-                  borderRadius: Spacing.smoothR12,
-                  side: BorderSide(color: getBorderColor(context), width: 2.0),
-                ),
-              ),
+              decoration:
+                  widget.decorationBuilder?.call(
+                    context,
+                    isHovering,
+                    hasContent,
+                    hasFocus,
+                  ) ??
+                  ShapeDecoration(
+                    color: getBackgroundColor(context),
+                    shape: SmoothRectangleBorder(
+                      borderRadius: Spacing.smoothR12,
+                      side: BorderSide(
+                        color: getBorderColor(context),
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
               child: CupertinoTextField(
                 controller: _controller,
                 focusNode: _focusNode,
-                style: ThemeConfigs().theme.typography.base2.copyWith(
+                style: baseTextStyle.copyWith(
                   color: getTextColor(context),
                 ),
                 scrollPadding: EdgeInsets.zero,
                 decoration: const BoxDecoration(),
+                cursorHeight: widget.cursorHeight,
+                cursorWidth: widget.cursorWidth,
                 obscureText: widget.obscureText,
                 autocorrect: !widget.isPasswordField,
                 enableIMEPersonalizedLearning: !widget.isPasswordField,
@@ -186,18 +220,21 @@ class _InputTextState extends State<InputText> {
                 onChanged: widget.onChanged,
                 onEditingComplete: widget.onEditingComplete,
                 textInputAction: widget.textInputAction,
-                placeholderStyle: ThemeConfigs().theme.typography.base2
-                    .copyWith(
-                      color: ThemeConfigs().theme.colors.neutral4.withValues(
-                        alpha: 0.5,
-                      ),
-                    ),
-                padding: EdgeInsets.only(
-                  left: widget.prefixIcon == null ? Spacing.d16 : Spacing.d12,
-                  right: Spacing.d16,
-                  top: Spacing.d14,
-                  bottom: Spacing.d14,
+                placeholderStyle: baseTextStyle.copyWith(
+                  color: ThemeConfigs().theme.colors.neutral4.withValues(
+                    alpha: 0.5,
+                  ),
                 ),
+                padding:
+                    widget.inputPadding ??
+                    EdgeInsets.only(
+                      left: widget.prefixIcon == null
+                          ? Spacing.d16
+                          : Spacing.d12,
+                      right: Spacing.d16,
+                      top: Spacing.d14,
+                      bottom: Spacing.d14,
+                    ),
                 prefix: widget.prefixIcon == null
                     ? null
                     : Padding(
