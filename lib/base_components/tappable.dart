@@ -39,6 +39,7 @@ enum TappableState {
 }
 
 class Tappable extends StatefulWidget {
+  final Widget Function(BuildContext context, TappableState state)? builder;
   final Widget? child;
 
   final GestureTapCallback? onTap;
@@ -77,6 +78,7 @@ class Tappable extends StatefulWidget {
     this.enableFocusBorder = true,
     this.enableHover = false,
     this.enableHoverOverlay = false,
+    this.builder,
     this.child,
     this.focusNode,
     this.hoverOverlayPadding = EdgeInsets.zero,
@@ -197,7 +199,8 @@ class _TappableState extends State<Tappable> {
                   duration: const Duration(milliseconds: _animationDuration),
                   child: Container(
                     color: Colors.transparent,
-                    child: widget.child,
+                    child:
+                        widget.builder?.call(context, _state) ?? widget.child,
                   ),
                 ),
                 if (widget.enableHoverOverlay)
