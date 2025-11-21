@@ -48,6 +48,9 @@ extension ThemeDataExt on AppTheme {
       dialogTheme: DialogThemeData(
         surfaceTintColor: Colors.transparent,
         backgroundColor: isDark ? colors.neutral7 : colors.neutral1,
+        shape: SmoothRectangleBorder(
+          borderRadius: Spacing.smoothR12,
+        ),
       ),
       tabBarTheme: TabBarThemeData(indicatorColor: colors.secondary),
       colorScheme: colorScheme,
