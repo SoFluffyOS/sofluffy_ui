@@ -5,15 +5,24 @@ class Tag extends StatelessWidget {
   final String text;
   final Color color;
 
-  const Tag(this.text, {super.key, this.color = Colors.white});
+  final EdgeInsets? padding;
+
+  Tag(
+    this.text, {
+    super.key,
+    this.color = Colors.white,
+    EdgeInsets? padding,
+  }) : padding =
+           padding ??
+           EdgeInsets.symmetric(
+             horizontal: Spacing.d8,
+             vertical: Spacing.d4,
+           );
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Spacing.d8,
-        vertical: Spacing.d4,
-      ),
+      padding: padding,
       decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.1),
         shape: const SmoothRectangleBorder(
