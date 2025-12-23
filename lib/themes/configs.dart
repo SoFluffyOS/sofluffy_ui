@@ -1,10 +1,15 @@
 import 'dart:convert';
 
-import 'package:design_system/design_system.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:design_system/constants/strings.dart';
+import 'package:design_system/themes/app_theme.dart';
 import 'package:flutter/services.dart';
 
+/// **Deprecated**: Use [ThemeLoader] to load themes and [AppThemeData] to
+/// provide themes to the widget tree.
+///
+/// This singleton is kept for backward compatibility but should be migrated
+/// to the new context-based system.
+@Deprecated('Use ThemeLoader and AppThemeData instead')
 class ThemeConfigs {
   AppTheme? _theme;
 
@@ -24,7 +29,7 @@ class ThemeConfigs {
       'assets/themes/$themeName.json',
       cache: false,
     );
-    final themeJson = jsonDecode(themeData);
+    final themeJson = jsonDecode(themeData) as Map<String, dynamic>;
     _theme = AppTheme.fromJson(themeJson);
   }
 
@@ -33,22 +38,4 @@ class ThemeConfigs {
   factory ThemeConfigs() => _instance;
 
   ThemeConfigs._();
-}
-
-@immutable
-class AppTheme {
-  final ColorData colors;
-  final TypographyData typography;
-
-  const AppTheme({
-    required this.colors,
-    required this.typography,
-  });
-
-  factory AppTheme.fromJson(Map<String, dynamic> json) {
-    return AppTheme(
-      colors: ColorData.fromJson(json['colors']),
-      typography: TypographyData.fromJson(json['typography']),
-    );
-  }
 }

@@ -39,4 +39,42 @@ class ColorData {
       neutral7: '${json['neutral7']}'.hexToColor(),
     );
   }
+
+  ColorData copyWith({
+    Color? primary,
+    Color? secondary,
+    Color? neutral1,
+    Color? neutral2,
+    Color? neutral3,
+    Color? neutral4,
+    Color? neutral5,
+    Color? neutral6,
+    Color? neutral7,
+  }) {
+    return ColorData(
+      primary: primary ?? this.primary,
+      secondary: secondary ?? this.secondary,
+      neutral1: neutral1 ?? this.neutral1,
+      neutral2: neutral2 ?? this.neutral2,
+      neutral3: neutral3 ?? this.neutral3,
+      neutral4: neutral4 ?? this.neutral4,
+      neutral5: neutral5 ?? this.neutral5,
+      neutral6: neutral6 ?? this.neutral6,
+      neutral7: neutral7 ?? this.neutral7,
+    );
+  }
+
+  static ColorData lerp(ColorData a, ColorData b, double t) {
+    return ColorData(
+      primary: Color.lerp(a.primary, b.primary, t)!,
+      secondary: Color.lerp(a.secondary, b.secondary, t)!,
+      neutral1: Color.lerp(a.neutral1, b.neutral1, t)!,
+      neutral2: Color.lerp(a.neutral2, b.neutral2, t)!,
+      neutral3: Color.lerp(a.neutral3, b.neutral3, t)!,
+      neutral4: Color.lerp(a.neutral4, b.neutral4, t)!,
+      neutral5: Color.lerp(a.neutral5, b.neutral5, t)!,
+      neutral6: Color.lerp(a.neutral6, b.neutral6, t)!,
+      neutral7: Color.lerp(a.neutral7, b.neutral7, t)!,
+    );
+  }
 }

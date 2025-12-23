@@ -6,24 +6,26 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ThemeConfigs().init();
-  runApp(const WidgetbookApp());
+  final appTheme = await ThemeLoader.loadDefault();
+  runApp(WidgetbookApp(appTheme: appTheme));
 }
 
 @widgetbook.App()
 class WidgetbookApp extends StatelessWidget {
-  const WidgetbookApp({super.key});
+  final AppTheme appTheme;
+
+  const WidgetbookApp({super.key, required this.appTheme});
 
   @override
   Widget build(BuildContext context) {
     final themes = [
       WidgetbookTheme(
         name: 'Light',
-        data: ThemeConfigs().theme.getTheme(isDark: false),
+        data: appTheme.getTheme(isDark: false),
       ),
       WidgetbookTheme(
         name: 'Dark',
-        data: ThemeConfigs().theme.getTheme(isDark: true),
+        data: appTheme.getTheme(isDark: true),
       ),
     ];
     return Widgetbook.material(

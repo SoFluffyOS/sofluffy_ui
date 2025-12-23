@@ -48,56 +48,62 @@ class _RoundButtonState extends State<RoundButton> {
         valueListenable: stateNotifier,
         builder: (context, state, _) {
           final isDark = context.theme.brightness == Brightness.dark;
+          final theme = context.themeConfigs;
           final borderColor = isDark
               ? switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
-                  ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral4.withValues(alpha: 0.2),
-                  _ => ThemeConfigs().theme.colors.neutral4.withValues(
+                  ButtonState.hover => theme.colors.neutral1,
+                  ButtonState.disabled => theme.colors.neutral4.withValues(
+                    alpha: 0.2,
+                  ),
+                  _ => theme.colors.neutral4.withValues(
                     alpha: 0.25,
                   ),
                 }
               : switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
-                  ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral2.withValues(alpha: 0.2),
-                  _ => ThemeConfigs().theme.colors.neutral2,
+                  ButtonState.hover => theme.colors.neutral7,
+                  ButtonState.disabled => theme.colors.neutral2.withValues(
+                    alpha: 0.2,
+                  ),
+                  _ => theme.colors.neutral2,
                 };
           final backgroundColor = isDark
               ? switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
-                  ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral7.withValues(alpha: 0.2),
-                  _ => ThemeConfigs().theme.colors.neutral7,
+                  ButtonState.hover => theme.colors.neutral1,
+                  ButtonState.disabled => theme.colors.neutral7.withValues(
+                    alpha: 0.2,
+                  ),
+                  _ => theme.colors.neutral7,
                 }
               : switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
-                  ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
-                  _ => ThemeConfigs().theme.colors.neutral2,
+                  ButtonState.hover => theme.colors.neutral7,
+                  _ => theme.colors.neutral2,
                 };
           final iconColor = isDark
               ? switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
-                  ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral4.withValues(alpha: 0.2),
-                  _ => ThemeConfigs().theme.colors.neutral4,
+                  ButtonState.hover => theme.colors.neutral7,
+                  ButtonState.disabled => theme.colors.neutral4.withValues(
+                    alpha: 0.2,
+                  ),
+                  _ => theme.colors.neutral4,
                 }
               : switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
-                  ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral5.withValues(alpha: 0.2),
-                  _ => ThemeConfigs().theme.colors.neutral5,
+                  ButtonState.hover => theme.colors.neutral1,
+                  ButtonState.disabled => theme.colors.neutral5.withValues(
+                    alpha: 0.2,
+                  ),
+                  _ => theme.colors.neutral5,
                 };
           return Tappable(
             onTap: widget.enable ? widget.onPressed : null,

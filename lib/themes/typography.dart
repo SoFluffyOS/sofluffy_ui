@@ -74,8 +74,23 @@ class TypographyData {
 
   factory TypographyData.fromJson(Map<String, dynamic> json) {
     return TypographyData(
-      fontFamily: json['fontFamily'],
-      bodyFontFamily: json['bodyFontFamily'],
+      fontFamily: json['fontFamily'] as String,
+      bodyFontFamily: json['bodyFontFamily'] as String?,
     );
+  }
+
+  TypographyData copyWith({
+    String? fontFamily,
+    String? bodyFontFamily,
+  }) {
+    return TypographyData(
+      fontFamily: fontFamily ?? this.fontFamily,
+      bodyFontFamily: bodyFontFamily ?? this.bodyFontFamily,
+    );
+  }
+
+  static TypographyData lerp(TypographyData a, TypographyData b, double t) {
+    // Typography doesn't lerp smoothly, so we just switch at t >= 0.5
+    return t < 0.5 ? a : b;
   }
 }

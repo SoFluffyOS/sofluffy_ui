@@ -19,9 +19,10 @@ enum ButtonVariant {
     Color? fillColor,
   ) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     switch (this) {
       case ButtonVariant.primary:
-        return ThemeConfigs().theme.colors.neutral1;
+        return theme.colors.neutral1;
       case ButtonVariant.secondary:
         if (fillColor != null) {
           return ButtonVariant.primary.getForegroundColor(
@@ -30,9 +31,7 @@ enum ButtonVariant {
             fillColor,
           );
         }
-        return isDark
-            ? ThemeConfigs().theme.colors.neutral7
-            : ThemeConfigs().theme.colors.neutral1;
+        return isDark ? theme.colors.neutral7 : theme.colors.neutral1;
       case ButtonVariant.ghost:
         if (fillColor != null) {
           return fillColor;
@@ -47,6 +46,7 @@ enum ButtonVariant {
     Color? fillColor,
   ) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     switch (this) {
       /// ButtonVariant.primary.
       case ButtonVariant.primary:
@@ -66,9 +66,7 @@ enum ButtonVariant {
         }
         final baseColor =
             fillColor?.withValues(alpha: 0.25) ??
-            (isDark
-                ? ThemeConfigs().theme.colors.neutral5
-                : ThemeConfigs().theme.colors.neutral3);
+            (isDark ? theme.colors.neutral5 : theme.colors.neutral3);
         if (state == ButtonState.disabled) {
           return baseColor.withValues(alpha: 0.5);
         }
@@ -93,10 +91,11 @@ enum ButtonVariant {
     Color? fillColor,
   ) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     switch (this) {
       /// ButtonVariant.primary.
       case ButtonVariant.primary:
-        final baseColor = fillColor ?? ThemeConfigs().theme.colors.primary;
+        final baseColor = fillColor ?? theme.colors.primary;
         if (state == ButtonState.disabled) {
           return baseColor.withValues(alpha: 0.5);
         }
@@ -109,8 +108,8 @@ enum ButtonVariant {
       case ButtonVariant.ghost:
         if (state == ButtonState.hover || state == ButtonState.pressing) {
           final baseColor = isDark
-              ? ThemeConfigs().theme.colors.neutral5
-              : ThemeConfigs().theme.colors.neutral3;
+              ? theme.colors.neutral5
+              : theme.colors.neutral3;
           if (fillColor != null) {
             return Color.lerp(
               context.theme.colorScheme.surface,
@@ -126,9 +125,7 @@ enum ButtonVariant {
       case ButtonVariant.secondary:
         final baseColor =
             fillColor ??
-            (isDark
-                ? ThemeConfigs().theme.colors.neutral1
-                : ThemeConfigs().theme.colors.neutral7);
+            (isDark ? theme.colors.neutral1 : theme.colors.neutral7);
         if (state == ButtonState.disabled) {
           return baseColor.withValues(alpha: 0.5);
         }
@@ -224,7 +221,7 @@ class _ButtonState extends State<Button> {
     } else if (widget.label case String label) {
       child = Text(
         label,
-        style: ThemeConfigs().theme.typography.base1.copyWith(
+        style: context.themeConfigs.typography.base1.copyWith(
           color: widget.variant.getForegroundColor(
             context,
             stateNotifier.value,

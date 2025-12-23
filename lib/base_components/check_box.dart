@@ -107,7 +107,7 @@ class CheckBoxIcon extends StatelessWidget {
               DesignSystemAssets.icons.tick02Solid,
               width: Spacing.d18,
               height: Spacing.d18,
-              color: ThemeConfigs().theme.colors.neutral1,
+              color: context.themeConfigs.colors.neutral1,
               assetPackage: kDesignSystemPackageName,
             ),
     );
@@ -115,27 +115,22 @@ class CheckBoxIcon extends StatelessWidget {
 
   Color _getBackgroundColor(BuildContext context, CheckBoxIconState state) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     return switch (state) {
-      CheckBoxIconState.checked => ThemeConfigs().theme.colors.primary,
+      CheckBoxIconState.checked => theme.colors.primary,
       CheckBoxIconState.unchecked =>
-        isDark
-            ? ThemeConfigs().theme.colors.neutral7
-            : ThemeConfigs().theme.colors.neutral1,
+        isDark ? theme.colors.neutral7 : theme.colors.neutral1,
       CheckBoxIconState.hover =>
-        isDark
-            ? ThemeConfigs().theme.colors.neutral6
-            : ThemeConfigs().theme.colors.neutral3,
+        isDark ? theme.colors.neutral6 : theme.colors.neutral3,
     };
   }
 
   Color _getBorderColor(BuildContext context, CheckBoxIconState state) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     return switch (state) {
-      CheckBoxIconState.checked => ThemeConfigs().theme.colors.primary,
-      _ =>
-        isDark
-            ? ThemeConfigs().theme.colors.neutral6
-            : ThemeConfigs().theme.colors.neutral3,
+      CheckBoxIconState.checked => theme.colors.primary,
+      _ => isDark ? theme.colors.neutral6 : theme.colors.neutral3,
     };
   }
 }

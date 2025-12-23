@@ -30,14 +30,14 @@ class TableHeaderCell extends StatelessWidget {
           children: [
             Text(
               text,
-              style: ThemeConfigs().theme.typography.base1,
+              style: context.themeConfigs.typography.base1,
             ),
             if (isSorted) ...[
               Spacing.h4,
               Icon(
                 sortAscending ? Icons.arrow_upward : Icons.arrow_downward,
                 size: 16,
-                color: ThemeConfigs().theme.typography.base1.color,
+                color: context.themeConfigs.typography.base1.color,
               ),
             ],
           ],

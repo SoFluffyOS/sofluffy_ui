@@ -108,27 +108,22 @@ class _RadioIconView extends StatelessWidget {
 
   Color _getBackgroundColor(BuildContext context, RadioIconState state) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     return switch (state) {
-      RadioIconState.checked => ThemeConfigs().theme.colors.primary,
+      RadioIconState.checked => theme.colors.primary,
       RadioIconState.unchecked =>
-        isDark
-            ? ThemeConfigs().theme.colors.neutral7
-            : ThemeConfigs().theme.colors.neutral1,
+        isDark ? theme.colors.neutral7 : theme.colors.neutral1,
       RadioIconState.hover =>
-        isDark
-            ? ThemeConfigs().theme.colors.neutral6
-            : ThemeConfigs().theme.colors.neutral3,
+        isDark ? theme.colors.neutral6 : theme.colors.neutral3,
     };
   }
 
   Color _getBorderColor(BuildContext context, RadioIconState state) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     return switch (state) {
-      RadioIconState.checked => ThemeConfigs().theme.colors.primary,
-      _ =>
-        isDark
-            ? ThemeConfigs().theme.colors.neutral3
-            : ThemeConfigs().theme.colors.neutral4,
+      RadioIconState.checked => theme.colors.primary,
+      _ => isDark ? theme.colors.neutral3 : theme.colors.neutral4,
     };
   }
 }

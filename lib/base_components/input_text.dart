@@ -129,8 +129,8 @@ class _InputTextState extends State<InputText> {
 
   @override
   Widget build(BuildContext context) {
-    final baseTextStyle =
-        widget.textStyle ?? ThemeConfigs().theme.typography.base2;
+    final theme = context.themeConfigs;
+    final baseTextStyle = widget.textStyle ?? theme.typography.base2;
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
@@ -156,8 +156,8 @@ class _InputTextState extends State<InputText> {
                     Text(
                       '${_controller.text.length}'
                       '${widget.maxLength != null ? '/${widget.maxLength}' : ''}',
-                      style: ThemeConfigs().theme.typography.caption2.copyWith(
-                        color: ThemeConfigs().theme.colors.neutral4,
+                      style: theme.typography.caption2.copyWith(
+                        color: theme.colors.neutral4,
                       ),
                     ),
                   ],
@@ -221,7 +221,7 @@ class _InputTextState extends State<InputText> {
                 onEditingComplete: widget.onEditingComplete,
                 textInputAction: widget.textInputAction,
                 placeholderStyle: baseTextStyle.copyWith(
-                  color: ThemeConfigs().theme.colors.neutral4.withValues(
+                  color: theme.colors.neutral4.withValues(
                     alpha: 0.5,
                   ),
                 ),
@@ -270,7 +270,7 @@ class _InputTextState extends State<InputText> {
               padding: EdgeInsets.only(top: Spacing.d8),
               child: Text(
                 error,
-                style: ThemeConfigs().theme.typography.caption2.copyWith(
+                style: theme.typography.caption2.copyWith(
                   color: Theme.of(context).colorScheme.error,
                 ),
               ),
@@ -282,28 +282,27 @@ class _InputTextState extends State<InputText> {
 
   Color getBackgroundColor(BuildContext context) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     if (hasFocus) {
-      return isDark
-          ? ThemeConfigs().theme.colors.neutral7
-          : ThemeConfigs().theme.colors.neutral1;
+      return isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     }
 
-    return isDark
-        ? ThemeConfigs().theme.colors.neutral6
-        : ThemeConfigs().theme.colors.neutral2;
+    return isDark ? theme.colors.neutral6 : theme.colors.neutral2;
   }
 
   Color getIconColor(BuildContext context) {
+    final theme = context.themeConfigs;
     if (hasContent) {
-      return ThemeConfigs().theme.colors.neutral4;
+      return theme.colors.neutral4;
     }
 
-    return ThemeConfigs().theme.colors.neutral4.withValues(alpha: 0.5);
+    return theme.colors.neutral4.withValues(alpha: 0.5);
   }
 
   Color getTextColor(BuildContext context) {
+    final theme = context.themeConfigs;
     if (isHovering) {
-      return ThemeConfigs().theme.colors.primary;
+      return theme.colors.primary;
     }
 
     if (hasError) {
@@ -311,9 +310,7 @@ class _InputTextState extends State<InputText> {
     }
 
     final isDark = context.theme.brightness == Brightness.dark;
-    return isDark
-        ? ThemeConfigs().theme.colors.neutral3
-        : ThemeConfigs().theme.colors.neutral6;
+    return isDark ? theme.colors.neutral3 : theme.colors.neutral6;
   }
 
   Color getBorderColor(BuildContext context) {
@@ -321,19 +318,17 @@ class _InputTextState extends State<InputText> {
       return getBackgroundColor(context);
     }
     final isDark = context.theme.brightness == Brightness.dark;
-    return isDark
-        ? ThemeConfigs().theme.colors.neutral5
-        : ThemeConfigs().theme.colors.neutral2;
+    final theme = context.themeConfigs;
+    return isDark ? theme.colors.neutral5 : theme.colors.neutral2;
   }
 
   Color _getLabelColor(BuildContext context) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     if (hasFocus) {
-      return isDark
-          ? ThemeConfigs().theme.colors.neutral1
-          : ThemeConfigs().theme.colors.neutral7;
+      return isDark ? theme.colors.neutral1 : theme.colors.neutral7;
     }
 
-    return ThemeConfigs().theme.colors.neutral4;
+    return theme.colors.neutral4;
   }
 }

@@ -25,6 +25,7 @@ extension ThemeDataExt on AppTheme {
     return baseTheme.copyWith(
       extensions: [
         ...baseTheme.extensions.values,
+        this,
         isDark
             ? getFlashBarDarkTheme(colorScheme)
             : getFlashBarTheme(colorScheme),

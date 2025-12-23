@@ -96,7 +96,7 @@ class _SwitchToggleState extends State<SwitchToggle>
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeConfigs().theme;
+    final theme = context.themeConfigs;
     final isDark = context.theme.brightness == Brightness.dark;
     final thumbRadius = _thumbSize / 2;
     final minX = _innerPadding * 2 + thumbRadius;

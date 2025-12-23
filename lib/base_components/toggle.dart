@@ -75,21 +75,21 @@ class _ToggleState extends State<Toggle> {
 
   Color _getBackgroundColor(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     if (_currentValue) {
-      return ThemeConfigs().theme.colors.primary;
+      return theme.colors.primary;
     }
 
-    return isDark
-        ? ThemeConfigs().theme.colors.neutral5
-        : ThemeConfigs().theme.colors.neutral3;
+    return isDark ? theme.colors.neutral5 : theme.colors.neutral3;
   }
 
   Color _getKnobColor(BuildContext context) {
     final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.themeConfigs;
     if (isDark && !_currentValue) {
-      return ThemeConfigs().theme.colors.neutral7;
+      return theme.colors.neutral7;
     }
 
-    return ThemeConfigs().theme.colors.neutral1;
+    return theme.colors.neutral1;
   }
 }
