@@ -28,6 +28,9 @@ class InputText extends StatefulWidget {
   final bool isPasswordField;
   final bool enableCounter;
 
+  /// When true, the text field is not editable.
+  final bool readOnly;
+
   final String? prefixIcon;
   final String? suffixIcon;
   final VoidCallback? onSuffixTap;
@@ -65,6 +68,7 @@ class InputText extends StatefulWidget {
     this.obscureText = false,
     this.isPasswordField = false,
     this.enableCounter = false,
+    this.readOnly = false,
     this.autoFillHints,
     this.keyboardType,
     this.onChanged,
@@ -217,6 +221,7 @@ class _InputTextState extends State<InputText> {
                 placeholder: widget.hintText,
                 maxLength: widget.maxLength,
                 maxLines: widget.maxLines,
+                readOnly: widget.readOnly,
                 onChanged: widget.onChanged,
                 onEditingComplete: widget.onEditingComplete,
                 textInputAction: widget.textInputAction,
