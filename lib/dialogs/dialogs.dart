@@ -3,3 +3,4 @@ export 'content_dialog.dart';
 export 'input_slider_dialog.dart';
 export 'input_text_dialog.dart';
 export 'radio_options_dialog.dart';
+export 'search_dialog.dart';
