@@ -216,19 +216,23 @@ class _TappableState extends State<Tappable> {
                           milliseconds: _animationDuration,
                         ),
                         decoration: _shouldShowBackground
-                            ? BoxDecoration(
+                            ? ShapeDecoration(
+                                shape: SmoothRectangleBorder(
+                                  borderRadius: SmoothBorderRadius.all(
+                                    SmoothRadius(
+                                      cornerRadius:
+                                          widget.hoverOverlayBorderRadius ??
+                                          12.0,
+                                      cornerSmoothing: 1.0,
+                                    ),
+                                  ),
+                                ),
                                 color:
                                     (widget.hoverOverlayColorTint ??
                                             context.theme.primaryColor)
                                         .withValues(
                                           alpha: _state.backgroundOpacity,
                                         ),
-                                borderRadius:
-                                    widget.hoverOverlayBorderRadius != null
-                                    ? BorderRadius.circular(
-                                        widget.hoverOverlayBorderRadius!,
-                                      )
-                                    : null,
                               )
                             : null,
                       ),
