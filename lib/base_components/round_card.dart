@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 class RoundCard extends StatelessWidget {
   final Widget child;
 
+  final double? borderRadius;
+
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
 
@@ -17,6 +19,7 @@ class RoundCard extends StatelessWidget {
     required this.child,
     this.color,
     this.borderColor,
+    this.borderRadius,
     this.margin,
     this.padding,
     this.shadow,
@@ -30,7 +33,15 @@ class RoundCard extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color ?? context.theme.cardColor,
         shape: SmoothRectangleBorder(
-          borderRadius: Spacing.smoothR12,
+          borderRadius: switch (borderRadius) {
+            final borderRadius? => SmoothBorderRadius.all(
+              SmoothRadius(
+                cornerRadius: borderRadius,
+                cornerSmoothing: 1.0,
+              ),
+            ),
+            _ => Spacing.smoothR12,
+          },
           side: switch (borderColor) {
             final Color borderColor => BorderSide(color: borderColor),
             _ => BorderSide.none,
