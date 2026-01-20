@@ -22,6 +22,19 @@ extension ThemeDataExt on AppTheme {
       onError: colors.neutral1,
     );
     final dividerColor = isDark ? colors.neutral4 : colors.neutral3;
+    final menuStyle = MenuStyle(
+      backgroundColor: WidgetStatePropertyAll(
+        isDark ? colors.neutral6 : colors.neutral2,
+      ),
+      surfaceTintColor: const WidgetStatePropertyAll(
+        Colors.transparent,
+      ),
+      shape: WidgetStatePropertyAll(
+        SmoothRectangleBorder(
+          borderRadius: Spacing.smoothR12,
+        ),
+      ),
+    );
     return baseTheme.copyWith(
       extensions: [
         ...baseTheme.extensions.values,
@@ -42,6 +55,7 @@ extension ThemeDataExt on AppTheme {
       secondaryHeaderColor: colors.secondary,
       scaffoldBackgroundColor: isDark ? colors.neutral7 : colors.neutral1,
       cardColor: isDark ? colors.neutral6 : colors.neutral2,
+      canvasColor: colorScheme.surface,
       dividerColor: dividerColor,
       dividerTheme: DividerThemeData(color: dividerColor),
       disabledColor: isDark ? colors.neutral5 : colors.neutral4,
@@ -89,16 +103,35 @@ extension ThemeDataExt on AppTheme {
         linearTrackColor: isDark ? colors.neutral5 : colors.neutral3,
         year2023: false,
       ),
+      popupMenuTheme: baseTheme.popupMenuTheme.copyWith(
+        color: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
+      dropdownMenuTheme: baseTheme.dropdownMenuTheme.copyWith(
+        menuStyle: menuStyle,
+      ),
       menuTheme: MenuThemeData(
-        style: MenuStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            isDark ? colors.neutral6 : colors.neutral2,
+        style: menuStyle,
+      ),
+      listTileTheme: baseTheme.listTileTheme.copyWith(
+        tileColor: colorScheme.surface,
+      ),
+      expansionTileTheme: baseTheme.expansionTileTheme.copyWith(
+        backgroundColor: colorScheme.surface,
+      ),
+      drawerTheme: baseTheme.drawerTheme.copyWith(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
+      tooltipTheme: baseTheme.tooltipTheme.copyWith(
+        decoration: ShapeDecoration(
+          color: isDark ? colors.neutral6 : colors.neutral2,
+          shape: SmoothRectangleBorder(
+            borderRadius: Spacing.smoothR8,
           ),
-          shape: WidgetStatePropertyAll(
-            SmoothRectangleBorder(
-              borderRadius: Spacing.smoothR12,
-            ),
-          ),
+        ),
+        textStyle: TextStyle(
+          color: isDark ? colors.neutral2 : colors.neutral6,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
