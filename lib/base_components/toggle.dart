@@ -1,5 +1,4 @@
 import 'package:design_system/design_system.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 class Toggle extends StatefulWidget {
@@ -48,15 +47,11 @@ class _ToggleState extends State<Toggle> {
           curve: Curves.easeInOut,
           decoration: ShapeDecoration(
             color: _getBackgroundColor(context),
-            shape: SmoothRectangleBorder(
-              borderRadius: Spacing.smoothR12,
-            ),
+            shape: SmoothRectangleBorder(borderRadius: Spacing.smoothR12),
           ),
           alignment:
               _currentValue ? Alignment.centerRight : Alignment.centerLeft,
-          padding: EdgeInsets.symmetric(
-            horizontal: Spacing.d2,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: Spacing.d2),
           child: Tappable(
             enableAnimation: true,
             enableFocusBorder: false,
@@ -67,9 +62,7 @@ class _ToggleState extends State<Toggle> {
               duration: Durations.medium1,
               curve: Curves.easeInOut,
               decoration: ShapeDecoration(
-                shape: SmoothRectangleBorder(
-                  borderRadius: Spacing.smoothR10,
-                ),
+                shape: SmoothRectangleBorder(borderRadius: Spacing.smoothR10),
                 color: _getKnobColor(context),
               ),
             ),

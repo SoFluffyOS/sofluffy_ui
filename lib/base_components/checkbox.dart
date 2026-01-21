@@ -1,5 +1,4 @@
 import 'package:design_system/design_system.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 class CheckBox extends StatefulWidget {

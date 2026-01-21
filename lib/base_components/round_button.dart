@@ -47,61 +47,60 @@ class _RoundButtonState extends State<RoundButton> {
         valueListenable: stateNotifier,
         builder: (context, state, _) {
           final isDark = context.theme.brightness == Brightness.dark;
-          final borderColor = isDark
-              ? switch (state) {
-                  ButtonState.pressing ||
-                  ButtonState.focus ||
-                  ButtonState.hover =>
-                    ThemeConfigs().theme.colors.neutral1,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral4.withOpacity(0.2),
-                  _ => ThemeConfigs().theme.colors.neutral4.withOpacity(0.25),
-                }
-              : switch (state) {
-                  ButtonState.pressing ||
-                  ButtonState.focus ||
-                  ButtonState.hover =>
-                    ThemeConfigs().theme.colors.neutral7,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral2.withOpacity(0.2),
-                  _ => ThemeConfigs().theme.colors.neutral2,
-                };
-          final backgroundColor = isDark
-              ? switch (state) {
-                  ButtonState.pressing ||
-                  ButtonState.focus ||
-                  ButtonState.hover =>
-                    ThemeConfigs().theme.colors.neutral1,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral7.withOpacity(0.2),
-                  _ => ThemeConfigs().theme.colors.neutral7,
-                }
-              : switch (state) {
-                  ButtonState.pressing ||
-                  ButtonState.focus ||
-                  ButtonState.hover =>
-                    ThemeConfigs().theme.colors.neutral7,
-                  _ => ThemeConfigs().theme.colors.neutral2,
-                };
-          final iconColor = isDark
-              ? switch (state) {
-                  ButtonState.pressing ||
-                  ButtonState.focus ||
-                  ButtonState.hover =>
-                    ThemeConfigs().theme.colors.neutral7,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral4.withOpacity(0.2),
-                  _ => ThemeConfigs().theme.colors.neutral4,
-                }
-              : switch (state) {
-                  ButtonState.pressing ||
-                  ButtonState.focus ||
-                  ButtonState.hover =>
-                    ThemeConfigs().theme.colors.neutral1,
-                  ButtonState.disabled =>
-                    ThemeConfigs().theme.colors.neutral5.withOpacity(0.2),
-                  _ => ThemeConfigs().theme.colors.neutral5,
-                };
+          final borderColor =
+              isDark
+                  ? switch (state) {
+                    ButtonState.pressing ||
+                    ButtonState.focus ||
+                    ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
+                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral4
+                        .withValues(alpha: 0.2),
+                    _ => ThemeConfigs().theme.colors.neutral4.withValues(
+                      alpha: 0.25,
+                    ),
+                  }
+                  : switch (state) {
+                    ButtonState.pressing ||
+                    ButtonState.focus ||
+                    ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
+                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral2
+                        .withValues(alpha: 0.2),
+                    _ => ThemeConfigs().theme.colors.neutral2,
+                  };
+          final backgroundColor =
+              isDark
+                  ? switch (state) {
+                    ButtonState.pressing ||
+                    ButtonState.focus ||
+                    ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
+                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral7
+                        .withValues(alpha: 0.2),
+                    _ => ThemeConfigs().theme.colors.neutral7,
+                  }
+                  : switch (state) {
+                    ButtonState.pressing ||
+                    ButtonState.focus ||
+                    ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
+                    _ => ThemeConfigs().theme.colors.neutral2,
+                  };
+          final iconColor =
+              isDark
+                  ? switch (state) {
+                    ButtonState.pressing ||
+                    ButtonState.focus ||
+                    ButtonState.hover => ThemeConfigs().theme.colors.neutral7,
+                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral4
+                        .withValues(alpha: 0.2),
+                    _ => ThemeConfigs().theme.colors.neutral4,
+                  }
+                  : switch (state) {
+                    ButtonState.pressing ||
+                    ButtonState.focus ||
+                    ButtonState.hover => ThemeConfigs().theme.colors.neutral1,
+                    ButtonState.disabled => ThemeConfigs().theme.colors.neutral5
+                        .withValues(alpha: 0.2),
+                    _ => ThemeConfigs().theme.colors.neutral5,
+                  };
           return Tappable(
             onTap: widget.enable ? widget.onPressed : null,
             enableHover: widget.enable,
@@ -130,28 +129,25 @@ class _RoundButtonState extends State<RoundButton> {
               height: Spacing.d40,
               decoration: BoxDecoration(
                 color: backgroundColor,
-                border: Border.all(
-                  color: borderColor,
-                  width: Spacing.d2,
-                ),
+                border: Border.all(color: borderColor, width: Spacing.d2),
                 borderRadius: BorderRadius.circular(Spacing.d20),
               ),
               padding: EdgeInsets.all(Spacing.d8),
               child: switch (widget.icon.runtimeType) {
                 const (IconData) => Icon(
-                    widget.icon,
-                    size: Spacing.d24,
-                    color: iconColor,
-                  ),
+                  widget.icon,
+                  size: Spacing.d24,
+                  color: iconColor,
+                ),
                 const (String) => ImageView(
-                    widget.icon,
-                    size: Spacing.d24,
-                    color: iconColor,
-                  ),
+                  widget.icon,
+                  size: Spacing.d24,
+                  color: iconColor,
+                ),
                 const (Widget) => SizedBox.square(
-                    dimension: Spacing.d24,
-                    child: widget.icon,
-                  ),
+                  dimension: Spacing.d24,
+                  child: widget.icon,
+                ),
                 _ => SizedBox.square(dimension: Spacing.d24),
               },
             ),

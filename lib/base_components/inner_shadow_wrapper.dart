@@ -47,7 +47,7 @@ class _RenderInnerShadow extends RenderProxyBox {
     }
 
     final blur = Spacing.d4;
-    final color = Colors.black.withOpacity(0.15);
+    final color = Colors.black.withValues(alpha: 0.15);
 
     final child = this.child;
     if (child == null) return;

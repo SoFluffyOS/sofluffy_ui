@@ -1,4 +1,4 @@
-library design_system;
+library;
 
 export 'package:figma_squircle/figma_squircle.dart';
 

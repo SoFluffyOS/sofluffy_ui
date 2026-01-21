@@ -1,5 +1,4 @@
 import 'package:design_system/design_system.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -110,17 +109,15 @@ class _InputTextState extends State<InputText> {
         children: [
           if (widget.label case String label)
             Padding(
-              padding: EdgeInsets.only(
-                bottom: Spacing.d4,
-              ),
+              padding: EdgeInsets.only(bottom: Spacing.d4),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
                       label,
                       style: ThemeConfigs().theme.typography.base2.copyWith(
-                            color: _getLabelColor(context),
-                          ),
+                        color: _getLabelColor(context),
+                      ),
                     ),
                   ),
                   if (widget.enableCounter) ...[
@@ -129,8 +126,8 @@ class _InputTextState extends State<InputText> {
                       '${_controller.text.length}'
                       '${widget.maxLength != null ? '/${widget.maxLength}' : ''}',
                       style: ThemeConfigs().theme.typography.caption2.copyWith(
-                            color: ThemeConfigs().theme.colors.neutral4,
-                          ),
+                        color: ThemeConfigs().theme.colors.neutral4,
+                      ),
                     ),
                   ],
                 ],
@@ -152,18 +149,15 @@ class _InputTextState extends State<InputText> {
                 color: getBackgroundColor(context),
                 shape: SmoothRectangleBorder(
                   borderRadius: Spacing.smoothR12,
-                  side: BorderSide(
-                    color: getBorderColor(context),
-                    width: 2.0,
-                  ),
+                  side: BorderSide(color: getBorderColor(context), width: 2.0),
                 ),
               ),
               child: CupertinoTextField(
                 controller: _controller,
                 focusNode: _focusNode,
                 style: ThemeConfigs().theme.typography.base2.copyWith(
-                      color: getTextColor(context),
-                    ),
+                  color: getTextColor(context),
+                ),
                 scrollPadding: EdgeInsets.zero,
                 decoration: const BoxDecoration(),
                 obscureText: widget.obscureText,
@@ -171,21 +165,21 @@ class _InputTextState extends State<InputText> {
                 enableIMEPersonalizedLearning: !widget.isPasswordField,
                 enableSuggestions: !widget.isPasswordField,
                 enableInteractiveSelection: !widget.isPasswordField,
-                autofillHints: widget.isPasswordField
-                    ? [AutofillHints.password]
-                    : widget.autoFillHints,
-                keyboardType: widget.isPasswordField
-                    ? TextInputType.visiblePassword
-                    : widget.keyboardType,
+                autofillHints:
+                    widget.isPasswordField
+                        ? [AutofillHints.password]
+                        : widget.autoFillHints,
+                keyboardType:
+                    widget.isPasswordField
+                        ? TextInputType.visiblePassword
+                        : widget.keyboardType,
                 placeholder: widget.hintText,
                 maxLength: widget.maxLength,
-                placeholderStyle: ThemeConfigs()
-                    .theme
-                    .typography
-                    .base2
+                placeholderStyle: ThemeConfigs().theme.typography.base2
                     .copyWith(
-                      color:
-                          ThemeConfigs().theme.colors.neutral4.withOpacity(0.5),
+                      color: ThemeConfigs().theme.colors.neutral4.withValues(
+                        alpha: 0.5,
+                      ),
                     ),
                 padding: EdgeInsets.only(
                   left: widget.prefixIcon == null ? Spacing.d16 : Spacing.d12,
@@ -193,49 +187,46 @@ class _InputTextState extends State<InputText> {
                   top: Spacing.d14,
                   bottom: Spacing.d14,
                 ),
-                prefix: widget.prefixIcon == null
-                    ? null
-                    : Padding(
-                        padding: EdgeInsets.only(
-                          left: Spacing.d16,
+                prefix:
+                    widget.prefixIcon == null
+                        ? null
+                        : Padding(
+                          padding: EdgeInsets.only(left: Spacing.d16),
+                          child: ImageView(
+                            widget.prefixIcon,
+                            size: Spacing.d24,
+                            fit: BoxFit.contain,
+                            color: getIconColor(context),
+                          ),
                         ),
-                        child: ImageView(
-                          widget.prefixIcon,
-                          size: Spacing.d24,
-                          fit: BoxFit.contain,
-                          color: getIconColor(context),
-                        ),
-                      ),
-                suffix: widget.suffix == null && widget.suffixIcon == null
-                    ? null
-                    : Padding(
-                        padding: EdgeInsets.only(
-                          right: Spacing.d16,
-                        ),
-                        child: widget.suffix ??
-                            Tappable(
-                              onTap: widget.onSuffixTap,
-                              child: ImageView(
-                                widget.suffixIcon,
-                                size: Spacing.d24,
-                                fit: BoxFit.contain,
-                                color: getIconColor(context),
+                suffix:
+                    widget.suffix == null && widget.suffixIcon == null
+                        ? null
+                        : Padding(
+                          padding: EdgeInsets.only(right: Spacing.d16),
+                          child:
+                              widget.suffix ??
+                              Tappable(
+                                onTap: widget.onSuffixTap,
+                                child: ImageView(
+                                  widget.suffixIcon,
+                                  size: Spacing.d24,
+                                  fit: BoxFit.contain,
+                                  color: getIconColor(context),
+                                ),
                               ),
-                            ),
-                      ),
+                        ),
               ),
             ),
           ),
           if (widget.errorText case String error)
             Padding(
-              padding: EdgeInsets.only(
-                top: Spacing.d8,
-              ),
+              padding: EdgeInsets.only(top: Spacing.d8),
               child: Text(
                 error,
                 style: ThemeConfigs().theme.typography.caption2.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
         ],
@@ -243,9 +234,7 @@ class _InputTextState extends State<InputText> {
     );
   }
 
-  Color getBackgroundColor(
-    BuildContext context,
-  ) {
+  Color getBackgroundColor(BuildContext context) {
     final isDark = context.theme.brightness == Brightness.dark;
     if (hasFocus) {
       return isDark
@@ -258,19 +247,15 @@ class _InputTextState extends State<InputText> {
         : ThemeConfigs().theme.colors.neutral2;
   }
 
-  Color getIconColor(
-    BuildContext context,
-  ) {
+  Color getIconColor(BuildContext context) {
     if (hasContent) {
       return ThemeConfigs().theme.colors.neutral4;
     }
 
-    return ThemeConfigs().theme.colors.neutral4.withOpacity(0.5);
+    return ThemeConfigs().theme.colors.neutral4.withValues(alpha: 0.5);
   }
 
-  Color getTextColor(
-    BuildContext context,
-  ) {
+  Color getTextColor(BuildContext context) {
     if (isHovering) {
       return ThemeConfigs().theme.colors.primary;
     }
@@ -285,9 +270,7 @@ class _InputTextState extends State<InputText> {
         : ThemeConfigs().theme.colors.neutral6;
   }
 
-  Color getBorderColor(
-    BuildContext context,
-  ) {
+  Color getBorderColor(BuildContext context) {
     if (!hasFocus) {
       return getBackgroundColor(context);
     }

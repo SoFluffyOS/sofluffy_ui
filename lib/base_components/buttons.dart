@@ -1,17 +1,10 @@
 import 'package:design_system/design_system.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 part 'round_button.dart';
 
-enum ButtonState {
-  normal,
-  hover,
-  focus,
-  pressing,
-  disabled,
-}
+enum ButtonState { normal, hover, focus, pressing, disabled }
 
 enum ButtonVariant {
   primary,
@@ -42,8 +35,6 @@ enum ButtonVariant {
         if (fillColor != null) {
           return fillColor;
         }
-      default:
-        return null;
     }
     return null;
   }
@@ -71,12 +62,13 @@ enum ButtonVariant {
         if (fillColor != null && state == ButtonState.pressing) {
           return Colors.transparent;
         }
-        final baseColor = fillColor?.withOpacity(0.25) ??
+        final baseColor =
+            fillColor?.withValues(alpha: 0.25) ??
             (isDark
                 ? ThemeConfigs().theme.colors.neutral5
                 : ThemeConfigs().theme.colors.neutral3);
         if (state == ButtonState.disabled) {
-          return baseColor.withOpacity(0.5);
+          return baseColor.withValues(alpha: 0.5);
         }
         return baseColor;
 
@@ -104,19 +96,20 @@ enum ButtonVariant {
       case ButtonVariant.primary:
         final baseColor = fillColor ?? ThemeConfigs().theme.colors.primary;
         if (state == ButtonState.disabled) {
-          return baseColor.withOpacity(0.5);
+          return baseColor.withValues(alpha: 0.5);
         }
         if (state == ButtonState.hover) {
-          return baseColor.withOpacity(0.8);
+          return baseColor.withValues(alpha: 0.8);
         }
         return baseColor;
 
       /// ButtonVariant.ghost.
       case ButtonVariant.ghost:
         if (state == ButtonState.hover || state == ButtonState.pressing) {
-          final baseColor = isDark
-              ? ThemeConfigs().theme.colors.neutral5
-              : ThemeConfigs().theme.colors.neutral3;
+          final baseColor =
+              isDark
+                  ? ThemeConfigs().theme.colors.neutral5
+                  : ThemeConfigs().theme.colors.neutral3;
           if (fillColor != null) {
             return Color.lerp(
               context.theme.colorScheme.surface,
@@ -130,12 +123,13 @@ enum ButtonVariant {
 
       /// ButtonVariant.secondary.
       case ButtonVariant.secondary:
-        final baseColor = fillColor ??
+        final baseColor =
+            fillColor ??
             (isDark
                 ? ThemeConfigs().theme.colors.neutral1
                 : ThemeConfigs().theme.colors.neutral7);
         if (state == ButtonState.disabled) {
-          return baseColor.withOpacity(0.5);
+          return baseColor.withValues(alpha: 0.5);
         }
         return baseColor;
     }
@@ -195,9 +189,9 @@ class Button extends StatefulWidget {
     this.mainAxisSize,
     this.mainAxisAlignment,
   }) : assert(
-          (label != null && child == null) || (label == null && child != null),
-          'Either label or child must be provided',
-        );
+         (label != null && child == null) || (label == null && child != null),
+         'Either label or child must be provided',
+       );
 
   @override
   State<Button> createState() => _ButtonState();
@@ -226,12 +220,15 @@ class _ButtonState extends State<Button> {
       child = Text(
         label,
         style: ThemeConfigs().theme.typography.base1.copyWith(
-              color: widget.variant.getForegroundColor(
-                context,
-                stateNotifier.value,
-                widget.color,
-              ),
-            ),
+          color: widget.variant.getForegroundColor(
+            context,
+            stateNotifier.value,
+            widget.color,
+          ),
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
       );
     }
     return Semantics(
@@ -266,82 +263,76 @@ class _ButtonState extends State<Button> {
             enableHoverOverlay: false,
             enableFocusBorder: false,
             tooltip: widget.tooltip,
-            onTap: widget.enable
-                ? () {
-                    HapticFeedback.lightImpact();
-                    widget.onPressed?.call();
-                  }
-                : null,
+            onTap:
+                widget.enable
+                    ? () {
+                      HapticFeedback.lightImpact();
+                      widget.onPressed?.call();
+                    }
+                    : null,
             enableHover: widget.enableHover,
             hoverOverlayBorderRadius: widget.radius ?? Spacing.d12,
-            hoverOverlayColorTint: widget.color ??
-                widget.variant.getBackgroundColor(
-                  context,
-                  state,
-                  widget.color,
-                ),
-            child: Builder(builder: (context) {
-              return AnimatedContainer(
-                width: widget.width,
-                height: widget.height,
-                duration: Durations.medium4,
-                curve: Curves.easeOut,
-                padding: widget.padding ??
-                    EdgeInsets.symmetric(
-                      horizontal: Spacing.d24,
-                      vertical: Spacing.d12,
+            hoverOverlayColorTint:
+                widget.color ??
+                widget.variant.getBackgroundColor(context, state, widget.color),
+            child: Builder(
+              builder: (context) {
+                return AnimatedContainer(
+                  width: widget.width,
+                  height: widget.height,
+                  duration: Durations.medium4,
+                  curve: Curves.easeOut,
+                  padding:
+                      widget.padding ??
+                      EdgeInsets.symmetric(
+                        horizontal: Spacing.d24,
+                        vertical: Spacing.d12,
+                      ),
+                  decoration: ShapeDecoration(
+                    color: widget.variant.getBackgroundColor(
+                      context,
+                      state,
+                      widget.color,
                     ),
-                decoration: ShapeDecoration(
-                  color: widget.variant.getBackgroundColor(
-                    context,
-                    state,
-                    widget.color,
+                    shape: SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius.all(
+                        SmoothRadius(
+                          cornerRadius: widget.radius ?? 12.0,
+                          cornerSmoothing: 1.0,
+                        ),
+                      ),
+                      side: BorderSide(
+                        color:
+                            widget.variant.getBorderColor(
+                              context,
+                              state,
+                              widget.color,
+                            ) ??
+                            Colors.transparent,
+                        width: widget.borderWidth ?? Spacing.d2,
+                        strokeAlign: BorderSide.strokeAlignInside,
+                      ),
+                    ),
                   ),
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius.all(
-                      SmoothRadius(
-                        cornerRadius: widget.radius ?? 12.0,
-                        cornerSmoothing: 1.0,
-                      ),
-                    ),
-                    side: BorderSide(
-                      color: widget.variant.getBorderColor(
-                            context,
-                            state,
-                            widget.color,
-                          ) ??
-                          Colors.transparent,
-                      width: widget.borderWidth ?? Spacing.d2,
-                      strokeAlign: BorderSide.strokeAlignInside,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: widget.mainAxisSize ?? MainAxisSize.max,
-                  mainAxisAlignment:
-                      widget.mainAxisAlignment ?? MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (widget.icon != null) widget.icon!,
-                    if (widget.icon != null)
-                      SizedBox(
-                        width: Spacing.d8,
-                      ),
-                    if (widget.expandTitle)
-                      Expanded(
-                        child: child,
-                      ),
-                    if (!widget.expandTitle) child,
-                    if (widget.trailingIcon != null) ...[
-                      SizedBox(
-                        width: Spacing.d8,
-                      ),
-                      widget.trailingIcon!,
+                  child: Row(
+                    mainAxisSize: widget.mainAxisSize ?? MainAxisSize.max,
+                    mainAxisAlignment:
+                        widget.mainAxisAlignment ?? MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (widget.icon != null) widget.icon!,
+                      if (widget.icon != null) SizedBox(width: Spacing.d8),
+                      if (widget.expandTitle) Expanded(child: child),
+                      if (!widget.expandTitle) child,
+                      if (widget.trailingIcon != null) ...[
+                        SizedBox(width: Spacing.d8),
+                        widget.trailingIcon!,
+                      ],
                     ],
-                  ],
-                ),
-              );
-            }),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

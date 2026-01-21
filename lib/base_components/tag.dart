@@ -5,11 +5,7 @@ class Tag extends StatelessWidget {
   final String text;
   final Color color;
 
-  const Tag(
-    this.text, {
-    super.key,
-    this.color = Colors.white,
-  });
+  const Tag(this.text, {super.key, this.color = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +15,10 @@ class Tag extends StatelessWidget {
         vertical: Spacing.d4,
       ),
       decoration: ShapeDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         shape: const SmoothRectangleBorder(
           borderRadius: SmoothBorderRadius.all(
-            SmoothRadius(
-              cornerRadius: 12.0,
-              cornerSmoothing: 1.0,
-            ),
+            SmoothRadius(cornerRadius: 12.0, cornerSmoothing: 1.0),
           ),
           side: BorderSide(
             color: Colors.transparent,
