@@ -12,6 +12,8 @@ class ListItem extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
 
+  final String? tooltip;
+
   final String? title;
   final String? subtitle;
   final Widget? child;
@@ -23,6 +25,7 @@ class ListItem extends StatelessWidget {
     this.style = ListItemStyle.standard,
     this.leading,
     this.trailing,
+    this.tooltip,
     this.title,
     this.subtitle,
     this.child,
@@ -65,6 +68,8 @@ class ListItem extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       enableAnimation: true,
       enableHover: true,
+      enableHoverOverlay: true,
+      tooltip: tooltip,
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(
