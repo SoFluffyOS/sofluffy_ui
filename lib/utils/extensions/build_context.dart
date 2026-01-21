@@ -13,9 +13,16 @@ extension BuildContextExtension on BuildContext {
   void toast(
     dynamic message, {
     MessageType type = MessageType.info,
-    Duration duration = const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 2),
   }) {
     showToast(message, type: type, duration: duration);
+  }
+
+  void toastError(
+    dynamic message, {
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    showToast(message, type: MessageType.error, duration: duration);
   }
 
   Future<void> showToast(
