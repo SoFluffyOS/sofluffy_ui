@@ -18,6 +18,8 @@ export 'side_bar.dart';
 export 'sofluffy_tab_bar.dart';
 export 'stepper.dart';
 export 'switch_toggle.dart';
+export 'table_body_cell.dart';
+export 'table_header_cell.dart';
 export 'tag.dart';
 export 'tappable.dart';
 export 'toggle.dart';
