@@ -6,6 +6,8 @@ part 'round_button.dart';
 
 enum ButtonState { normal, hover, focus, pressing, disabled }
 
+enum ButtonTitleExpand { none, shrink, expand }
+
 enum ButtonVariant {
   primary,
   secondary,
@@ -151,7 +153,7 @@ class Button extends StatefulWidget {
   final bool enable;
   final bool enableHover;
 
-  final bool expandTitle;
+  final ButtonTitleExpand titleExpand;
 
   final String? tooltip;
   final String? semanticLabel;
@@ -178,7 +180,7 @@ class Button extends StatefulWidget {
     this.tooltip,
     this.enable = true,
     this.enableHover = true,
-    this.expandTitle = false,
+    this.titleExpand = ButtonTitleExpand.none,
     this.onPressed,
     this.child,
     this.semanticLabel,
@@ -324,8 +326,11 @@ class _ButtonState extends State<Button> {
                     children: [
                       if (widget.icon != null) widget.icon!,
                       if (widget.icon != null) SizedBox(width: Spacing.d8),
-                      if (widget.expandTitle) Expanded(child: child),
-                      if (!widget.expandTitle) child,
+                      switch (widget.titleExpand) {
+                        ButtonTitleExpand.shrink => Flexible(child: child),
+                        ButtonTitleExpand.expand => Expanded(child: child),
+                        ButtonTitleExpand.none => child,
+                      },
                       if (widget.trailingIcon != null) ...[
                         SizedBox(width: Spacing.d8),
                         widget.trailingIcon!,
