@@ -20,11 +20,8 @@ extension BuildContextExtension on BuildContext {
     dynamic message, {
     MessageType type = MessageType.info,
     Duration duration = const Duration(seconds: 3),
-    String? actionLabel,
-    Function? onActionTap,
   }) async {
     unawaited(HapticFeedback.lightImpact());
-    bool isLoading = false;
     try {
       return await showFlash(
         context: this,
@@ -76,30 +73,6 @@ extension BuildContextExtension on BuildContext {
                 ],
               ),
             ),
-            primaryAction: actionLabel != null
-                ? Tappable(
-                    onTap: isLoading
-                        ? null
-                        : () async {
-                            // TODO: update.
-                            // setState(() {
-                            //   isLoading = true;
-                            // });
-                            await onActionTap?.call();
-                            await controller.dismiss();
-                          },
-                    child: Padding(
-                      padding: EdgeInsets.all(Spacing.d16),
-                      child: Text(
-                        actionLabel,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                  )
-                : null,
           );
         },
       );
