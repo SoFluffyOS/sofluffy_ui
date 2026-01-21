@@ -14,6 +14,7 @@ class InputText extends StatefulWidget {
   final String? errorText;
 
   final int? maxLength;
+  final int? maxLines;
 
   final bool obscureText;
   final bool isPasswordField;
@@ -37,6 +38,7 @@ class InputText extends StatefulWidget {
     this.hintText,
     this.errorText,
     this.maxLength,
+    this.maxLines = 1,
     this.prefixIcon,
     this.suffixIcon,
     this.suffix,
@@ -173,6 +175,7 @@ class _InputTextState extends State<InputText> {
                     : widget.keyboardType,
                 placeholder: widget.hintText,
                 maxLength: widget.maxLength,
+                maxLines: widget.maxLines,
                 placeholderStyle: ThemeConfigs().theme.typography.base2
                     .copyWith(
                       color: ThemeConfigs().theme.colors.neutral4.withValues(
