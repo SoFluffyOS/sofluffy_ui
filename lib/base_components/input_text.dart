@@ -52,6 +52,8 @@ class InputText extends StatefulWidget {
   final double? cursorHeight;
   final double cursorWidth;
 
+  final double? borderRadius;
+
   const InputText({
     super.key,
     this.focusNode,
@@ -79,6 +81,7 @@ class InputText extends StatefulWidget {
     this.inputPadding,
     this.cursorHeight,
     this.cursorWidth = 2.0,
+    this.borderRadius,
   });
 
   @override
@@ -190,7 +193,15 @@ class _InputTextState extends State<InputText> {
                   ShapeDecoration(
                     color: getBackgroundColor(context),
                     shape: SmoothRectangleBorder(
-                      borderRadius: Spacing.smoothR12,
+                      borderRadius: switch (widget.borderRadius) {
+                        final borderRadius? => SmoothBorderRadius.all(
+                          SmoothRadius(
+                            cornerRadius: borderRadius,
+                            cornerSmoothing: 1.0,
+                          ),
+                        ),
+                        _ => Spacing.smoothR12,
+                      },
                       side: BorderSide(
                         color: getBorderColor(context),
                         width: 2.0,
