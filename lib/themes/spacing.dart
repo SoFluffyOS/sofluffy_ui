@@ -66,6 +66,8 @@ class Spacing {
 
   static double get d96 => d4 * 24;
 
+  static double get d200 => d4 * 50;
+
   static double get d280 => d4 * 70;
 
   static double get d320 => d4 * 80;
@@ -86,6 +88,8 @@ class Spacing {
 
   static Widget get h4 => horizontal(d4);
 
+  static Widget get h6 => horizontal(d6);
+
   static Widget get h8 => horizontal(d8);
 
   static Widget get h12 => horizontal(d12);
@@ -94,13 +98,25 @@ class Spacing {
 
   static Widget get h24 => horizontal(d24);
 
+  static Widget get h32 => horizontal(d32);
+
+  static Widget get h48 => horizontal(d48);
+
   static Widget get v4 => vertical(d4);
 
+  static Widget get v6 => vertical(d6);
+
   static Widget get v8 => vertical(d8);
+
+  static Widget get v12 => vertical(d12);
 
   static Widget get v16 => vertical(d16);
 
   static Widget get v24 => vertical(d24);
+
+  static Widget get v32 => vertical(d32);
+
+  static Widget get v48 => vertical(d48);
 
   static BorderRadius get r12 => BorderRadius.circular(12.0);
 
