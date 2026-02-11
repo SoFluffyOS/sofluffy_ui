@@ -35,6 +35,9 @@ class InputText extends StatefulWidget {
   final String? suffixIcon;
   final VoidCallback? onSuffixTap;
 
+  /// Only prefixIcon or prefix can be provide at a time.
+  final Widget? prefix;
+
   /// Only suffixIcon or suffix can be provide at a time.
   final Widget? suffix;
 
@@ -64,6 +67,7 @@ class InputText extends StatefulWidget {
     this.maxLength,
     this.maxLines = 1,
     this.prefixIcon,
+    this.prefix,
     this.suffixIcon,
     this.suffix,
     this.onSuffixTap,
@@ -251,16 +255,18 @@ class _InputTextState extends State<InputText> {
                       top: Spacing.d14,
                       bottom: Spacing.d14,
                     ),
-                prefix: widget.prefixIcon == null
+                prefix: widget.prefix == null && widget.prefixIcon == null
                     ? null
                     : Padding(
                         padding: EdgeInsets.only(left: Spacing.d16),
-                        child: ImageView(
-                          widget.prefixIcon,
-                          size: Spacing.d24,
-                          fit: BoxFit.contain,
-                          color: getIconColor(context),
-                        ),
+                        child:
+                            widget.prefix ??
+                            ImageView(
+                              widget.prefixIcon,
+                              size: Spacing.d24,
+                              fit: BoxFit.contain,
+                              color: getIconColor(context),
+                            ),
                       ),
                 suffix: widget.suffix == null && widget.suffixIcon == null
                     ? null
