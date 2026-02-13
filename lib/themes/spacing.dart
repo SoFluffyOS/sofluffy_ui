@@ -127,6 +127,13 @@ class Spacing {
     ),
   );
 
+  static SmoothBorderRadius get smoothR6 => const SmoothBorderRadius.all(
+    SmoothRadius(
+      cornerRadius: 6.0,
+      cornerSmoothing: 1.0,
+    ),
+  );
+
   static SmoothBorderRadius get smoothR8 => const SmoothBorderRadius.all(
     SmoothRadius(
       cornerRadius: 8.0,
