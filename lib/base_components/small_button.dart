@@ -1,141 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+part of 'buttons.dart';
 
-part 'round_button.dart';
-part 'small_button.dart';
-
-enum ButtonState { normal, hover, focus, pressing, disabled }
-
-enum ButtonTitleExpand { none, shrink, expand }
-
-enum ButtonVariant {
-  primary,
-  secondary,
-  ghost;
-
-  Color? getForegroundColor(
-    BuildContext context,
-    ButtonState state,
-    Color? fillColor,
-  ) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
-    switch (this) {
-      case ButtonVariant.primary:
-        return theme.colors.neutral1;
-      case ButtonVariant.secondary:
-        if (fillColor != null) {
-          return ButtonVariant.primary.getForegroundColor(
-            context,
-            state,
-            fillColor,
-          );
-        }
-        return isDark ? theme.colors.neutral7 : theme.colors.neutral1;
-      case ButtonVariant.ghost:
-        if (fillColor != null) {
-          return fillColor;
-        }
-    }
-    return null;
-  }
-
-  Color? getBorderColor(
-    BuildContext context,
-    ButtonState state,
-    Color? fillColor,
-  ) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
-    switch (this) {
-      /// ButtonVariant.primary.
-      case ButtonVariant.primary:
-        final baseColor = getBackgroundColor(context, state, fillColor);
-        if (state == ButtonState.disabled) {
-          return Colors.transparent;
-        }
-        if (state == ButtonState.pressing) {
-          return Color.lerp(baseColor, Colors.black, 0.1);
-        }
-        return baseColor;
-
-      /// ButtonVariant.ghost.
-      case ButtonVariant.ghost:
-        if (fillColor != null && state == ButtonState.pressing) {
-          return Colors.transparent;
-        }
-        final baseColor =
-            fillColor?.withValues(alpha: 0.25) ??
-            (isDark ? theme.colors.neutral5 : theme.colors.neutral3);
-        if (state == ButtonState.disabled) {
-          return baseColor.withValues(alpha: 0.5);
-        }
-        return baseColor;
-
-      /// ButtonVariant.secondary.
-      case ButtonVariant.secondary:
-        if (fillColor != null) {
-          return ButtonVariant.primary.getBorderColor(
-            context,
-            state,
-            fillColor,
-          );
-        }
-        return Colors.transparent;
-    }
-  }
-
-  Color? getBackgroundColor(
-    BuildContext context,
-    ButtonState state,
-    Color? fillColor,
-  ) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
-    switch (this) {
-      /// ButtonVariant.primary.
-      case ButtonVariant.primary:
-        final baseColor = fillColor ?? theme.colors.primary;
-        if (state == ButtonState.disabled) {
-          return baseColor.withValues(alpha: 0.5);
-        }
-        if (state == ButtonState.hover) {
-          return baseColor.withValues(alpha: 0.8);
-        }
-        return baseColor;
-
-      /// ButtonVariant.ghost.
-      case ButtonVariant.ghost:
-        if (state == ButtonState.hover || state == ButtonState.pressing) {
-          final baseColor = isDark
-              ? theme.colors.neutral5
-              : theme.colors.neutral3;
-          if (fillColor != null) {
-            return Color.lerp(
-              context.theme.colorScheme.surface,
-              fillColor,
-              0.25,
-            );
-          }
-          return baseColor;
-        }
-        return context.theme.colorScheme.surface;
-
-      /// ButtonVariant.secondary.
-      case ButtonVariant.secondary:
-        final baseColor =
-            fillColor ??
-            (isDark ? theme.colors.neutral1 : theme.colors.neutral7);
-        if (state == ButtonState.disabled) {
-          return baseColor.withValues(alpha: 0.5);
-        }
-        return baseColor;
-    }
-  }
-}
-
-class Button extends StatefulWidget {
+class SmallButton extends StatefulWidget {
   final ButtonVariant variant;
 
   final Function? onPressed;
@@ -168,7 +33,7 @@ class Button extends StatefulWidget {
 
   final TextAlign? labelTextAlign;
 
-  const Button({
+  const SmallButton({
     super.key,
     required this.variant,
     this.label,
@@ -196,16 +61,16 @@ class Button extends StatefulWidget {
        );
 
   @override
-  State<Button> createState() => _ButtonState();
+  State<SmallButton> createState() => _SmallButtonState();
 }
 
-class _ButtonState extends State<Button> {
+class _SmallButtonState extends State<SmallButton> {
   late final ValueNotifier<ButtonState> stateNotifier = ValueNotifier(
     widget.enable ? ButtonState.normal : ButtonState.disabled,
   );
 
   @override
-  void didUpdateWidget(covariant Button oldWidget) {
+  void didUpdateWidget(covariant SmallButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.enable != oldWidget.enable) {
       stateNotifier.value = widget.enable
@@ -222,7 +87,7 @@ class _ButtonState extends State<Button> {
     } else if (widget.label case String label) {
       child = Text(
         label,
-        style: context.themeConfigs.typography.base1.copyWith(
+        style: context.themeConfigs.typography.caption1.copyWith(
           color: widget.variant.getForegroundColor(
             context,
             stateNotifier.value,
@@ -273,7 +138,8 @@ class _ButtonState extends State<Button> {
                   }
                 : null,
             enableHover: widget.enableHover,
-            hoverOverlayBorderRadius: widget.radius ?? Spacing.d12,
+            // SmallButton: Reduced default radius to d8 (8.0)
+            hoverOverlayBorderRadius: widget.radius ?? Spacing.d8,
             hoverOverlayColorTint:
                 widget.color ??
                 widget.variant.getBackgroundColor(context, state, widget.color),
@@ -287,8 +153,8 @@ class _ButtonState extends State<Button> {
                   padding:
                       widget.padding ??
                       EdgeInsets.symmetric(
-                        horizontal: Spacing.d24,
-                        vertical: Spacing.d12,
+                        horizontal: Spacing.d12,
+                        vertical: Spacing.d8,
                       ),
                   decoration: ShapeDecoration(
                     color: widget.variant.getBackgroundColor(
@@ -299,7 +165,7 @@ class _ButtonState extends State<Button> {
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius.all(
                         SmoothRadius(
-                          cornerRadius: widget.radius ?? 12.0,
+                          cornerRadius: widget.radius ?? 8.0,
                           cornerSmoothing: 1.0,
                         ),
                       ),
