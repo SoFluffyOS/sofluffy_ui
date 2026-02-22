@@ -145,6 +145,11 @@ class _SmallButtonState extends State<SmallButton> {
                 widget.variant.getBackgroundColor(context, state, widget.color),
             child: Builder(
               builder: (context) {
+                final fgColor = widget.variant.getForegroundColor(
+                  context,
+                  state,
+                  widget.color,
+                );
                 return AnimatedContainer(
                   width: widget.width,
                   height: widget.height,
@@ -182,24 +187,31 @@ class _SmallButtonState extends State<SmallButton> {
                       ),
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: widget.mainAxisSize ?? MainAxisSize.max,
-                    mainAxisAlignment:
-                        widget.mainAxisAlignment ?? MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (widget.icon != null) widget.icon!,
-                      if (widget.icon != null) SizedBox(width: Spacing.d8),
-                      switch (widget.titleExpand) {
-                        ButtonTitleExpand.shrink => Flexible(child: child),
-                        ButtonTitleExpand.expand => Expanded(child: child),
-                        ButtonTitleExpand.none => child,
-                      },
-                      if (widget.trailingIcon != null) ...[
-                        SizedBox(width: Spacing.d8),
-                        widget.trailingIcon!,
-                      ],
-                    ],
+                  child: IconTheme.merge(
+                    data: IconThemeData(color: fgColor),
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(color: fgColor),
+                      child: Row(
+                        mainAxisSize: widget.mainAxisSize ?? MainAxisSize.max,
+                        mainAxisAlignment:
+                            widget.mainAxisAlignment ??
+                            MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (widget.icon != null) widget.icon!,
+                          if (widget.icon != null) SizedBox(width: Spacing.d8),
+                          switch (widget.titleExpand) {
+                            ButtonTitleExpand.shrink => Flexible(child: child),
+                            ButtonTitleExpand.expand => Expanded(child: child),
+                            ButtonTitleExpand.none => child,
+                          },
+                          if (widget.trailingIcon != null) ...[
+                            SizedBox(width: Spacing.d8),
+                            widget.trailingIcon!,
+                          ],
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
