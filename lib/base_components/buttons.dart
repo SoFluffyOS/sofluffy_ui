@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 part 'round_button.dart';
-part 'small_button.dart';
 
 enum ButtonState { normal, hover, focus, pressing, disabled }
 
@@ -220,13 +219,21 @@ class _ButtonState extends State<Button> {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
+
     late final Widget child;
     if (widget.child case Widget thisChild) {
       child = thisChild;
     } else if (widget.label case String label) {
+      final typography = context.themeConfigs.typography;
       child = Text(
         label,
-        style: context.themeConfigs.typography.base1.copyWith(
+        style: (isDesktop ? typography.caption1 : typography.base1).copyWith(
           color: widget.variant.getForegroundColor(
             context,
             stateNotifier.value,
@@ -277,7 +284,8 @@ class _ButtonState extends State<Button> {
                   }
                 : null,
             enableHover: widget.enableHover,
-            hoverOverlayBorderRadius: widget.radius ?? Spacing.d12,
+            hoverOverlayBorderRadius:
+                widget.radius ?? (isDesktop ? Spacing.d8 : Spacing.d12),
             hoverOverlayColorTint:
                 widget.color ??
                 widget.variant.getBackgroundColor(context, state, widget.color),
@@ -291,14 +299,22 @@ class _ButtonState extends State<Button> {
                 return AnimatedContainer(
                   width: widget.width,
                   height: widget.height,
+                  constraints: BoxConstraints(
+                    minHeight: isDesktop ? 32.0 : 48.0,
+                  ),
                   duration: Durations.medium4,
                   curve: Curves.easeOut,
                   padding:
                       widget.padding ??
-                      EdgeInsets.symmetric(
-                        horizontal: Spacing.d24,
-                        vertical: Spacing.d12,
-                      ),
+                      (isDesktop
+                          ? EdgeInsets.symmetric(
+                              horizontal: Spacing.d12,
+                              vertical: Spacing.d8,
+                            )
+                          : EdgeInsets.symmetric(
+                              horizontal: Spacing.d24,
+                              vertical: Spacing.d12,
+                            )),
                   decoration: ShapeDecoration(
                     color: widget.variant.getBackgroundColor(
                       context,
@@ -308,7 +324,8 @@ class _ButtonState extends State<Button> {
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius.all(
                         SmoothRadius(
-                          cornerRadius: widget.radius ?? 12.0,
+                          cornerRadius:
+                              widget.radius ?? (isDesktop ? 8.0 : 12.0),
                           cornerSmoothing: 1.0,
                         ),
                       ),

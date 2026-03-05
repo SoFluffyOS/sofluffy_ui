@@ -7,22 +7,32 @@ class Tag extends StatelessWidget {
 
   final EdgeInsets? padding;
 
-  Tag(
+  const Tag(
     this.text, {
     super.key,
     this.color = Colors.white,
-    EdgeInsets? padding,
-  }) : padding =
-           padding ??
-           EdgeInsets.symmetric(
-             horizontal: Spacing.d8,
-             vertical: Spacing.d4,
-           );
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
+    final resolvedPadding =
+        padding ??
+        (isDesktop
+            ? EdgeInsets.symmetric(horizontal: Spacing.d6, vertical: Spacing.d2)
+            : EdgeInsets.symmetric(
+                horizontal: Spacing.d8,
+                vertical: Spacing.d4,
+              ));
+
     return Container(
-      padding: padding,
+      padding: resolvedPadding,
       decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.1),
         shape: const SmoothRectangleBorder(

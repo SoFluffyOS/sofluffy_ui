@@ -31,18 +31,22 @@ class _SwitchToggleState extends State<SwitchToggle>
   bool _isDragging = false;
   double _dragPositionX = 0;
 
-  double get _outerPadding => Spacing.d8;
-  double get _innerPadding => Spacing.d2;
-  double get _thumbSize => Spacing.d24;
-  double get _containerHeight => Spacing.d28 + (Spacing.d2 * 2);
-  double get _containerWidth => Spacing.d56;
+  double _outerPadding(bool isDesktop) => isDesktop ? Spacing.d4 : Spacing.d8;
+  double _innerPadding(bool isDesktop) => isDesktop ? Spacing.d4 : Spacing.d2;
+  double _thumbSize(bool isDesktop) => isDesktop ? Spacing.d16 : Spacing.d24;
+  double _containerHeight(bool isDesktop) =>
+      _thumbSize(isDesktop) +
+      (_innerPadding(isDesktop) * 2) +
+      (isDesktop ? 0 : Spacing.d4);
+  double _containerWidth(bool isDesktop) =>
+      isDesktop ? Spacing.d40 : Spacing.d56;
 
-  static const _sideRadius = SmoothRadius(
-    cornerRadius: 48.0,
+  SmoothRadius _sideRadius(bool isDesktop) => SmoothRadius(
+    cornerRadius: isDesktop ? 12.0 : 48.0,
     cornerSmoothing: 1.0,
   );
-  static const _roomRadius = SmoothRadius(
-    cornerRadius: 12.0,
+  SmoothRadius _roomRadius(bool isDesktop) => SmoothRadius(
+    cornerRadius: isDesktop ? 4.0 : 12.0,
     cornerSmoothing: 1.0,
   );
 
@@ -98,9 +102,20 @@ class _SwitchToggleState extends State<SwitchToggle>
   Widget build(BuildContext context) {
     final theme = context.themeConfigs;
     final isDark = context.theme.brightness == Brightness.dark;
-    final thumbRadius = _thumbSize / 2;
-    final minX = _innerPadding * 2 + thumbRadius;
-    final maxX = _containerWidth - _innerPadding * 2 - thumbRadius;
+
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
+
+    final thumbRadius = _thumbSize(isDesktop) / 2;
+    final minX = _innerPadding(isDesktop) * (isDesktop ? 1 : 2) + thumbRadius;
+    final maxX =
+        _containerWidth(isDesktop) -
+        _innerPadding(isDesktop) * (isDesktop ? 1 : 2) -
+        thumbRadius;
     final overboundXOffset = thumbRadius / 2;
     final overboundYOffset = thumbRadius;
 
@@ -126,7 +141,8 @@ class _SwitchToggleState extends State<SwitchToggle>
       child: GestureDetector(
         onTap: _handleTap,
         onHorizontalDragStart: (details) {
-          final dragStartX = details.localPosition.dx - _outerPadding;
+          final dragStartX =
+              details.localPosition.dx - _outerPadding(isDesktop);
           _animationController.stop();
           if (!_isDragging) setState(() => _isDragging = true);
           final originOffset = overboundXOffset * (_currentValue ? -1 : 1);
@@ -137,19 +153,22 @@ class _SwitchToggleState extends State<SwitchToggle>
           _doughController.start(
             origin: Offset(
               lerpDouble(minX, maxX, _animation.value)! + originOffset,
-              _containerHeight / 2,
+              _containerHeight(isDesktop) / 2,
             ),
             target: Offset(
               _dragPositionX,
               details.localPosition.dy.clamp(
-                -overboundYOffset - _outerPadding,
-                _containerHeight + _outerPadding + overboundYOffset,
+                -overboundYOffset - _outerPadding(isDesktop),
+                _containerHeight(isDesktop) +
+                    _outerPadding(isDesktop) +
+                    overboundYOffset,
               ),
             ),
           );
         },
         onHorizontalDragUpdate: (details) {
-          final dragUpdateX = details.localPosition.dx - _outerPadding;
+          final dragUpdateX =
+              details.localPosition.dx - _outerPadding(isDesktop);
           final newDragPositionX = dragUpdateX.clamp(
             minX - overboundXOffset,
             maxX + overboundXOffset,
@@ -163,15 +182,18 @@ class _SwitchToggleState extends State<SwitchToggle>
             target: Offset(
               _dragPositionX,
               details.localPosition.dy.clamp(
-                -overboundYOffset - _outerPadding,
-                _containerHeight + _outerPadding + overboundYOffset,
+                -overboundYOffset - _outerPadding(isDesktop),
+                _containerHeight(isDesktop) +
+                    _outerPadding(isDesktop) +
+                    overboundYOffset,
               ),
             ),
           );
         },
         onHorizontalDragEnd: (details) {
           if (_isDragging) setState(() => _isDragging = false);
-          final bool newTargetValue = _dragPositionX > (_containerWidth / 2);
+          final bool newTargetValue =
+              _dragPositionX > (_containerWidth(isDesktop) / 2);
           _doughController.stop();
           final dragProgress = (_dragPositionX - minX) / (maxX - minX);
           _animationController.value = dragProgress.clamp(0.0, 1.0);
@@ -183,31 +205,33 @@ class _SwitchToggleState extends State<SwitchToggle>
           }
         },
         child: Padding(
-          padding: EdgeInsets.all(_outerPadding),
+          padding: EdgeInsets.all(_outerPadding(isDesktop)),
           child: Stack(
             alignment: Alignment.center,
             children: [
               AnimatedContainer(
                 curve: Curves.easeOut,
                 duration: const Duration(milliseconds: 300),
-                width: _containerWidth,
-                height: _containerHeight,
+                width: _containerWidth(isDesktop),
+                height: _containerHeight(isDesktop),
                 decoration: ShapeDecoration(
                   color: _getBackgroundColor(
                     theme: theme,
                     isDark: isDark,
                     isOn: _isDragging
-                        ? _dragPositionX > (_containerWidth / 2)
+                        ? _dragPositionX > (_containerWidth(isDesktop) / 2)
                         : _currentValue,
                   ),
                   shape: SmoothRectangleBorder(
-                    borderRadius: Spacing.smoothR12,
+                    borderRadius: isDesktop
+                        ? Spacing.smoothR8
+                        : Spacing.smoothR12,
                     side: BorderSide(
                       color: _getBorderColor(
                         theme: theme,
                         isDark: isDark,
                         isOn: _isDragging
-                            ? _dragPositionX > (_containerWidth / 2)
+                            ? _dragPositionX > (_containerWidth(isDesktop) / 2)
                             : _currentValue,
                       ),
                       width: 2.0,
@@ -223,7 +247,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                       ? _dragPositionX
                       : lerpDouble(minX, maxX, _animation.value)!;
                   final showingValue = _isDragging
-                      ? _dragPositionX > (_containerWidth / 2)
+                      ? _dragPositionX > (_containerWidth(isDesktop) / 2)
                       : _currentValue;
                   final thumbColor = showingValue
                       ? theme.colors.primary
@@ -231,26 +255,35 @@ class _SwitchToggleState extends State<SwitchToggle>
                       ? theme.colors.neutral6
                       : theme.colors.neutral3;
                   final realThumbHeight = _isPointerDown
-                      ? (_isDragging ? _thumbSize * 1.0 : _thumbSize * 1.3)
-                      : _thumbSize;
+                      ? (_isDragging
+                            ? _thumbSize(isDesktop) * 1.0
+                            : _thumbSize(isDesktop) * 1.3)
+                      : _thumbSize(isDesktop);
                   final realThumbWidth = _isPointerDown
-                      ? (_isDragging ? _thumbSize * 1.4 : _thumbSize * 1.3)
-                      : _thumbSize;
+                      ? (_isDragging
+                            ? _thumbSize(isDesktop) * 1.4
+                            : _thumbSize(isDesktop) * 1.3)
+                      : _thumbSize(isDesktop);
                   final thumbBorderRadius = _isPointerDown
                       ? (_isDragging
-                            ? Spacing.smoothR24
+                            ? (isDesktop
+                                  ? Spacing.smoothR12
+                                  : Spacing.smoothR24)
                             : (showingValue
-                                  ? const SmoothBorderRadius.horizontal(
-                                      left: _sideRadius,
-                                      right: _roomRadius,
+                                  ? SmoothBorderRadius.horizontal(
+                                      left: _sideRadius(isDesktop),
+                                      right: _roomRadius(isDesktop),
                                     )
-                                  : const SmoothBorderRadius.horizontal(
-                                      left: _roomRadius,
-                                      right: _sideRadius,
+                                  : SmoothBorderRadius.horizontal(
+                                      left: _roomRadius(isDesktop),
+                                      right: _sideRadius(isDesktop),
                                     )))
-                      : Spacing.smoothR8;
+                      : (isDesktop ? Spacing.smoothR4 : Spacing.smoothR8);
                   return Transform.translate(
-                    offset: Offset(thumbX - (_containerWidth / 2), 0),
+                    offset: Offset(
+                      thumbX - (_containerWidth(isDesktop) / 2),
+                      0,
+                    ),
                     child: DoughRecipe(
                       data: DoughRecipe.of(context).copyWith(
                         expansion: 1.125,

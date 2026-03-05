@@ -39,6 +39,12 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
     return Tappable(
       enableAnimation: true,
       enableHover: true,
@@ -49,7 +55,7 @@ class _CheckBoxState extends State<CheckBox> {
       },
       onTap: () => _onChanged(!_currentValue),
       child: Padding(
-        padding: EdgeInsets.all(Spacing.d8),
+        padding: EdgeInsets.all(isDesktop ? Spacing.d4 : Spacing.d8),
         child: CheckBoxIcon(
           state: _currentValue
               ? CheckBoxIconState.checked
@@ -78,9 +84,15 @@ class CheckBoxIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
     return AnimatedContainer(
-      width: Spacing.d24,
-      height: Spacing.d24,
+      width: isDesktop ? Spacing.d16 : Spacing.d24,
+      height: isDesktop ? Spacing.d16 : Spacing.d24,
       curve: Curves.easeOut,
       duration: Durations.medium1,
       decoration: ShapeDecoration(
@@ -105,8 +117,8 @@ class CheckBoxIcon extends StatelessWidget {
           ? null
           : ImageView(
               DesignSystemAssets.icons.tick02Solid,
-              width: Spacing.d18,
-              height: Spacing.d18,
+              width: isDesktop ? 12.0 : Spacing.d18,
+              height: isDesktop ? 12.0 : Spacing.d18,
               color: context.themeConfigs.colors.neutral1,
               assetPackage: kDesignSystemPackageName,
             ),

@@ -37,9 +37,15 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
     final spacer = switch (style) {
       ListItemStyle.compact => const SizedBox.shrink(),
-      ListItemStyle.standard => Spacing.h8,
+      ListItemStyle.standard => isDesktop ? Spacing.h4 : Spacing.h8,
     };
     final titleWidget = switch (title) {
       String title when title.isNotEmpty => Column(
@@ -50,13 +56,18 @@ class ListItem extends StatelessWidget {
             title,
             style: switch (style) {
               ListItemStyle.compact => context.theme.textTheme.bodySmall,
-              ListItemStyle.standard => context.theme.textTheme.bodyLarge,
+              ListItemStyle.standard =>
+                isDesktop
+                    ? context.theme.textTheme.bodyMedium
+                    : context.theme.textTheme.bodyLarge,
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Text(
               subtitle,
-              style: context.theme.textTheme.bodySmall,
+              style: isDesktop
+                  ? context.themeConfigs.typography.caption2
+                  : context.theme.textTheme.bodySmall,
             ),
           ],
         ],
@@ -75,11 +86,11 @@ class ListItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: switch (style) {
             ListItemStyle.compact => Spacing.d4,
-            ListItemStyle.standard => Spacing.d8,
+            ListItemStyle.standard => isDesktop ? Spacing.d4 : Spacing.d8,
           },
           horizontal: switch (style) {
             ListItemStyle.compact => 0.0,
-            ListItemStyle.standard => Spacing.d16,
+            ListItemStyle.standard => isDesktop ? Spacing.d12 : Spacing.d16,
           },
         ),
         child: Row(

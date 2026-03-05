@@ -141,7 +141,15 @@ class _InputTextState extends State<InputText> {
   @override
   Widget build(BuildContext context) {
     final theme = context.themeConfigs;
-    final baseTextStyle = widget.textStyle ?? theme.typography.base2;
+    final isDesktop = switch (Theme.of(context).platform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
+    final baseTextStyle =
+        widget.textStyle ??
+        (isDesktop ? theme.typography.caption1 : theme.typography.base2);
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
@@ -247,14 +255,23 @@ class _InputTextState extends State<InputText> {
                 ),
                 padding:
                     widget.inputPadding ??
-                    EdgeInsets.only(
-                      left: widget.prefixIcon == null
-                          ? Spacing.d16
-                          : Spacing.d12,
-                      right: Spacing.d16,
-                      top: Spacing.d14,
-                      bottom: Spacing.d14,
-                    ),
+                    (isDesktop
+                        ? EdgeInsets.only(
+                            left: widget.prefixIcon == null
+                                ? Spacing.d12
+                                : Spacing.d8,
+                            right: Spacing.d12,
+                            top: Spacing.d8,
+                            bottom: Spacing.d8,
+                          )
+                        : EdgeInsets.only(
+                            left: widget.prefixIcon == null
+                                ? Spacing.d16
+                                : Spacing.d12,
+                            right: Spacing.d16,
+                            top: Spacing.d14,
+                            bottom: Spacing.d14,
+                          )),
                 prefix: widget.prefix == null && widget.prefixIcon == null
                     ? null
                     : Padding(
@@ -263,7 +280,7 @@ class _InputTextState extends State<InputText> {
                             widget.prefix ??
                             ImageView(
                               widget.prefixIcon,
-                              size: Spacing.d24,
+                              size: isDesktop ? Spacing.d18 : Spacing.d24,
                               fit: BoxFit.contain,
                               color: getIconColor(context),
                             ),
@@ -278,7 +295,7 @@ class _InputTextState extends State<InputText> {
                               onTap: widget.onSuffixTap,
                               child: ImageView(
                                 widget.suffixIcon,
-                                size: Spacing.d24,
+                                size: isDesktop ? Spacing.d18 : Spacing.d24,
                                 fit: BoxFit.contain,
                                 color: getIconColor(context),
                               ),
