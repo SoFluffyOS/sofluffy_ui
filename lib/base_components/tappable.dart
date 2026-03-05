@@ -30,12 +30,15 @@ enum TappableState {
   normal(1.0),
   hover(1.025, 0.1),
   focus(1.025, 0.2),
-  pressed(0.975);
+  pressed(0.975, 0.15);
 
   final double scale;
   final double backgroundOpacity;
 
   const TappableState(this.scale, [this.backgroundOpacity = 0.0]);
+
+  bool get isHovered =>
+      this == TappableState.hover || this == TappableState.pressed;
 }
 
 class Tappable extends StatefulWidget {
@@ -92,221 +95,201 @@ class Tappable extends StatefulWidget {
 }
 
 class _TappableState extends State<Tappable> {
-  TappableState _lastState = TappableState.normal;
-  TappableState _state = TappableState.normal;
+  bool _isHovered = false;
+  bool _isFocused = false;
+  bool _isPressed = false;
+
+  TappableState get _state {
+    if (_isPressed) return TappableState.pressed;
+    if (_isFocused && widget.enableFocusBorder) return TappableState.focus;
+    if (_isHovered && widget.enableHover) return TappableState.hover;
+    return TappableState.normal;
+  }
 
   bool get _isInteractive =>
       (widget.onTap ?? widget.onLongPress ?? widget.onDoubleTap) != null;
 
   bool get _shouldShowBackground =>
-      _state == TappableState.hover || _state == TappableState.focus;
+      _state.isHovered ||
+      _state == TappableState.focus ||
+      _state == TappableState.pressed;
+
+  void _setHovered(bool value) {
+    if (_isHovered == value) return;
+    if (mounted) setState(() => _isHovered = value);
+    widget.onStateChanged?.call(_state);
+  }
+
+  void _setFocused(bool value) {
+    if (_isFocused == value) return;
+    if (mounted) setState(() => _isFocused = value);
+    widget.onStateChanged?.call(_state);
+  }
+
+  DateTime? _lastPressTime;
+  Timer? _unpressTimer;
+
+  @override
+  void dispose() {
+    _unpressTimer?.cancel();
+    super.dispose();
+  }
+
+  void _setPressed(bool value) {
+    _unpressTimer?.cancel();
+
+    if (value) {
+      _lastPressTime = DateTime.now();
+      if (!_isPressed) {
+        if (mounted) setState(() => _isPressed = true);
+        widget.onStateChanged?.call(_state);
+      }
+    } else {
+      final now = DateTime.now();
+      final diff = _lastPressTime != null
+          ? now.difference(_lastPressTime!).inMilliseconds
+          : _animationDuration;
+
+      if (diff < _animationDuration) {
+        _unpressTimer = Timer(
+          Duration(milliseconds: _animationDuration - diff),
+          () {
+            if (mounted && _isPressed) {
+              setState(() => _isPressed = false);
+              widget.onStateChanged?.call(_state);
+            }
+          },
+        );
+      } else {
+        if (_isPressed && mounted) {
+          setState(() => _isPressed = false);
+          widget.onStateChanged?.call(_state);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       message: widget.tooltip ?? '',
-      child: MouseRegion(
-        cursor: _isInteractive
+      child: FocusableActionDetector(
+        enabled:
+            _isInteractive || widget.enableHover || widget.enableFocusBorder,
+        focusNode: widget.focusNode,
+        mouseCursor: _isInteractive
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic,
-        onHover: (_) {
-          if (widget.enableHover && _state != TappableState.focus) {
-            hover();
-          }
+        onShowHoverHighlight: _setHovered,
+        onShowFocusHighlight: _setFocused,
+        shortcuts: {
+          LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
+          LogicalKeySet(LogicalKeyboardKey.space): const ActivateIntent(),
         },
-        onEnter: (_) {
-          if (widget.enableHover && _state != TappableState.focus) {
-            hover();
-          }
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) async {
+              if (widget.onTap != null) {
+                _setPressed(true);
+                await Future.delayed(
+                  const Duration(milliseconds: _animationDuration),
+                );
+                _setPressed(false);
+                widget.onTap?.call();
+              }
+              return null;
+            },
+          ),
         },
-        onExit: (_) {
-          if (widget.enableHover && _state != TappableState.focus) {
-            _lastState = TappableState.normal;
-            reset();
-          }
-        },
-        child: Focus(
-          descendantsAreFocusable: false,
-          descendantsAreTraversable: false,
-          canRequestFocus: _isInteractive,
-          focusNode: widget.focusNode,
-          onFocusChange: (bool hasFocus) {
-            if (hasFocus) {
-              focus();
-            } else {
-              reset();
+        child: GestureDetector(
+          behavior: widget.behavior,
+          onTap: widget.onTap,
+          onDoubleTap: widget.onDoubleTap,
+          onLongPress: widget.onLongPress,
+          onTapDown: (details) {
+            if (widget.onTap != null || widget.onTapDown != null) {
+              _setPressed(true);
             }
+            widget.onTapDown?.call(details);
           },
-          onKeyEvent: (node, event) {
-            if (event is KeyDownEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.enter ||
-                  event.logicalKey == LogicalKeyboardKey.space) {
-                pressedDown();
-                return KeyEventResult.handled;
-              }
-            } else if (event is KeyUpEvent) {
-              if (event.logicalKey == LogicalKeyboardKey.enter ||
-                  event.logicalKey == LogicalKeyboardKey.space) {
-                bounceUp();
-                if (widget.onTap != null) {
-                  widget.onTap?.call();
-                  return KeyEventResult.handled;
-                }
-              }
+          onTapUp: (details) {
+            if (widget.onTap != null || widget.onTapUp != null) {
+              _setPressed(false);
             }
-
-            return KeyEventResult.ignored;
+            widget.onTapUp?.call(details);
           },
-          child: GestureDetector(
-            behavior: widget.behavior,
-            onTap: () async {
-              if (widget.onTap == null) {
-                return;
-              }
-              widget.onTap?.call();
-              await pressedDown();
-              unawaited(bounceUp());
-            },
-            onDoubleTap: widget.onDoubleTap,
-            onLongPress: widget.onLongPress,
-            onTapDown: (TapDownDetails details) {
-              if (widget.onTap == null) {
-                return;
-              }
-              pressedDown();
-              if (widget.onTapDown != null) {
-                widget.onTapDown?.call(details);
-              }
-            },
-            onTapUp: (TapUpDetails details) {
-              if (widget.onTap == null) {
-                return;
-              }
-              widget.onTapUp?.call(details);
-              bounceUp();
-            },
-            onTapCancel: () {
-              if (widget.onTap == null) {
-                return;
-              }
-              bounceUp();
-              widget.onTapCancel?.call();
-            },
-            child: Stack(
-              children: [
-                AnimatedScale(
-                  scale: widget.enableAnimation ? _state.scale : 1.0,
-                  duration: const Duration(milliseconds: _animationDuration),
-                  child: Container(
-                    color: Colors.transparent,
-                    child:
-                        widget.builder?.call(context, _state) ?? widget.child,
-                  ),
+          onTapCancel: () {
+            if (widget.onTap != null || widget.onTapCancel != null) {
+              _setPressed(false);
+            }
+            widget.onTapCancel?.call();
+          },
+          child: Stack(
+            children: [
+              AnimatedScale(
+                scale: widget.enableAnimation ? _state.scale : 1.0,
+                duration: const Duration(milliseconds: _animationDuration),
+                child: Container(
+                  color: Colors.transparent,
+                  child: widget.builder?.call(context, _state) ?? widget.child,
                 ),
-                if (widget.enableHoverOverlay)
-                  Positioned.fill(
-                    child: AnimatedScale(
-                      scale: widget.enableAnimation ? _state.scale : 1.0,
+              ),
+              if (widget.enableHoverOverlay)
+                Positioned.fill(
+                  child: AnimatedScale(
+                    scale: widget.enableAnimation ? _state.scale : 1.0,
+                    duration: const Duration(milliseconds: _animationDuration),
+                    child: AnimatedContainer(
+                      margin: widget.hoverOverlayPadding,
                       duration: const Duration(
                         milliseconds: _animationDuration,
                       ),
-                      child: AnimatedContainer(
-                        margin: widget.hoverOverlayPadding,
-                        duration: const Duration(
-                          milliseconds: _animationDuration,
-                        ),
-                        decoration: _shouldShowBackground
-                            ? ShapeDecoration(
-                                shape: SmoothRectangleBorder(
-                                  borderRadius: SmoothBorderRadius.all(
-                                    SmoothRadius(
-                                      cornerRadius:
-                                          widget.hoverOverlayBorderRadius ??
-                                          12.0,
-                                      cornerSmoothing: 1.0,
-                                    ),
+                      decoration: _shouldShowBackground
+                          ? ShapeDecoration(
+                              shape: SmoothRectangleBorder(
+                                borderRadius: SmoothBorderRadius.all(
+                                  SmoothRadius(
+                                    cornerRadius:
+                                        widget.hoverOverlayBorderRadius ?? 12.0,
+                                    cornerSmoothing: 1.0,
                                   ),
                                 ),
-                                color:
-                                    (widget.hoverOverlayColorTint ??
-                                            context.theme.primaryColor)
-                                        .withValues(
-                                          alpha: _state.backgroundOpacity,
-                                        ),
+                              ),
+                              color:
+                                  (widget.hoverOverlayColorTint ??
+                                          context.theme.primaryColor)
+                                      .withValues(
+                                        alpha: _state.backgroundOpacity,
+                                      ),
+                            )
+                          : null,
+                    ),
+                  ),
+                ),
+              if (_state == TappableState.focus && widget.enableFocusBorder)
+                Positioned.fill(
+                  child: Transform.scale(
+                    scale: _state.scale,
+                    child: Container(
+                      margin: widget.hoverOverlayPadding,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: context.theme.focusColor,
+                          width: Spacing.d2,
+                        ),
+                        borderRadius: widget.hoverOverlayBorderRadius != null
+                            ? BorderRadius.circular(
+                                widget.hoverOverlayBorderRadius!,
                               )
                             : null,
                       ),
                     ),
                   ),
-                if (_state == TappableState.focus && widget.enableFocusBorder)
-                  Positioned.fill(
-                    child: Transform.scale(
-                      scale: _state.scale,
-                      child: Container(
-                        margin: widget.hoverOverlayPadding,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: context.theme.focusColor,
-                            width: Spacing.d2,
-                          ),
-                          borderRadius: widget.hoverOverlayBorderRadius != null
-                              ? BorderRadius.circular(
-                                  widget.hoverOverlayBorderRadius!,
-                                )
-                              : null,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  Future<void> pressedDown() {
-    _lastState = _state;
-    _state = TappableState.pressed;
-    if (mounted) {
-      setState(() {});
-    }
-    widget.onStateChanged?.call(_state);
-    return Future.delayed(const Duration(milliseconds: _animationDuration));
-  }
-
-  Future<void> bounceUp() {
-    reset();
-    return Future.delayed(const Duration(milliseconds: _animationDuration));
-  }
-
-  void hover() {
-    _state = TappableState.hover;
-    _lastState = TappableState.hover;
-    if (mounted) {
-      setState(() {});
-    }
-    widget.onStateChanged?.call(_state);
-  }
-
-  void focus() {
-    _state = TappableState.focus;
-    if (mounted) {
-      setState(() {});
-    }
-    widget.onStateChanged?.call(_state);
-  }
-
-  void reset() {
-    if (_lastState == TappableState.hover) {
-      _state = TappableState.hover;
-    } else {
-      _state = TappableState.normal;
-    }
-    if (mounted) {
-      setState(() {});
-    }
-    widget.onStateChanged?.call(_state);
   }
 }

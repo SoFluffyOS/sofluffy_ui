@@ -51,7 +51,7 @@ class _LinkTextState extends State<LinkText> {
       onTap: widget.onTap,
       enableHover: true,
       onStateChanged: (state) {
-        _isHovered.value = state == TappableState.hover;
+        _isHovered.value = state.isHovered;
       },
       child: ValueListenableBuilder<bool>(
         valueListenable: _isHovered,

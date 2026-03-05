@@ -39,7 +39,7 @@ class _RadioIconState<T> extends State<RadioIcon<T>> {
       enableHover: true,
       onStateChanged: (state) {
         setState(() {
-          _isHovering = state == TappableState.hover;
+          _isHovering = state.isHovered;
         });
       },
       onTap: () {

@@ -269,7 +269,7 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
     return Tappable(
       onTap: () => _selectItem(item),
       builder: (context, state) {
-        final isHovered = state == TappableState.hover;
+        final isHovered = state.isHovered;
         final isActive = isSelected || isHovered;
 
         Color backgroundColor = Colors.transparent;

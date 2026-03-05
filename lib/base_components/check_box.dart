@@ -44,7 +44,7 @@ class _CheckBoxState extends State<CheckBox> {
       enableHover: true,
       onStateChanged: (state) {
         setState(() {
-          _isHovering = state == TappableState.hover;
+          _isHovering = state.isHovered;
         });
       },
       onTap: () => _onChanged(!_currentValue),
