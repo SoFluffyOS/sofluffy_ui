@@ -27,11 +27,11 @@ class LoadingBox extends StatelessWidget {
         highlightColor: isDark ? Colors.grey[600]! : Colors.grey[100]!,
         child: Container(
           decoration: ShapeDecoration(
-            color: shimmerBorderRadius == null ? Colors.white : null,
-            shape: const SmoothRectangleBorder(
+            color: Colors.white,
+            shape: SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius.all(
                 SmoothRadius(
-                  cornerRadius: 12.0,
+                  cornerRadius: shimmerBorderRadius ?? 12.0,
                   cornerSmoothing: 1.0,
                 ),
               ),
