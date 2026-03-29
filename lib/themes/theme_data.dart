@@ -130,6 +130,7 @@ extension ThemeDataExt on AppTheme {
             borderRadius: Spacing.smoothR8,
           ),
         ),
+        waitDuration: const Duration(milliseconds: 300),
         textStyle: TextStyle(
           color: isDark ? colors.neutral2 : colors.neutral6,
         ),
