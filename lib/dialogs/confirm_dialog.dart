@@ -16,17 +16,39 @@ class ConfirmDialog {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
+        final isDesktop = switch (Theme.of(context).platform) {
+          TargetPlatform.macOS ||
+          TargetPlatform.windows ||
+          TargetPlatform.linux => true,
+          _ => false,
+        };
+        final theme = context.theme;
+
         return AlertDialog(
+          shape: isDesktop
+              ? SmoothRectangleBorder(
+                  borderRadius: Spacing.smoothR12,
+                  side: BorderSide(color: theme.dividerColor, width: 0.25),
+                )
+              : null,
+          backgroundColor: isDesktop ? theme.scaffoldBackgroundColor : null,
+          elevation: isDesktop ? 0 : null,
           title: Text(title),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (message case String message when message.isNotEmpty) ...[
-                Text(
-                  message,
-                ),
+          content: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: isDesktop ? 360 : double.infinity,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (message case String message when message.isNotEmpty) ...[
+                  Text(
+                    message,
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
           actions: <Widget>[
             Row(
