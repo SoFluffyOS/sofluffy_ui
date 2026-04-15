@@ -45,6 +45,7 @@ class InputText extends StatefulWidget {
   final TextInputType? keyboardType;
 
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onEditingComplete;
   final TextInputAction? textInputAction;
 
@@ -78,6 +79,7 @@ class InputText extends StatefulWidget {
     this.autoFillHints,
     this.keyboardType,
     this.onChanged,
+    this.onSubmitted,
     this.onEditingComplete,
     this.textInputAction,
     this.decorationBuilder,
@@ -157,6 +159,7 @@ class _InputTextState extends State<InputText> {
       alignment: Alignment.topCenter,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.label case String label)
             Padding(
@@ -184,124 +187,127 @@ class _InputTextState extends State<InputText> {
                 ],
               ),
             ),
-          MouseRegion(
-            onEnter: (_) {
-              setState(() {
-                isHovering = true;
-              });
-            },
-            onExit: (_) {
-              setState(() {
-                isHovering = false;
-              });
-            },
-            child: Container(
-              decoration:
-                  widget.decorationBuilder?.call(
-                    context,
-                    isHovering,
-                    hasContent,
-                    hasFocus,
-                  ) ??
-                  ShapeDecoration(
-                    color: getBackgroundColor(context),
-                    shape: SmoothRectangleBorder(
-                      borderRadius: switch (widget.borderRadius) {
-                        final borderRadius? => SmoothBorderRadius.all(
-                          SmoothRadius(
-                            cornerRadius: borderRadius,
-                            cornerSmoothing: 1.0,
+          Flexible(
+            child: MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovering = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isHovering = false;
+                });
+              },
+              child: Container(
+                decoration:
+                    widget.decorationBuilder?.call(
+                      context,
+                      isHovering,
+                      hasContent,
+                      hasFocus,
+                    ) ??
+                    ShapeDecoration(
+                      color: getBackgroundColor(context),
+                      shape: SmoothRectangleBorder(
+                        borderRadius: switch (widget.borderRadius) {
+                          final borderRadius? => SmoothBorderRadius.all(
+                            SmoothRadius(
+                              cornerRadius: borderRadius,
+                              cornerSmoothing: 1.0,
+                            ),
                           ),
+                          _ => Spacing.smoothR12,
+                        },
+                        side: BorderSide(
+                          color: getBorderColor(context),
+                          width: 2.0,
                         ),
-                        _ => Spacing.smoothR12,
-                      },
-                      side: BorderSide(
-                        color: getBorderColor(context),
-                        width: 2.0,
                       ),
                     ),
+                child: CupertinoTextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  style: baseTextStyle.copyWith(
+                    color: getTextColor(context),
                   ),
-              child: CupertinoTextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                style: baseTextStyle.copyWith(
-                  color: getTextColor(context),
-                ),
-                scrollPadding: EdgeInsets.zero,
-                decoration: const BoxDecoration(),
-                cursorHeight: widget.cursorHeight,
-                cursorWidth: widget.cursorWidth,
-                obscureText: widget.obscureText,
-                autocorrect: !widget.isPasswordField,
-                enableIMEPersonalizedLearning: !widget.isPasswordField,
-                enableSuggestions: !widget.isPasswordField,
-                enableInteractiveSelection: !widget.isPasswordField,
-                autofillHints: widget.isPasswordField
-                    ? [AutofillHints.password]
-                    : widget.autoFillHints,
-                keyboardType: widget.isPasswordField
-                    ? TextInputType.visiblePassword
-                    : widget.keyboardType,
-                placeholder: widget.hintText,
-                maxLength: widget.maxLength,
-                maxLines: widget.maxLines,
-                readOnly: widget.readOnly,
-                onChanged: widget.onChanged,
-                onEditingComplete: widget.onEditingComplete,
-                textInputAction: widget.textInputAction,
-                placeholderStyle: baseTextStyle.copyWith(
-                  color: theme.colors.neutral4.withValues(
-                    alpha: 0.5,
+                  scrollPadding: EdgeInsets.zero,
+                  decoration: const BoxDecoration(),
+                  cursorHeight: widget.cursorHeight,
+                  cursorWidth: widget.cursorWidth,
+                  obscureText: widget.obscureText,
+                  autocorrect: !widget.isPasswordField,
+                  enableIMEPersonalizedLearning: !widget.isPasswordField,
+                  enableSuggestions: !widget.isPasswordField,
+                  enableInteractiveSelection: !widget.isPasswordField,
+                  autofillHints: widget.isPasswordField
+                      ? [AutofillHints.password]
+                      : widget.autoFillHints,
+                  keyboardType: widget.isPasswordField
+                      ? TextInputType.visiblePassword
+                      : widget.keyboardType,
+                  placeholder: widget.hintText,
+                  maxLength: widget.maxLength,
+                  maxLines: widget.maxLines,
+                  readOnly: widget.readOnly,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
+                  onEditingComplete: widget.onEditingComplete,
+                  textInputAction: widget.textInputAction,
+                  placeholderStyle: baseTextStyle.copyWith(
+                    color: theme.colors.neutral4.withValues(
+                      alpha: 0.5,
+                    ),
                   ),
-                ),
-                padding:
-                    widget.inputPadding ??
-                    (isDesktop
-                        ? EdgeInsets.only(
-                            left: widget.prefixIcon == null
-                                ? Spacing.d12
-                                : Spacing.d8,
-                            right: Spacing.d12,
-                            top: Spacing.d8,
-                            bottom: Spacing.d8,
-                          )
-                        : EdgeInsets.only(
-                            left: widget.prefixIcon == null
-                                ? Spacing.d16
-                                : Spacing.d12,
-                            right: Spacing.d16,
-                            top: Spacing.d14,
-                            bottom: Spacing.d14,
-                          )),
-                prefix: widget.prefix == null && widget.prefixIcon == null
-                    ? null
-                    : Padding(
-                        padding: EdgeInsets.only(left: Spacing.d16),
-                        child:
-                            widget.prefix ??
-                            ImageView(
-                              widget.prefixIcon,
-                              size: isDesktop ? Spacing.d18 : Spacing.d24,
-                              fit: BoxFit.contain,
-                              color: getIconColor(context),
-                            ),
-                      ),
-                suffix: widget.suffix == null && widget.suffixIcon == null
-                    ? null
-                    : Padding(
-                        padding: EdgeInsets.only(right: Spacing.d16),
-                        child:
-                            widget.suffix ??
-                            Tappable(
-                              onTap: widget.onSuffixTap,
-                              child: ImageView(
-                                widget.suffixIcon,
+                  padding:
+                      widget.inputPadding ??
+                      (isDesktop
+                          ? EdgeInsets.only(
+                              left: widget.prefixIcon == null
+                                  ? Spacing.d12
+                                  : Spacing.d8,
+                              right: Spacing.d12,
+                              top: Spacing.d8,
+                              bottom: Spacing.d8,
+                            )
+                          : EdgeInsets.only(
+                              left: widget.prefixIcon == null
+                                  ? Spacing.d16
+                                  : Spacing.d12,
+                              right: Spacing.d16,
+                              top: Spacing.d14,
+                              bottom: Spacing.d14,
+                            )),
+                  prefix: widget.prefix == null && widget.prefixIcon == null
+                      ? null
+                      : Padding(
+                          padding: EdgeInsets.only(left: Spacing.d16),
+                          child:
+                              widget.prefix ??
+                              ImageView(
+                                widget.prefixIcon,
                                 size: isDesktop ? Spacing.d18 : Spacing.d24,
                                 fit: BoxFit.contain,
                                 color: getIconColor(context),
                               ),
-                            ),
-                      ),
+                        ),
+                  suffix: widget.suffix == null && widget.suffixIcon == null
+                      ? null
+                      : Padding(
+                          padding: EdgeInsets.only(right: Spacing.d16),
+                          child:
+                              widget.suffix ??
+                              Tappable(
+                                onTap: widget.onSuffixTap,
+                                child: ImageView(
+                                  widget.suffixIcon,
+                                  size: isDesktop ? Spacing.d18 : Spacing.d24,
+                                  fit: BoxFit.contain,
+                                  color: getIconColor(context),
+                                ),
+                              ),
+                        ),
+                ),
               ),
             ),
           ),
