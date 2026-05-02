@@ -356,7 +356,7 @@ class _InputTextState extends State<InputText> {
     }
 
     final isDark = context.theme.brightness == Brightness.dark;
-    return isDark ? theme.colors.neutral3 : theme.colors.neutral6;
+    return isDark ? theme.colors.neutral1 : theme.colors.neutral6;
   }
 
   Color getBorderColor(BuildContext context) {
