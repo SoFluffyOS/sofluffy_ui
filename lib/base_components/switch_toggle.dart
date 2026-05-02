@@ -28,6 +28,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   late bool _currentValue = widget.value;
 
   bool _isPointerDown = false;
+  bool _isHovered = false;
   bool _isDragging = false;
   double _dragPositionX = 0;
 
@@ -138,178 +139,190 @@ class _SwitchToggleState extends State<SwitchToggle>
           setState(() {});
         }
       },
-      child: GestureDetector(
-        onTap: _handleTap,
-        onHorizontalDragStart: (details) {
-          final dragStartX =
-              details.localPosition.dx - _outerPadding(isDesktop);
-          _animationController.stop();
-          if (!_isDragging) setState(() => _isDragging = true);
-          final originOffset = overboundXOffset * (_currentValue ? -1 : 1);
-          _dragPositionX = dragStartX.clamp(
-            minX - overboundXOffset,
-            maxX + overboundXOffset,
-          );
-          _doughController.start(
-            origin: Offset(
-              lerpDouble(minX, maxX, _animation.value)! + originOffset,
-              _containerHeight(isDesktop) / 2,
-            ),
-            target: Offset(
-              _dragPositionX,
-              details.localPosition.dy.clamp(
-                -overboundYOffset - _outerPadding(isDesktop),
-                _containerHeight(isDesktop) +
-                    _outerPadding(isDesktop) +
-                    overboundYOffset,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) {
+          _isHovered = true;
+          setState(() {});
+        },
+        onExit: (_) {
+          _isHovered = false;
+          setState(() {});
+        },
+        child: GestureDetector(
+          onTap: _handleTap,
+          onHorizontalDragStart: (details) {
+            final dragStartX =
+                details.localPosition.dx - _outerPadding(isDesktop);
+            _animationController.stop();
+            if (!_isDragging) setState(() => _isDragging = true);
+            final originOffset = overboundXOffset * (_currentValue ? -1 : 1);
+            _dragPositionX = dragStartX.clamp(
+              minX - overboundXOffset,
+              maxX + overboundXOffset,
+            );
+            _doughController.start(
+              origin: Offset(
+                lerpDouble(minX, maxX, _animation.value)! + originOffset,
+                _containerHeight(isDesktop) / 2,
               ),
-            ),
-          );
-        },
-        onHorizontalDragUpdate: (details) {
-          final dragUpdateX =
-              details.localPosition.dx - _outerPadding(isDesktop);
-          final newDragPositionX = dragUpdateX.clamp(
-            minX - overboundXOffset,
-            maxX + overboundXOffset,
-          );
-          if (_dragPositionX != newDragPositionX) {
-            setState(() {
-              _dragPositionX = newDragPositionX;
-            });
-          }
-          _doughController.update(
-            target: Offset(
-              _dragPositionX,
-              details.localPosition.dy.clamp(
-                -overboundYOffset - _outerPadding(isDesktop),
-                _containerHeight(isDesktop) +
-                    _outerPadding(isDesktop) +
-                    overboundYOffset,
+              target: Offset(
+                _dragPositionX,
+                details.localPosition.dy.clamp(
+                  -overboundYOffset - _outerPadding(isDesktop),
+                  _containerHeight(isDesktop) +
+                      _outerPadding(isDesktop) +
+                      overboundYOffset,
+                ),
               ),
-            ),
-          );
-        },
-        onHorizontalDragEnd: (details) {
-          if (_isDragging) setState(() => _isDragging = false);
-          final bool newTargetValue =
-              _dragPositionX > (_containerWidth(isDesktop) / 2);
-          _doughController.stop();
-          final dragProgress = (_dragPositionX - minX) / (maxX - minX);
-          _animationController.value = dragProgress.clamp(0.0, 1.0);
-          _handleValueChanged(newTargetValue);
-          if (newTargetValue) {
-            _animationController.forward();
-          } else {
-            _animationController.reverse();
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.all(_outerPadding(isDesktop)),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              AnimatedContainer(
-                curve: Curves.easeOut,
-                duration: const Duration(milliseconds: 300),
-                width: _containerWidth(isDesktop),
-                height: _containerHeight(isDesktop),
-                decoration: ShapeDecoration(
-                  color: _getBackgroundColor(
-                    theme: theme,
-                    isDark: isDark,
-                    isOn: _isDragging
-                        ? _dragPositionX > (_containerWidth(isDesktop) / 2)
-                        : _currentValue,
-                  ),
-                  shape: SmoothRectangleBorder(
-                    borderRadius: isDesktop
-                        ? Spacing.smoothR8
-                        : Spacing.smoothR12,
-                    side: BorderSide(
-                      color: _getBorderColor(
-                        theme: theme,
-                        isDark: isDark,
-                        isOn: _isDragging
-                            ? _dragPositionX > (_containerWidth(isDesktop) / 2)
-                            : _currentValue,
+            );
+          },
+          onHorizontalDragUpdate: (details) {
+            final dragUpdateX =
+                details.localPosition.dx - _outerPadding(isDesktop);
+            final newDragPositionX = dragUpdateX.clamp(
+              minX - overboundXOffset,
+              maxX + overboundXOffset,
+            );
+            if (_dragPositionX != newDragPositionX) {
+              setState(() {
+                _dragPositionX = newDragPositionX;
+              });
+            }
+            _doughController.update(
+              target: Offset(
+                _dragPositionX,
+                details.localPosition.dy.clamp(
+                  -overboundYOffset - _outerPadding(isDesktop),
+                  _containerHeight(isDesktop) +
+                      _outerPadding(isDesktop) +
+                      overboundYOffset,
+                ),
+              ),
+            );
+          },
+          onHorizontalDragEnd: (details) {
+            if (_isDragging) setState(() => _isDragging = false);
+            final bool newTargetValue =
+                _dragPositionX > (_containerWidth(isDesktop) / 2);
+            _doughController.stop();
+            final dragProgress = (_dragPositionX - minX) / (maxX - minX);
+            _animationController.value = dragProgress.clamp(0.0, 1.0);
+            _handleValueChanged(newTargetValue);
+            if (newTargetValue) {
+              _animationController.forward();
+            } else {
+              _animationController.reverse();
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.all(_outerPadding(isDesktop)),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                AnimatedContainer(
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                  width: _containerWidth(isDesktop),
+                  height: _containerHeight(isDesktop),
+                  decoration: ShapeDecoration(
+                    color: _getBackgroundColor(
+                      theme: theme,
+                      isDark: isDark,
+                      isOn: _isDragging
+                          ? _dragPositionX > (_containerWidth(isDesktop) / 2)
+                          : _currentValue,
+                    ),
+                    shape: SmoothRectangleBorder(
+                      borderRadius: isDesktop
+                          ? Spacing.smoothR8
+                          : Spacing.smoothR12,
+                      side: BorderSide(
+                        color: _getBorderColor(
+                          theme: theme,
+                          isDark: isDark,
+                          isOn: _isDragging
+                              ? _dragPositionX >
+                                    (_containerWidth(isDesktop) / 2)
+                              : _currentValue,
+                        ),
+                        width: 2.0,
+                        strokeAlign: BorderSide.strokeAlignInside,
                       ),
-                      width: 2.0,
-                      strokeAlign: BorderSide.strokeAlignInside,
                     ),
                   ),
                 ),
-              ),
-              AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  final thumbX = _isDragging
-                      ? _dragPositionX
-                      : lerpDouble(minX, maxX, _animation.value)!;
-                  final showingValue = _isDragging
-                      ? _dragPositionX > (_containerWidth(isDesktop) / 2)
-                      : _currentValue;
-                  final thumbColor = showingValue
-                      ? theme.colors.primary
-                      : isDark
-                      ? theme.colors.neutral6
-                      : theme.colors.neutral3;
-                  final realThumbHeight = _isPointerDown
-                      ? (_isDragging
-                            ? _thumbSize(isDesktop) * 1.0
-                            : _thumbSize(isDesktop) * 1.3)
-                      : _thumbSize(isDesktop);
-                  final realThumbWidth = _isPointerDown
-                      ? (_isDragging
-                            ? _thumbSize(isDesktop) * 1.4
-                            : _thumbSize(isDesktop) * 1.3)
-                      : _thumbSize(isDesktop);
-                  final thumbBorderRadius = _isPointerDown
-                      ? (_isDragging
-                            ? (isDesktop
-                                  ? Spacing.smoothR12
-                                  : Spacing.smoothR24)
-                            : (showingValue
-                                  ? SmoothBorderRadius.horizontal(
-                                      left: _sideRadius(isDesktop),
-                                      right: _roomRadius(isDesktop),
-                                    )
-                                  : SmoothBorderRadius.horizontal(
-                                      left: _roomRadius(isDesktop),
-                                      right: _sideRadius(isDesktop),
-                                    )))
-                      : (isDesktop ? Spacing.smoothR4 : Spacing.smoothR8);
-                  return Transform.translate(
-                    offset: Offset(
-                      thumbX - (_containerWidth(isDesktop) / 2),
-                      0,
-                    ),
-                    child: DoughRecipe(
-                      data: DoughRecipe.of(context).copyWith(
-                        expansion: 1.125,
-                        usePerspectiveWarp: true,
-                        perspectiveWarpDepth: 2,
+                AnimatedBuilder(
+                  animation: _animation,
+                  builder: (context, child) {
+                    final thumbX = _isDragging
+                        ? _dragPositionX
+                        : lerpDouble(minX, maxX, _animation.value)!;
+                    final showingValue = _isDragging
+                        ? _dragPositionX > (_containerWidth(isDesktop) / 2)
+                        : _currentValue;
+                    final thumbColor = _getThumbColor(
+                      theme: theme,
+                      isOn: showingValue,
+                      isDark: isDark,
+                    );
+                    final realThumbHeight = _isPointerDown
+                        ? (_isDragging
+                              ? _thumbSize(isDesktop) * 1.0
+                              : _thumbSize(isDesktop) * 1.3)
+                        : _thumbSize(isDesktop);
+                    final realThumbWidth = _isPointerDown
+                        ? (_isDragging
+                              ? _thumbSize(isDesktop) * 1.4
+                              : _thumbSize(isDesktop) * 1.3)
+                        : _thumbSize(isDesktop);
+                    final thumbBorderRadius = _isPointerDown
+                        ? (_isDragging
+                              ? (isDesktop
+                                    ? Spacing.smoothR12
+                                    : Spacing.smoothR24)
+                              : (showingValue
+                                    ? SmoothBorderRadius.horizontal(
+                                        left: _sideRadius(isDesktop),
+                                        right: _roomRadius(isDesktop),
+                                      )
+                                    : SmoothBorderRadius.horizontal(
+                                        left: _roomRadius(isDesktop),
+                                        right: _sideRadius(isDesktop),
+                                      )))
+                        : (isDesktop ? Spacing.smoothR4 : Spacing.smoothR8);
+                    return Transform.translate(
+                      offset: Offset(
+                        thumbX - (_containerWidth(isDesktop) / 2),
+                        0,
                       ),
-                      child: Dough(
-                        controller: _doughController,
-                        child: AnimatedContainer(
-                          curve: Curves.easeOut,
-                          duration: const Duration(milliseconds: 200),
-                          height: realThumbHeight,
-                          width: realThumbWidth,
-                          decoration: ShapeDecoration(
-                            color: thumbColor,
-                            shape: SmoothRectangleBorder(
-                              borderRadius: thumbBorderRadius,
+                      child: DoughRecipe(
+                        data: DoughRecipe.of(context).copyWith(
+                          expansion: 1.125,
+                          usePerspectiveWarp: true,
+                          perspectiveWarpDepth: 2,
+                        ),
+                        child: Dough(
+                          controller: _doughController,
+                          child: AnimatedContainer(
+                            curve: Curves.easeOut,
+                            duration: const Duration(milliseconds: 200),
+                            height: realThumbHeight,
+                            width: realThumbWidth,
+                            decoration: ShapeDecoration(
+                              color: thumbColor,
+                              shape: SmoothRectangleBorder(
+                                borderRadius: thumbBorderRadius,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -321,6 +334,9 @@ class _SwitchToggleState extends State<SwitchToggle>
     required bool isOn,
     required bool isDark,
   }) {
+    if (isOn && _isHovered) {
+      return theme.colors.primary.withValues(alpha: 0.1);
+    }
     if (isOn) {
       return theme.colors.primary.withValues(alpha: 0.2);
     }
@@ -332,9 +348,32 @@ class _SwitchToggleState extends State<SwitchToggle>
     required bool isOn,
     required bool isDark,
   }) {
+    if (isOn && _isHovered) {
+      return theme.colors.primary.withValues(alpha: 0.8);
+    }
     if (isOn) {
       return theme.colors.primary;
     }
-    return isDark ? theme.colors.neutral6 : theme.colors.neutral3;
+    if (_isHovered) {
+      return theme.colors.neutral4;
+    }
+    return isDark ? theme.colors.neutral5 : theme.colors.neutral3;
+  }
+
+  Color _getThumbColor({
+    required AppTheme theme,
+    required bool isOn,
+    required bool isDark,
+  }) {
+    if (isOn && _isHovered) {
+      return theme.colors.primary.withValues(alpha: 0.8);
+    }
+    if (isOn) {
+      return theme.colors.primary;
+    }
+    if (_isHovered) {
+      return theme.colors.neutral4;
+    }
+    return isDark ? theme.colors.neutral5 : theme.colors.neutral3;
   }
 }
