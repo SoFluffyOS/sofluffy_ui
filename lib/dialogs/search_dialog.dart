@@ -31,7 +31,6 @@ class SearchDialog<T> extends StatefulWidget {
   }) {
     return showDialog(
       context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.2),
       barrierDismissible: true,
       builder: (context) => SearchDialog<T>(
         onSearch: onSearch,
@@ -154,8 +153,7 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.themeConfigs;
-    final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.theme;
 
     final size = MediaQuery.sizeOf(context);
     final maxHeight = size.height * 0.6;
@@ -176,21 +174,11 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
               maxHeight: maxHeight,
             ),
             decoration: ShapeDecoration(
-              color: isDark ? theme.colors.neutral7 : theme.colors.neutral1,
+              color: theme.scaffoldBackgroundColor,
               shape: SmoothRectangleBorder(
                 borderRadius: Spacing.smoothR12,
-                side: BorderSide(
-                  color: isDark ? theme.colors.neutral2 : theme.colors.neutral3,
-                  width: 1,
-                ),
+                side: BorderSide(color: theme.dividerColor, width: 0.25),
               ),
-              shadows: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -214,15 +202,13 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
                     decorationBuilder: (context, _, _, _) {
                       return const BoxDecoration();
                     },
-                    textStyle: theme.typography.headline6,
+                    textStyle: theme.textTheme.headlineSmall,
                   ),
                 ),
                 if (_results.isNotEmpty || _isLoading)
                   Divider(
                     height: 1,
-                    color: isDark
-                        ? theme.colors.neutral2
-                        : theme.colors.neutral3,
+                    color: theme.dividerColor,
                   ),
                 switch (_isLoading) {
                   true => Container(
@@ -246,8 +232,10 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
                     padding: EdgeInsets.all(Spacing.d24),
                     child: Text(
                       'No results found',
-                      style: theme.typography.body1.copyWith(
-                        color: theme.colors.neutral4,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                     ),
                   ),
@@ -263,8 +251,7 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
 
   Widget _buildItem(int index, T item) {
     final isSelected = index == _selectedIndex;
-    final theme = context.themeConfigs;
-    final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.theme;
 
     return Tappable(
       onTap: () => _selectItem(item),
@@ -274,9 +261,7 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
 
         Color backgroundColor = Colors.transparent;
         if (isActive) {
-          backgroundColor = isDark
-              ? theme.colors.primary.withValues(alpha: 0.2)
-              : theme.colors.primary.withValues(alpha: 0.1);
+          backgroundColor = theme.colorScheme.primary.withValues(alpha: 0.1);
         }
 
         return Container(
