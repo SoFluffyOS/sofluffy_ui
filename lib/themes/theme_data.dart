@@ -7,6 +7,10 @@ extension ThemeDataExt on AppTheme {
     required bool isDark,
     String? fontFamily,
   }) {
+    final configuredFontFamily = fontFamily ?? typography.fontFamily;
+    final effectiveFontFamily = configuredFontFamily.trim().isEmpty
+        ? null
+        : configuredFontFamily;
     final baseTheme = isDark ? ThemeData.dark() : ThemeData.light();
     final colorScheme = baseTheme.colorScheme.copyWith(
       primary: colors.primary,
@@ -44,10 +48,10 @@ extension ThemeDataExt on AppTheme {
             : getFlashBarTheme(colorScheme),
       ],
       textTheme: baseTheme.textTheme.apply(
-        fontFamily: fontFamily,
+        fontFamily: effectiveFontFamily,
       ),
       primaryTextTheme: baseTheme.primaryTextTheme.apply(
-        fontFamily: fontFamily,
+        fontFamily: effectiveFontFamily,
       ),
       primaryColor: colors.primary,
       primaryColorDark: colors.primary,
