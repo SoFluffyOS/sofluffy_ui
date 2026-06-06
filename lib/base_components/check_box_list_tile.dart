@@ -18,7 +18,11 @@ class CheckBoxListTile extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   final String? title;
+  final TextStyle? titleStyle;
+
   final String? subtitle;
+  final TextStyle? subtitleStyle;
+
   final Widget? child;
 
   const CheckBoxListTile({
@@ -28,7 +32,9 @@ class CheckBoxListTile extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.title,
+    this.titleStyle,
     this.subtitle,
+    this.subtitleStyle,
     this.child,
   }) : assert(
          subtitle == null || style != CheckBoxListTileStyle.compact,
@@ -48,18 +54,20 @@ class CheckBoxListTile extends StatelessWidget {
         children: [
           Text(
             title,
-            style: switch (style) {
-              CheckBoxListTileStyle.compact =>
-                context.theme.textTheme.bodySmall,
-              CheckBoxListTileStyle.standard =>
-                context.theme.textTheme.bodyLarge,
-            },
+            style:
+                titleStyle ??
+                switch (style) {
+                  CheckBoxListTileStyle.compact =>
+                    context.theme.textTheme.bodySmall,
+                  CheckBoxListTileStyle.standard =>
+                    context.theme.textTheme.bodyLarge,
+                },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Spacing.v4,
             Text(
               subtitle,
-              style: context.theme.textTheme.bodySmall,
+              style: subtitleStyle ?? context.theme.textTheme.bodySmall,
             ),
           ],
         ],
