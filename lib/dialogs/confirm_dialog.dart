@@ -1,5 +1,6 @@
 import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 enum ConfirmAction { positive, negative, dismiss }
 
@@ -24,7 +25,7 @@ class ConfirmDialog {
         };
         final theme = context.theme;
 
-        return AlertDialog(
+        final dialog = AlertDialog(
           shape: isDesktop
               ? SmoothRectangleBorder(
                   borderRadius: Spacing.smoothR12,
@@ -92,6 +93,21 @@ class ConfirmDialog {
               ],
             ),
           ],
+        );
+
+        return CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.enter): () {
+              context.navigator.pop(ConfirmAction.positive);
+            },
+            const SingleActivator(LogicalKeyboardKey.numpadEnter): () {
+              context.navigator.pop(ConfirmAction.positive);
+            },
+          },
+          child: Focus(
+            autofocus: true,
+            child: dialog,
+          ),
         );
       },
     );
