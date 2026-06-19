@@ -1,5 +1,6 @@
 import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputTextDialog {
   static Future<String?> show(
@@ -14,72 +15,106 @@ class InputTextDialog {
     final TextEditingController controller = TextEditingController(
       text: initialValue,
     );
-    final result = await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              InputText(
-                controller: controller,
-                label: labelText,
-                hintText: hintText,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            Row(
+
+    try {
+      final result = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          final isDesktop = switch (Theme.of(context).platform) {
+            TargetPlatform.macOS ||
+            TargetPlatform.windows ||
+            TargetPlatform.linux => true,
+            _ => false,
+          };
+          final theme = context.theme;
+
+          void confirm() {
+            context.navigator.pop(controller.text);
+          }
+
+          final dialog = AlertDialog(
+            shape: isDesktop
+                ? SmoothRectangleBorder(
+                    borderRadius: Spacing.smoothR12,
+                    side: BorderSide(color: theme.dividerColor, width: 0.25),
+                  )
+                : null,
+            backgroundColor: isDesktop ? theme.scaffoldBackgroundColor : null,
+            elevation: isDesktop ? 0 : null,
+            title: Text(title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Button(
-                    variant: ButtonVariant.ghost,
-                    tooltip: cancelText,
-                    child: Flexible(
-                      child: Text(
-                        cancelText,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    onPressed: () {
-                      context.navigator.pop();
-                    },
-                  ),
-                ),
-                Spacing.h8,
-                Expanded(
-                  child: Button(
-                    variant: ButtonVariant.primary,
-                    tooltip: confirmText,
-                    child: Flexible(
-                      child: Text(
-                        confirmText,
-                        style: TextStyle(
-                          color: context.theme.colorScheme.onPrimary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    onPressed: () {
-                      context.navigator.pop(controller.text);
-                    },
-                  ),
+                InputText(
+                  controller: controller,
+                  label: labelText,
+                  hintText: hintText,
                 ),
               ],
             ),
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              Row(
+                children: [
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.ghost,
+                      tooltip: cancelText,
+                      child: Flexible(
+                        child: Text(
+                          cancelText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      onPressed: () {
+                        context.navigator.pop();
+                      },
+                    ),
+                  ),
+                  Spacing.h8,
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.primary,
+                      tooltip: confirmText,
+                      onPressed: confirm,
+                      child: Flexible(
+                        child: Text(
+                          confirmText,
+                          style: TextStyle(
+                            color: context.theme.colorScheme.onPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
 
-    if (result is! String) {
-      return null;
+          return CallbackShortcuts(
+            bindings: {
+              const SingleActivator(LogicalKeyboardKey.enter): confirm,
+              const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
+            },
+            child: Focus(
+              autofocus: true,
+              child: dialog,
+            ),
+          );
+        },
+      );
+
+      if (result is! String) {
+        return null;
+      }
+
+      return result;
+    } finally {
+      controller.dispose();
     }
-
-    return result;
   }
 }
