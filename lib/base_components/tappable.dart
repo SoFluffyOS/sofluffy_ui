@@ -236,33 +236,38 @@ class _TappableState extends State<Tappable> {
               ),
               if (widget.enableHoverOverlay)
                 Positioned.fill(
-                  child: AnimatedScale(
-                    scale: widget.enableAnimation ? _state.scale : 1.0,
-                    duration: const Duration(milliseconds: _animationDuration),
-                    child: AnimatedContainer(
-                      margin: widget.hoverOverlayPadding,
+                  child: IgnorePointer(
+                    child: AnimatedScale(
+                      scale: widget.enableAnimation ? _state.scale : 1.0,
                       duration: const Duration(
                         milliseconds: _animationDuration,
                       ),
-                      decoration: _shouldShowBackground
-                          ? ShapeDecoration(
-                              shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius.all(
-                                  SmoothRadius(
-                                    cornerRadius:
-                                        widget.hoverOverlayBorderRadius ?? 12.0,
-                                    cornerSmoothing: 1.0,
+                      child: AnimatedContainer(
+                        margin: widget.hoverOverlayPadding,
+                        duration: const Duration(
+                          milliseconds: _animationDuration,
+                        ),
+                        decoration: _shouldShowBackground
+                            ? ShapeDecoration(
+                                shape: SmoothRectangleBorder(
+                                  borderRadius: SmoothBorderRadius.all(
+                                    SmoothRadius(
+                                      cornerRadius:
+                                          widget.hoverOverlayBorderRadius ??
+                                          12.0,
+                                      cornerSmoothing: 1.0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              color:
-                                  (widget.hoverOverlayColorTint ??
-                                          context.theme.primaryColor)
-                                      .withValues(
-                                        alpha: _state.backgroundOpacity,
-                                      ),
-                            )
-                          : null,
+                                color:
+                                    (widget.hoverOverlayColorTint ??
+                                            context.theme.primaryColor)
+                                        .withValues(
+                                          alpha: _state.backgroundOpacity,
+                                        ),
+                              )
+                            : null,
+                      ),
                     ),
                   ),
                 ),
