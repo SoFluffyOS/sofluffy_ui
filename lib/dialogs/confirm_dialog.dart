@@ -58,13 +58,7 @@ class ConfirmDialog {
                   child: Button(
                     variant: ButtonVariant.ghost,
                     tooltip: negativeText,
-                    child: Flexible(
-                      child: Text(
-                        negativeText,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    label: negativeText,
                     onPressed: () {
                       context.navigator.pop(ConfirmAction.negative);
                     },
@@ -75,16 +69,7 @@ class ConfirmDialog {
                   child: Button(
                     variant: ButtonVariant.primary,
                     tooltip: positiveText,
-                    child: Flexible(
-                      child: Text(
-                        positiveText,
-                        style: TextStyle(
-                          color: context.theme.colorScheme.onPrimary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    label: positiveText,
                     onPressed: () {
                       context.navigator.pop(ConfirmAction.positive);
                     },
