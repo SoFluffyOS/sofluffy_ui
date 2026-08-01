@@ -34,7 +34,21 @@ class RadioOptionsDialog {
             context.navigator.pop(value);
           }
 
+          void moveSelection(int delta) {
+            if (values.isEmpty) return;
+
+            final current = notifier.value;
+            final currentIndex = current == null ? -1 : values.indexOf(current);
+            final startIndex = switch (currentIndex) {
+              >= 0 => currentIndex,
+              _ when delta > 0 => -1,
+              _ => 0,
+            };
+            notifier.value = values[(startIndex + delta) % values.length];
+          }
+
           final dialog = AlertDialog(
+            constraints: isDesktop ? const BoxConstraints(maxWidth: 360) : null,
             shape: isDesktop
                 ? SmoothRectangleBorder(
                     borderRadius: Spacing.smoothR12,
@@ -48,58 +62,64 @@ class RadioOptionsDialog {
               top: Spacing.d16,
               bottom: Spacing.d24,
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (message case String message when message.isNotEmpty) ...[
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Spacing.d24,
-                    ),
-                    child: switch (useHtmlMessage) {
-                      true => HtmlWidget(
-                        message,
-                        textStyle: TextStyle(
-                          color: context.theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      false => Text(
-                        message,
-                        style: TextStyle(
-                          color: context.theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    },
-                  ),
-                  Spacing.v16,
-                ],
-                ValueListenableBuilder(
-                  valueListenable: notifier,
-                  builder: (context, groupValue, child) {
-                    return SingleChildScrollView(
+            content: ConstrainedBox(
+              key: const ValueKey('radio-options-dialog-content'),
+              constraints: BoxConstraints(
+                maxWidth: isDesktop ? 360 : double.infinity,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (message case String message when message.isNotEmpty) ...[
+                    Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: Spacing.d24,
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (final value in values)
-                            RadioIconListTile<T>(
-                              style: RadioIconListTileStyle.compact,
-                              expanded: true,
-                              value: value,
-                              groupValue: groupValue,
-                              onChanged: (value) {
-                                notifier.value = value;
-                              },
-                              title: itemLabelBuilder(value),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      child: switch (useHtmlMessage) {
+                        true => HtmlWidget(
+                          message,
+                          textStyle: TextStyle(
+                            color: context.theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        false => Text(
+                          message,
+                          style: TextStyle(
+                            color: context.theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      },
+                    ),
+                    Spacing.v16,
+                  ],
+                  ValueListenableBuilder(
+                    valueListenable: notifier,
+                    builder: (context, groupValue, child) {
+                      return SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d24,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (final value in values)
+                              RadioIconListTile<T>(
+                                style: RadioIconListTileStyle.compact,
+                                expanded: true,
+                                value: value,
+                                groupValue: groupValue,
+                                onChanged: (value) {
+                                  notifier.value = value;
+                                },
+                                title: itemLabelBuilder(value),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             actions: <Widget>[
               ValueListenableBuilder(
@@ -156,6 +176,12 @@ class RadioOptionsDialog {
               const SingleActivator(LogicalKeyboardKey.enter): confirmSelected,
               const SingleActivator(LogicalKeyboardKey.numpadEnter):
                   confirmSelected,
+              const SingleActivator(LogicalKeyboardKey.arrowUp): () {
+                moveSelection(-1);
+              },
+              const SingleActivator(LogicalKeyboardKey.arrowDown): () {
+                moveSelection(1);
+              },
             },
             child: Focus(
               autofocus: true,
