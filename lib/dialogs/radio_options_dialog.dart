@@ -131,13 +131,7 @@ class RadioOptionsDialog {
                         child: Button(
                           variant: ButtonVariant.ghost,
                           tooltip: cancelText,
-                          child: Flexible(
-                            child: Text(
-                              cancelText,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          label: cancelText,
                           onPressed: () {
                             context.navigator.pop();
                           },
@@ -149,16 +143,7 @@ class RadioOptionsDialog {
                           enable: groupValue != null,
                           variant: ButtonVariant.primary,
                           tooltip: confirmText,
-                          child: Flexible(
-                            child: Text(
-                              confirmText,
-                              style: TextStyle(
-                                color: context.theme.colorScheme.onPrimary,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          label: confirmText,
                           onPressed: () {
                             confirmSelected();
                           },
