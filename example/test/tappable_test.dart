@@ -52,6 +52,35 @@ void main() {
     expect(tapCount, 2);
     expect(doubleTapCount, 0);
   });
+
+  testWidgets(
+    'dispatches double tap when widget rebuilds with new closure between taps',
+    (tester) async {
+      var doubleTapCount = 0;
+
+      Widget buildWidget() {
+        return MaterialApp(
+          home: Center(
+            child: Tappable(
+              key: const ValueKey('target'),
+              onDoubleTap: () => doubleTapCount++,
+              child: const SizedBox(width: 100, height: 40),
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(buildWidget());
+      final target = find.byKey(const ValueKey('target'));
+      await tester.tap(target);
+
+      // Rebuild with new closure instance
+      await tester.pumpWidget(buildWidget());
+
+      await tester.tap(target);
+      expect(doubleTapCount, 1);
+    },
+  );
 }
 
 Future<void> _pumpTappable(

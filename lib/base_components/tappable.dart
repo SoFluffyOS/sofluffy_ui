@@ -140,7 +140,7 @@ class _TappableState extends State<Tappable> {
   @override
   void didUpdateWidget(covariant Tappable oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.onDoubleTap != widget.onDoubleTap) {
+    if ((oldWidget.onDoubleTap == null) != (widget.onDoubleTap == null)) {
       _resetDoubleTapTracking();
     }
   }
