@@ -40,8 +40,8 @@ enum ButtonVariant {
         if (fillColor != null) {
           return fillColor;
         }
+        return isDark ? theme.colors.neutral1 : theme.colors.neutral7;
     }
-    return null;
   }
 
   Color? getBorderColor(
