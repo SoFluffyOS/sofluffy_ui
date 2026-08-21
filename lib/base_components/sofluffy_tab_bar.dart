@@ -68,16 +68,10 @@ class SoFluffyTabBar extends StatelessWidget {
           final hasTitle = title != null && title.isNotEmpty;
           return Container(
             decoration: ShapeDecoration(
-              shape: const SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(
-                    cornerRadius: 12.0,
-                    cornerSmoothing: 1.0,
-                  ),
-                  topRight: SmoothRadius(
-                    cornerRadius: 12.0,
-                    cornerSmoothing: 1.0,
-                  ),
+              shape: const RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0),
                 ),
               ),
               color: isSelected

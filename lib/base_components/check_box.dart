@@ -97,19 +97,15 @@ class CheckBoxIcon extends StatelessWidget {
       duration: Durations.medium1,
       decoration: ShapeDecoration(
         color: _getBackgroundColor(context, state),
-        shape: SmoothRectangleBorder(
-          borderRadius: const SmoothBorderRadius.all(
-            SmoothRadius(
-              cornerRadius: 6.0,
-              cornerSmoothing: 1.0,
-            ),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(6.0),
           ),
           side: BorderSide(
             color: _getBorderColor(context, state),
             width: 2.0,
             strokeAlign: BorderSide.strokeAlignInside,
           ),
-          borderAlign: BorderAlign.inside,
         ),
       ),
       alignment: Alignment.center,

@@ -1,4 +1,3 @@
-import 'package:design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -28,12 +27,9 @@ class LoadingBox extends StatelessWidget {
         child: Container(
           decoration: ShapeDecoration(
             color: Colors.white,
-            shape: SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.all(
-                SmoothRadius(
-                  cornerRadius: shimmerBorderRadius ?? 12.0,
-                  cornerSmoothing: 1.0,
-                ),
+            shape: RoundedSuperellipseBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(shimmerBorderRadius ?? 12.0),
               ),
             ),
           ),

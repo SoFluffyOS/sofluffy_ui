@@ -35,8 +35,8 @@ class InputTextDialog {
 
           final dialog = AlertDialog(
             shape: isDesktop
-                ? SmoothRectangleBorder(
-                    borderRadius: Spacing.smoothR12,
+                ? RoundedSuperellipseBorder(
+                    borderRadius: Spacing.r12,
                     side: BorderSide(color: theme.dividerColor, width: 0.25),
                   )
                 : null,

@@ -340,13 +340,10 @@ class _TappableState extends State<Tappable> {
                           ),
                           decoration: _shouldShowBackground
                               ? ShapeDecoration(
-                                  shape: SmoothRectangleBorder(
-                                    borderRadius: SmoothBorderRadius.all(
-                                      SmoothRadius(
-                                        cornerRadius:
-                                            widget.hoverOverlayBorderRadius ??
-                                            12.0,
-                                        cornerSmoothing: 1.0,
+                                  shape: RoundedSuperellipseBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        widget.hoverOverlayBorderRadius ?? 12.0,
                                       ),
                                     ),
                                   ),

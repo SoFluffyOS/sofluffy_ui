@@ -35,9 +35,9 @@ class Tag extends StatelessWidget {
       padding: resolvedPadding,
       decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.1),
-        shape: const SmoothRectangleBorder(
-          borderRadius: SmoothBorderRadius.all(
-            SmoothRadius(cornerRadius: 12.0, cornerSmoothing: 1.0),
+        shape: const RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12.0),
           ),
           side: BorderSide(
             color: Colors.transparent,

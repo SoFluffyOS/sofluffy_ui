@@ -1,4 +1,3 @@
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 
 class Spacing {
@@ -118,54 +117,25 @@ class Spacing {
 
   static Widget get v48 => vertical(d48);
 
-  static BorderRadius get r12 => BorderRadius.circular(12.0);
-
-  static SmoothBorderRadius get smoothR4 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 4.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r4 = BorderRadius.all(
+    Radius.circular(4.0),
   );
-
-  static SmoothBorderRadius get smoothR6 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 6.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r6 = BorderRadius.all(
+    Radius.circular(6.0),
   );
-
-  static SmoothBorderRadius get smoothR8 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 8.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r8 = BorderRadius.all(
+    Radius.circular(8.0),
   );
-
-  static SmoothBorderRadius get smoothR10 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 10.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r10 = BorderRadius.all(
+    Radius.circular(10.0),
   );
-
-  static SmoothBorderRadius get smoothR12 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 12.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r12 = BorderRadius.all(
+    Radius.circular(12.0),
   );
-
-  static SmoothBorderRadius get smoothR16 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 16.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r16 = BorderRadius.all(
+    Radius.circular(16.0),
   );
-
-  static SmoothBorderRadius get smoothR24 => const SmoothBorderRadius.all(
-    SmoothRadius(
-      cornerRadius: 24.0,
-      cornerSmoothing: 1.0,
-    ),
+  static const BorderRadius r24 = BorderRadius.all(
+    Radius.circular(24.0),
   );
 }

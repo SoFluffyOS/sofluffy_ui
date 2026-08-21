@@ -42,14 +42,9 @@ class _SwitchToggleState extends State<SwitchToggle>
   double _containerWidth(bool isDesktop) =>
       isDesktop ? Spacing.d40 : Spacing.d56;
 
-  SmoothRadius _sideRadius(bool isDesktop) => SmoothRadius(
-    cornerRadius: isDesktop ? 12.0 : 48.0,
-    cornerSmoothing: 1.0,
-  );
-  SmoothRadius _roomRadius(bool isDesktop) => SmoothRadius(
-    cornerRadius: isDesktop ? 4.0 : 12.0,
-    cornerSmoothing: 1.0,
-  );
+  Radius _sideRadius(bool isDesktop) =>
+      Radius.circular(isDesktop ? 12.0 : 48.0);
+  Radius _roomRadius(bool isDesktop) => Radius.circular(isDesktop ? 4.0 : 12.0);
 
   @override
   void initState() {
@@ -233,10 +228,8 @@ class _SwitchToggleState extends State<SwitchToggle>
                           ? _dragPositionX > (_containerWidth(isDesktop) / 2)
                           : _currentValue,
                     ),
-                    shape: SmoothRectangleBorder(
-                      borderRadius: isDesktop
-                          ? Spacing.smoothR8
-                          : Spacing.smoothR12,
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: isDesktop ? Spacing.r8 : Spacing.r12,
                       side: BorderSide(
                         color: _getBorderColor(
                           theme: theme,
@@ -278,19 +271,17 @@ class _SwitchToggleState extends State<SwitchToggle>
                         : _thumbSize(isDesktop);
                     final thumbBorderRadius = _isPointerDown
                         ? (_isDragging
-                              ? (isDesktop
-                                    ? Spacing.smoothR12
-                                    : Spacing.smoothR24)
+                              ? (isDesktop ? Spacing.r12 : Spacing.r24)
                               : (showingValue
-                                    ? SmoothBorderRadius.horizontal(
+                                    ? BorderRadius.horizontal(
                                         left: _sideRadius(isDesktop),
                                         right: _roomRadius(isDesktop),
                                       )
-                                    : SmoothBorderRadius.horizontal(
+                                    : BorderRadius.horizontal(
                                         left: _roomRadius(isDesktop),
                                         right: _sideRadius(isDesktop),
                                       )))
-                        : (isDesktop ? Spacing.smoothR4 : Spacing.smoothR8);
+                        : (isDesktop ? Spacing.r4 : Spacing.r8);
                     return Transform.translate(
                       offset: Offset(
                         thumbX - (_containerWidth(isDesktop) / 2),
@@ -311,7 +302,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                             width: realThumbWidth,
                             decoration: ShapeDecoration(
                               color: thumbColor,
-                              shape: SmoothRectangleBorder(
+                              shape: RoundedSuperellipseBorder(
                                 borderRadius: thumbBorderRadius,
                               ),
                             ),

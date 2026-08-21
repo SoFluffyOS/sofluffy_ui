@@ -175,8 +175,8 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
             ),
             decoration: ShapeDecoration(
               color: theme.scaffoldBackgroundColor,
-              shape: SmoothRectangleBorder(
-                borderRadius: Spacing.smoothR12,
+              shape: RoundedSuperellipseBorder(
+                borderRadius: Spacing.r12,
                 side: BorderSide(color: theme.dividerColor, width: 0.25),
               ),
             ),

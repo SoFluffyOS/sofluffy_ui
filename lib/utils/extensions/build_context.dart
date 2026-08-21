@@ -46,12 +46,9 @@ extension BuildContextExtension on BuildContext {
             content: Container(
               decoration: ShapeDecoration(
                 color: type.color.withValues(alpha: 0.05),
-                shape: SmoothRectangleBorder(
-                  borderRadius: const SmoothBorderRadius.all(
-                    SmoothRadius(
-                      cornerRadius: 12.0,
-                      cornerSmoothing: 1.0,
-                    ),
+                shape: RoundedSuperellipseBorder(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(12.0),
                   ),
                   side: BorderSide(
                     color: type.color,

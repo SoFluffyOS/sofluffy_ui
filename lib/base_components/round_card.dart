@@ -32,15 +32,12 @@ class RoundCard extends StatelessWidget {
       padding: padding,
       decoration: ShapeDecoration(
         color: color ?? context.theme.cardColor,
-        shape: SmoothRectangleBorder(
+        shape: RoundedSuperellipseBorder(
           borderRadius: switch (borderRadius) {
-            final borderRadius? => SmoothBorderRadius.all(
-              SmoothRadius(
-                cornerRadius: borderRadius,
-                cornerSmoothing: 1.0,
-              ),
+            final borderRadius? => BorderRadius.all(
+              Radius.circular(borderRadius),
             ),
-            _ => Spacing.smoothR12,
+            _ => Spacing.r12,
           },
           side: switch (borderColor) {
             final Color borderColor => BorderSide(color: borderColor),

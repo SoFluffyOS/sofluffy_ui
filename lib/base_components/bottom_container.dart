@@ -1,11 +1,5 @@
 import 'package:design_system/design_system.dart'
-    show
-        AfterLayoutMixin,
-        Spacing,
-        BuildContextExtension,
-        SmoothRectangleBorder,
-        SmoothBorderRadius,
-        SmoothRadius;
+    show AfterLayoutMixin, Spacing, BuildContextExtension;
 import 'package:flutter/material.dart';
 
 class BottomContainer extends StatefulWidget {
@@ -80,12 +74,9 @@ class _BottomContainerState extends State<BottomContainer>
               Brightness.light => context.theme.colorScheme.surface,
               Brightness.dark => context.theme.cardColor,
             },
-        shape: const SmoothRectangleBorder(
-          borderRadius: SmoothBorderRadius.vertical(
-            top: SmoothRadius(
-              cornerRadius: 16.0,
-              cornerSmoothing: 1.0,
-            ),
+        shape: const RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16.0),
           ),
         ),
         shadows: switch (_shouldShowShadow) {

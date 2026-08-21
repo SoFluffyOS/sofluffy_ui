@@ -47,7 +47,9 @@ class _ToggleState extends State<Toggle> {
           curve: Curves.easeInOut,
           decoration: ShapeDecoration(
             color: _getBackgroundColor(context),
-            shape: SmoothRectangleBorder(borderRadius: Spacing.smoothR12),
+            shape: const RoundedSuperellipseBorder(
+              borderRadius: Spacing.r12,
+            ),
           ),
           alignment: _currentValue
               ? Alignment.centerRight
@@ -63,7 +65,9 @@ class _ToggleState extends State<Toggle> {
               duration: Durations.medium1,
               curve: Curves.easeInOut,
               decoration: ShapeDecoration(
-                shape: SmoothRectangleBorder(borderRadius: Spacing.smoothR10),
+                shape: const RoundedSuperellipseBorder(
+                  borderRadius: Spacing.r10,
+                ),
                 color: _getKnobColor(context),
               ),
             ),

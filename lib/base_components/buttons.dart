@@ -321,12 +321,10 @@ class _ButtonState extends State<Button> {
                       state,
                       widget.color,
                     ),
-                    shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius.all(
-                        SmoothRadius(
-                          cornerRadius:
-                              widget.radius ?? (isDesktop ? 8.0 : 12.0),
-                          cornerSmoothing: 1.0,
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(
+                          widget.radius ?? (isDesktop ? 8.0 : 12.0),
                         ),
                       ),
                       side: BorderSide(

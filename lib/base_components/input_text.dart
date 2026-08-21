@@ -209,15 +209,12 @@ class _InputTextState extends State<InputText> {
                     ) ??
                     ShapeDecoration(
                       color: getBackgroundColor(context),
-                      shape: SmoothRectangleBorder(
+                      shape: RoundedSuperellipseBorder(
                         borderRadius: switch (widget.borderRadius) {
-                          final borderRadius? => SmoothBorderRadius.all(
-                            SmoothRadius(
-                              cornerRadius: borderRadius,
-                              cornerSmoothing: 1.0,
-                            ),
+                          final borderRadius? => BorderRadius.all(
+                            Radius.circular(borderRadius),
                           ),
-                          _ => Spacing.smoothR12,
+                          _ => Spacing.r12,
                         },
                         side: BorderSide(
                           color: getBorderColor(context),

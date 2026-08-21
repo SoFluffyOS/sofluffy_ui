@@ -33,9 +33,9 @@ extension ThemeDataExt on AppTheme {
       surfaceTintColor: const WidgetStatePropertyAll(
         Colors.transparent,
       ),
-      shape: WidgetStatePropertyAll(
-        SmoothRectangleBorder(
-          borderRadius: Spacing.smoothR12,
+      shape: const WidgetStatePropertyAll(
+        RoundedSuperellipseBorder(
+          borderRadius: Spacing.r12,
         ),
       ),
     );
@@ -67,8 +67,8 @@ extension ThemeDataExt on AppTheme {
       dialogTheme: DialogThemeData(
         surfaceTintColor: Colors.transparent,
         backgroundColor: isDark ? colors.neutral7 : colors.neutral1,
-        shape: SmoothRectangleBorder(
-          borderRadius: Spacing.smoothR12,
+        shape: const RoundedSuperellipseBorder(
+          borderRadius: Spacing.r12,
         ),
       ),
       tabBarTheme: TabBarThemeData(indicatorColor: colors.secondary),
@@ -130,8 +130,8 @@ extension ThemeDataExt on AppTheme {
       tooltipTheme: baseTheme.tooltipTheme.copyWith(
         decoration: ShapeDecoration(
           color: isDark ? colors.neutral6 : colors.neutral2,
-          shape: SmoothRectangleBorder(
-            borderRadius: Spacing.smoothR8,
+          shape: const RoundedSuperellipseBorder(
+            borderRadius: Spacing.r8,
           ),
         ),
         waitDuration: const Duration(milliseconds: 300),
@@ -177,12 +177,9 @@ extension ThemeDataExt on AppTheme {
         vertical: Spacing.d16,
       ),
       padding: EdgeInsets.all(Spacing.d16),
-      shape: const SmoothRectangleBorder(
-        borderRadius: SmoothBorderRadius.all(
-          SmoothRadius(
-            cornerRadius: 12.0,
-            cornerSmoothing: 1.0,
-          ),
+      shape: const RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12.0),
         ),
         side: BorderSide.none,
       ),
@@ -204,12 +201,9 @@ extension ThemeDataExt on AppTheme {
         vertical: Spacing.d16,
       ),
       padding: EdgeInsets.all(Spacing.d16),
-      shape: const SmoothRectangleBorder(
-        borderRadius: SmoothBorderRadius.all(
-          SmoothRadius(
-            cornerRadius: 12.0,
-            cornerSmoothing: 1.0,
-          ),
+      shape: const RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12.0),
         ),
         side: BorderSide.none,
       ),
