@@ -105,7 +105,6 @@ extension ThemeDataExt on AppTheme {
         stopIndicatorColor: Colors.transparent,
         borderRadius: BorderRadius.circular(Spacing.d12),
         linearTrackColor: isDark ? colors.neutral5 : colors.neutral3,
-        year2023: false,
       ),
       popupMenuTheme: baseTheme.popupMenuTheme.copyWith(
         color: colorScheme.surface,
