@@ -300,7 +300,7 @@ class _ButtonState extends State<Button> {
                   width: widget.width,
                   height: widget.height,
                   constraints: BoxConstraints(
-                    minHeight: isDesktop ? 32.0 : 48.0,
+                    minHeight: isDesktop ? Spacing.d32 : Spacing.d36,
                   ),
                   duration: Durations.medium4,
                   curve: Curves.easeOut,
