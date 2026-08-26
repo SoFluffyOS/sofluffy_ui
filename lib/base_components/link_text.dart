@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class LinkText extends StatefulWidget {
   final String text;
@@ -61,12 +61,14 @@ class _LinkTextState extends State<LinkText> {
             widget.text,
             style: style.copyWith(
               fontStyle: isHovered ? FontStyle.italic : FontStyle.normal,
-              color: isHovered ? context.theme.primaryColor : null,
+              color: isHovered ? context.fluffyTheme.colors.primary : null,
               decoration: switch (widget.showUnderlineWhenNormal) {
                 true => TextDecoration.underline,
                 false => isHovered ? TextDecoration.underline : null,
               },
-              decorationColor: isHovered ? context.theme.primaryColor : null,
+              decorationColor: isHovered
+                  ? context.fluffyTheme.colors.primary
+                  : null,
               decorationThickness: isHovered ? 2.0 : 1.0,
             ),
             textAlign: widget.textAlign,

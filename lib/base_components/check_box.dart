@@ -1,5 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 part 'check_box_list_tile.dart';
 
@@ -39,7 +40,7 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (Theme.of(context).platform) {
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -84,7 +85,7 @@ class CheckBoxIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (Theme.of(context).platform) {
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -94,16 +95,14 @@ class CheckBoxIcon extends StatelessWidget {
       width: isDesktop ? Spacing.d16 : Spacing.d24,
       height: isDesktop ? Spacing.d16 : Spacing.d24,
       curve: Curves.easeOut,
-      duration: Durations.medium1,
+      duration: FluffyDurations.normal,
       decoration: ShapeDecoration(
         color: _getBackgroundColor(context, state),
         shape: RoundedSuperellipseBorder(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(6.0),
-          ),
+          borderRadius: Spacing.r6,
           side: BorderSide(
             color: _getBorderColor(context, state),
-            width: 2.0,
+            width: Spacing.d2,
             strokeAlign: BorderSide.strokeAlignInside,
           ),
         ),
@@ -112,18 +111,18 @@ class CheckBoxIcon extends StatelessWidget {
       child: state != CheckBoxIconState.checked
           ? null
           : ImageView(
-              DesignSystemAssets.icons.tick02Solid,
-              width: isDesktop ? 12.0 : Spacing.d18,
-              height: isDesktop ? 12.0 : Spacing.d18,
-              color: context.themeConfigs.colors.neutral1,
-              assetPackage: kDesignSystemPackageName,
+              FluffyAssets.icons.tick02Solid,
+              width: isDesktop ? Spacing.d12 : Spacing.d18,
+              height: isDesktop ? Spacing.d12 : Spacing.d18,
+              color: context.fluffyTheme.colors.neutral1,
+              assetPackage: kSofluffyUiPackageName,
             ),
     );
   }
 
   Color _getBackgroundColor(BuildContext context, CheckBoxIconState state) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     return switch (state) {
       CheckBoxIconState.checked => theme.colors.primary,
       CheckBoxIconState.unchecked =>
@@ -134,8 +133,8 @@ class CheckBoxIcon extends StatelessWidget {
   }
 
   Color _getBorderColor(BuildContext context, CheckBoxIconState state) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     return switch (state) {
       CheckBoxIconState.checked => theme.colors.primary,
       _ => isDark ? theme.colors.neutral6 : theme.colors.neutral3,

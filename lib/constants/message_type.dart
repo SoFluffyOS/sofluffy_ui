@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 enum MessageType {
   info,
@@ -9,25 +9,25 @@ enum MessageType {
 
   Color get color {
     return switch (this) {
-      MessageType.info => Colors.blue,
-      MessageType.error => Colors.red,
-      MessageType.warning => Colors.yellow,
-      MessageType.success => Colors.green,
+      MessageType.info => FluffyColors.info,
+      MessageType.error => FluffyColors.error,
+      MessageType.warning => FluffyColors.warningAlt,
+      MessageType.success => FluffyColors.success,
     };
   }
 
   Widget get icon {
     final path = switch (this) {
-      MessageType.info => DesignSystemAssets.icons.informationCircle,
-      MessageType.error => DesignSystemAssets.icons.alertCircle,
-      MessageType.warning => DesignSystemAssets.icons.alertCircle,
-      MessageType.success => DesignSystemAssets.icons.informationCircle,
+      MessageType.info => FluffyAssets.icons.informationCircle,
+      MessageType.error => FluffyAssets.icons.alertCircle,
+      MessageType.warning => FluffyAssets.icons.alertCircle,
+      MessageType.success => FluffyAssets.icons.informationCircle,
     };
     return ImageView(
       path,
       color: color,
       size: Spacing.d16,
-      assetPackage: kDesignSystemPackageName,
+      assetPackage: kSofluffyUiPackageName,
     );
   }
 }

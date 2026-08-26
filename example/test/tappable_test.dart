@@ -1,7 +1,7 @@
-import 'package:design_system/design_system.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 void main() {
   testWidgets('dispatches the first tap immediately and the second as double', (

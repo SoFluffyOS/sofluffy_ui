@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class InnerShadow extends SingleChildRenderObjectWidget {
   final bool enable;
@@ -49,7 +49,7 @@ class _RenderInnerShadow extends RenderProxyBox {
     }
 
     final blur = Spacing.d4;
-    final color = Colors.black.withValues(alpha: 0.15);
+    const color = FluffyColors.shadowMedium;
 
     final child = this.child;
     if (child == null) return;
@@ -70,7 +70,7 @@ class _RenderInnerShadow extends RenderProxyBox {
     final Paint shadowPaint = Paint()
       ..blendMode = BlendMode.srcATop
       ..imageFilter = ImageFilter.blur(sigmaX: blur, sigmaY: blur)
-      ..colorFilter = ColorFilter.mode(color, BlendMode.srcOut);
+      ..colorFilter = const ColorFilter.mode(color, BlendMode.srcOut);
 
     canvas
       ..saveLayer(rectOuter, shadowPaint)

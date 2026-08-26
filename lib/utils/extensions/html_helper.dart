@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart' show HexColorUtilsExt;
 import 'package:flutter/widgets.dart' show Color;
+import 'package:sofluffy_ui/sofluffy_ui.dart' show HexColorUtilsExt;
 
 extension HtmlHelper on String {
   HtmlText get html {

@@ -1,5 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 enum ListItemStyle {
   compact,
@@ -37,7 +38,8 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (Theme.of(context).platform) {
+    final typography = context.fluffyTheme.typography;
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -55,19 +57,15 @@ class ListItem extends StatelessWidget {
           Text(
             title,
             style: switch (style) {
-              ListItemStyle.compact => context.theme.textTheme.bodySmall,
+              ListItemStyle.compact => typography.caption1,
               ListItemStyle.standard =>
-                isDesktop
-                    ? context.theme.textTheme.bodyMedium
-                    : context.theme.textTheme.bodyLarge,
+                isDesktop ? typography.base2 : typography.base1,
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Text(
               subtitle,
-              style: isDesktop
-                  ? context.themeConfigs.typography.caption2
-                  : context.theme.textTheme.bodySmall,
+              style: isDesktop ? typography.caption2 : typography.caption1,
             ),
           ],
         ],

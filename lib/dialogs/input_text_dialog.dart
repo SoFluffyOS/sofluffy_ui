@@ -1,6 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class InputTextDialog {
   static Future<String?> show(
@@ -17,31 +17,29 @@ class InputTextDialog {
     );
 
     try {
-      final result = await showDialog(
+      final result = await showGeneralDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) {
-          final isDesktop = switch (Theme.of(context).platform) {
-            TargetPlatform.macOS ||
-            TargetPlatform.windows ||
-            TargetPlatform.linux => true,
-            _ => false,
-          };
-          final theme = context.theme;
-
+        barrierLabel: 'Dismiss',
+        barrierColor: FluffyColors.barrier,
+        transitionDuration: FluffyDurations.dialogTransition,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return FadeTransition(
+            opacity: anim1,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
+              ),
+              child: child,
+            ),
+          );
+        },
+        pageBuilder: (BuildContext context, anim1, anim2) {
           void confirm() {
             context.navigator.pop(controller.text);
           }
 
-          final dialog = AlertDialog(
-            shape: isDesktop
-                ? RoundedSuperellipseBorder(
-                    borderRadius: Spacing.r12,
-                    side: BorderSide(color: theme.dividerColor, width: 0.25),
-                  )
-                : null,
-            backgroundColor: isDesktop ? theme.scaffoldBackgroundColor : null,
-            elevation: isDesktop ? 0 : null,
+          final dialog = DialogCard(
             title: Text(title),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -53,7 +51,7 @@ class InputTextDialog {
                 ),
               ],
             ),
-            actions: <Widget>[
+            actions: [
               Row(
                 children: [
                   Expanded(

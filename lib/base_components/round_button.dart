@@ -47,8 +47,8 @@ class _RoundButtonState extends State<RoundButton> {
       child: ValueListenableBuilder<ButtonState>(
         valueListenable: stateNotifier,
         builder: (context, state, _) {
-          final isDark = context.theme.brightness == Brightness.dark;
-          final theme = context.themeConfigs;
+          final isDark = context.isDark;
+          final theme = context.fluffyTheme;
           final borderColor = isDark
               ? switch (state) {
                   ButtonState.pressing ||

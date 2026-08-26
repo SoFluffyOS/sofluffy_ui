@@ -1,6 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class RadioOptionsDialog {
   static Future<T?> show<T>(
@@ -16,17 +16,29 @@ class RadioOptionsDialog {
   }) async {
     final ValueNotifier<T?> notifier = ValueNotifier(initialValue);
     try {
-      final result = await showDialog(
+      final result = await showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        builder: (BuildContext context) {
-          final isDesktop = switch (Theme.of(context).platform) {
-            TargetPlatform.macOS ||
-            TargetPlatform.windows ||
-            TargetPlatform.linux => true,
-            _ => false,
-          };
-          final theme = context.theme;
+        barrierLabel: 'Dismiss',
+        barrierColor: FluffyColors.barrier,
+        transitionDuration: FluffyDurations.dialogTransition,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return FadeTransition(
+            opacity: anim1,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
+              ),
+              child: child,
+            ),
+          );
+        },
+        pageBuilder: (BuildContext context, anim1, anim2) {
+          final theme = context.fluffyTheme;
+          final isDark = context.isDark;
+          final onSurfaceColor = isDark
+              ? theme.colors.neutral1
+              : theme.colors.neutral7;
 
           void confirmSelected() {
             final value = notifier.value;
@@ -47,81 +59,57 @@ class RadioOptionsDialog {
             notifier.value = values[(startIndex + delta) % values.length];
           }
 
-          final dialog = AlertDialog(
-            constraints: isDesktop ? const BoxConstraints(maxWidth: 360) : null,
-            shape: isDesktop
-                ? RoundedSuperellipseBorder(
-                    borderRadius: Spacing.r12,
-                    side: BorderSide(color: theme.dividerColor, width: 0.25),
-                  )
-                : null,
-            backgroundColor: isDesktop ? theme.scaffoldBackgroundColor : null,
-            elevation: isDesktop ? 0 : null,
+          final dialog = DialogCard(
             title: Text(title),
-            contentPadding: EdgeInsets.only(
-              top: Spacing.d16,
-              bottom: Spacing.d24,
-            ),
-            content: ConstrainedBox(
-              key: const ValueKey('radio-options-dialog-content'),
-              constraints: BoxConstraints(
-                maxWidth: isDesktop ? 360 : double.infinity,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (message case String message when message.isNotEmpty) ...[
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Spacing.d24,
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (message case String message when message.isNotEmpty) ...[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: Spacing.d16),
+                    child: switch (useHtmlMessage) {
+                      true => HtmlWidget(
+                        message,
+                        textStyle: TextStyle(
+                          color: onSurfaceColor,
+                        ),
                       ),
-                      child: switch (useHtmlMessage) {
-                        true => HtmlWidget(
-                          message,
-                          textStyle: TextStyle(
-                            color: context.theme.colorScheme.onSurface,
-                          ),
+                      false => Text(
+                        message,
+                        style: TextStyle(
+                          color: onSurfaceColor,
                         ),
-                        false => Text(
-                          message,
-                          style: TextStyle(
-                            color: context.theme.colorScheme.onSurface,
-                          ),
-                        ),
-                      },
-                    ),
-                    Spacing.v16,
-                  ],
-                  ValueListenableBuilder(
-                    valueListenable: notifier,
-                    builder: (context, groupValue, child) {
-                      return SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Spacing.d24,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (final value in values)
-                              RadioIconListTile<T>(
-                                style: RadioIconListTileStyle.compact,
-                                expanded: true,
-                                value: value,
-                                groupValue: groupValue,
-                                onChanged: (value) {
-                                  notifier.value = value;
-                                },
-                                title: itemLabelBuilder(value),
-                              ),
-                          ],
-                        ),
-                      );
+                      ),
                     },
                   ),
                 ],
-              ),
+                ValueListenableBuilder(
+                  valueListenable: notifier,
+                  builder: (context, groupValue, child) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (final value in values)
+                            RadioIconListTile<T>(
+                              style: RadioIconListTileStyle.compact,
+                              expanded: true,
+                              value: value,
+                              groupValue: groupValue,
+                              onChanged: (value) {
+                                notifier.value = value;
+                              },
+                              title: itemLabelBuilder(value),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-            actions: <Widget>[
+            actions: [
               ValueListenableBuilder(
                 valueListenable: notifier,
                 builder: (context, groupValue, child) {

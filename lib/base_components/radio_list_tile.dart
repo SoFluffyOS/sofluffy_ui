@@ -55,16 +55,16 @@ class RadioIconListTile<T> extends StatelessWidget {
             title,
             style: switch (style) {
               RadioIconListTileStyle.compact =>
-                context.theme.textTheme.bodySmall,
+                context.fluffyTheme.typography.caption1,
               RadioIconListTileStyle.standard =>
-                context.theme.textTheme.bodyLarge,
+                context.fluffyTheme.typography.base1,
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Spacing.v4,
             Text(
               subtitle,
-              style: context.theme.textTheme.bodySmall,
+              style: context.fluffyTheme.typography.caption2,
             ),
           ],
         ],

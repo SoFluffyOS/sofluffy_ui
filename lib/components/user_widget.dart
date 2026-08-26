@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class UserWidget extends StatelessWidget {
   final String? avatarUrl;
@@ -18,6 +18,7 @@ class UserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.fluffyTheme;
     return Row(
       children: [
         if (avatarUrl != null) ...[
@@ -30,12 +31,20 @@ class UserWidget extends StatelessWidget {
             ),
           ),
         ] else ...[
-          SizedBox.square(
-            dimension: Spacing.d36,
-            child: CircleAvatar(
-              child: Icon(
-                Icons.person,
-                size: Spacing.d24,
+          Container(
+            width: Spacing.d36,
+            height: Spacing.d36,
+            decoration: BoxDecoration(
+              color: theme.colors.neutral3,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              name?.isNotEmpty == true ? name![0].toUpperCase() : '?',
+              style: TextStyle(
+                color: theme.colors.neutral7,
+                fontSize: Spacing.d16,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -48,16 +57,18 @@ class UserWidget extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: theme.colors.neutral7,
                   ),
                 ),
                 if (subText case String subText) ...[
                   Text(
                     subText,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
+                      color: theme.colors.neutral4,
                     ),
                   ),
                 ],

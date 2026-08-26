@@ -1,6 +1,23 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+class DateTimeRange {
+  final DateTime start;
+  final DateTime end;
+
+  const DateTimeRange({required this.start, required this.end});
+
+  Duration get duration => end.difference(start);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DateTimeRange && other.start == start && other.end == end;
+
+  @override
+  int get hashCode => Object.hash(start, end);
+}
 
 class DatePicker {
   static Future<DateTime?> show(
@@ -9,9 +26,24 @@ class DatePicker {
     DateTime? firstDate,
     DateTime? lastDate,
   }) async {
-    final pickedDate = await showDialog(
+    final pickedDate = await showGeneralDialog(
       context: context,
-      builder: (context) {
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      barrierColor: FluffyColors.barrier,
+      transitionDuration: FluffyDurations.dialogTransition,
+      transitionBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+              CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
+      pageBuilder: (context, anim1, anim2) {
         return _DatePickerDialog(
           initialDate: initialDate,
           firstDate: firstDate,
@@ -29,9 +61,24 @@ class DatePicker {
     DateTime? firstDate,
     DateTime? lastDate,
   }) async {
-    final pickedRange = await showDialog(
+    final pickedRange = await showGeneralDialog(
       context: context,
-      builder: (context) {
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      barrierColor: FluffyColors.barrier,
+      transitionDuration: FluffyDurations.dialogTransition,
+      transitionBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+              CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
+      pageBuilder: (context, anim1, anim2) {
         return _DateRangePickerDialog(
           initialStartDate: initialStartDate,
           initialEndDate: initialEndDate,
@@ -115,120 +162,130 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    final typography = context.themeConfigs.typography;
-    final primaryColor = context.theme.primaryColor;
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
+    final typography = theme.typography;
+    final primaryColor = theme.colors.primary;
+    final onSurfaceColor = isDark
+        ? theme.colors.neutral1
+        : theme.colors.neutral7;
+    final scaffoldBg = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
+    final borderColor = isDark ? theme.colors.neutral5 : theme.colors.neutral3;
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(Spacing.d64),
-      child: RoundCard(
-        padding: EdgeInsets.all(Spacing.d16),
-        color: theme.scaffoldBackgroundColor,
-        borderColor: theme.dividerColor,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minWidth: 320,
-            maxWidth: 360,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(context),
-              SizedBox(height: Spacing.d12),
-              TableCalendar<DateTime>(
-                firstDay: _firstDay,
-                lastDay: _lastDay,
-                focusedDay: _focusedDay,
-                currentDay: _normalizeDate(DateTime.now()),
-                headerVisible: false,
-                availableCalendarFormats: const {
-                  CalendarFormat.month: 'Month',
-                },
-                selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
-                daysOfWeekHeight: Spacing.d24,
-                rowHeight: Spacing.d40,
-                calendarStyle: CalendarStyle(
-                  outsideDaysVisible: false,
-                  defaultTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
-                  weekendTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
-                  outsideTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                  ),
-                  disabledTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                  ),
-                  todayDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: primaryColor),
-                  ),
-                  todayTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: typography.caption1.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-                  weekendStyle: typography.caption1.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-                ),
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    _focusedDay = _normalizeDate(focusedDay);
-                  });
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = _normalizeDate(selectedDay);
-                    _focusedDay = _normalizeDate(focusedDay);
-                  });
-                },
-              ),
-              SizedBox(height: Spacing.d12),
-              Text(
-                _formatSelectedDate(_selectedDay),
-                textAlign: TextAlign.center,
-                style: typography.caption1.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-              ),
-              SizedBox(height: Spacing.d16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Button(
-                      variant: ButtonVariant.ghost,
-                      label: 'Cancel',
-                      onPressed: () => Navigator.of(context).pop(),
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.d64),
+        child: RoundCard(
+          padding: EdgeInsets.all(Spacing.d16),
+          color: scaffoldBg,
+          borderColor: borderColor,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: 320,
+              maxWidth: 360,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeader(context),
+                SizedBox(height: Spacing.d12),
+                TableCalendar<DateTime>(
+                  firstDay: _firstDay,
+                  lastDay: _lastDay,
+                  focusedDay: _focusedDay,
+                  currentDay: _normalizeDate(DateTime.now()),
+                  headerVisible: false,
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Month',
+                  },
+                  selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                  daysOfWeekHeight: Spacing.d24,
+                  rowHeight: Spacing.d40,
+                  calendarStyle: CalendarStyle(
+                    outsideDaysVisible: false,
+                    defaultTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor,
+                    ),
+                    weekendTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor,
+                    ),
+                    outsideTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.3),
+                    ),
+                    disabledTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.3),
+                    ),
+                    todayDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: primaryColor),
+                    ),
+                    todayTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    selectedDecoration: BoxDecoration(
+                      color: primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    selectedTextStyle: typography.base2.copyWith(
+                      color: isDark
+                          ? theme.colors.neutral7
+                          : theme.colors.neutral1,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: Spacing.d8),
-                  Expanded(
-                    child: Button(
-                      variant: ButtonVariant.primary,
-                      label: 'Apply',
-                      onPressed: () => Navigator.of(context).pop(_selectedDay),
+                  daysOfWeekStyle: DaysOfWeekStyle(
+                    weekdayStyle: typography.caption1.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.5),
+                    ),
+                    weekendStyle: typography.caption1.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.5),
                     ),
                   ),
-                ],
-              ),
-            ],
+                  onPageChanged: (focusedDay) {
+                    setState(() {
+                      _focusedDay = _normalizeDate(focusedDay);
+                    });
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = _normalizeDate(selectedDay);
+                      _focusedDay = _normalizeDate(focusedDay);
+                    });
+                  },
+                ),
+                SizedBox(height: Spacing.d12),
+                Text(
+                  _formatSelectedDate(_selectedDay),
+                  textAlign: TextAlign.center,
+                  style: typography.caption1.copyWith(
+                    color: onSurfaceColor.withValues(alpha: 0.7),
+                  ),
+                ),
+                SizedBox(height: Spacing.d16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.ghost,
+                        label: 'Cancel',
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                    SizedBox(width: Spacing.d8),
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.primary,
+                        label: 'Apply',
+                        onPressed: () =>
+                            Navigator.of(context).pop(_selectedDay),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -236,10 +293,15 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
+    final onSurfaceColor = isDark
+        ? theme.colors.neutral1
+        : theme.colors.neutral7;
     return Row(
       children: [
         RoundButton(
-          icon: Icons.chevron_left,
+          icon: const _DatePickerChevron(direction: _DatePickerChevronDir.left),
           tooltip: 'Previous month',
           enable: _canMoveToPreviousMonth,
           onPressed: _canMoveToPreviousMonth
@@ -250,14 +312,16 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
           child: Text(
             _monthLabel(_focusedDay),
             textAlign: TextAlign.center,
-            style: context.themeConfigs.typography.base1.copyWith(
-              color: context.theme.colorScheme.onSurface,
+            style: context.fluffyTheme.typography.base1.copyWith(
+              color: onSurfaceColor,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
         RoundButton(
-          icon: Icons.chevron_right,
+          icon: const _DatePickerChevron(
+            direction: _DatePickerChevronDir.right,
+          ),
           tooltip: 'Next month',
           enable: _canMoveToNextMonth,
           onPressed: _canMoveToNextMonth ? () => _moveFocusedMonth(1) : null,
@@ -427,144 +491,155 @@ class _DateRangePickerDialogContentState
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    final typography = context.themeConfigs.typography;
-    final primaryColor = context.theme.primaryColor;
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
+    final typography = theme.typography;
+    final primaryColor = theme.colors.primary;
+    final onSurfaceColor = isDark
+        ? theme.colors.neutral1
+        : theme.colors.neutral7;
+    final scaffoldBg = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
+    final borderColor = isDark ? theme.colors.neutral5 : theme.colors.neutral3;
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(Spacing.d64),
-      child: RoundCard(
-        padding: EdgeInsets.all(Spacing.d16),
-        color: theme.scaffoldBackgroundColor,
-        borderColor: theme.dividerColor,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minWidth: 360,
-            maxWidth: 400,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(context),
-              SizedBox(height: Spacing.d12),
-              TableCalendar<DateTime>(
-                firstDay: _firstDay,
-                lastDay: _lastDay,
-                focusedDay: _focusedDay,
-                currentDay: _normalizeDate(DateTime.now()),
-                headerVisible: false,
-                rangeStartDay: _rangeStart,
-                rangeEndDay: _rangeEnd,
-                rangeSelectionMode: RangeSelectionMode.toggledOn,
-                availableCalendarFormats: const {
-                  CalendarFormat.month: 'Month',
-                },
-                daysOfWeekHeight: Spacing.d24,
-                rowHeight: Spacing.d40,
-                calendarStyle: CalendarStyle(
-                  outsideDaysVisible: false,
-                  defaultTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
-                  weekendTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
-                  outsideTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                  ),
-                  disabledTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                  ),
-                  todayDecoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: primaryColor),
-                  ),
-                  todayTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  rangeStartDecoration: BoxDecoration(
-                    color: primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  rangeEndDecoration: BoxDecoration(
-                    color: primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  rangeHighlightColor: primaryColor.withValues(alpha: 0.18),
-                  rangeStartTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  rangeEndTextStyle: typography.base2.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: typography.caption1.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-                  weekendStyle: typography.caption1.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-                ),
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    _focusedDay = _normalizeDate(focusedDay);
-                  });
-                },
-                onRangeSelected: (start, end, focusedDay) {
-                  setState(() {
-                    _rangeStart = switch (start) {
-                      final value? => _normalizeDate(value),
-                      null => null,
-                    };
-                    _rangeEnd = switch (end) {
-                      final value? => _normalizeDate(value),
-                      null => null,
-                    };
-                    _focusedDay = _normalizeDate(focusedDay);
-                  });
-                },
-              ),
-              SizedBox(height: Spacing.d12),
-              Text(
-                _formatSelectedRange(),
-                textAlign: TextAlign.center,
-                style: typography.caption1.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-              ),
-              SizedBox(height: Spacing.d16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Button(
-                      variant: ButtonVariant.ghost,
-                      label: 'Cancel',
-                      onPressed: () => Navigator.of(context).pop(),
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.d64),
+        child: RoundCard(
+          padding: EdgeInsets.all(Spacing.d16),
+          color: scaffoldBg,
+          borderColor: borderColor,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: 360,
+              maxWidth: 400,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeader(context),
+                SizedBox(height: Spacing.d12),
+                TableCalendar<DateTime>(
+                  firstDay: _firstDay,
+                  lastDay: _lastDay,
+                  focusedDay: _focusedDay,
+                  currentDay: _normalizeDate(DateTime.now()),
+                  headerVisible: false,
+                  rangeStartDay: _rangeStart,
+                  rangeEndDay: _rangeEnd,
+                  rangeSelectionMode: RangeSelectionMode.toggledOn,
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Month',
+                  },
+                  daysOfWeekHeight: Spacing.d24,
+                  rowHeight: Spacing.d40,
+                  calendarStyle: CalendarStyle(
+                    outsideDaysVisible: false,
+                    defaultTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor,
+                    ),
+                    weekendTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor,
+                    ),
+                    outsideTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.3),
+                    ),
+                    disabledTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.3),
+                    ),
+                    todayDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: primaryColor),
+                    ),
+                    todayTextStyle: typography.base2.copyWith(
+                      color: onSurfaceColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    rangeStartDecoration: BoxDecoration(
+                      color: primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    rangeEndDecoration: BoxDecoration(
+                      color: primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    rangeHighlightColor: primaryColor.withValues(alpha: 0.18),
+                    rangeStartTextStyle: typography.base2.copyWith(
+                      color: isDark
+                          ? theme.colors.neutral7
+                          : theme.colors.neutral1,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    rangeEndTextStyle: typography.base2.copyWith(
+                      color: isDark
+                          ? theme.colors.neutral7
+                          : theme.colors.neutral1,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: Spacing.d8),
-                  Expanded(
-                    child: Button(
-                      variant: ButtonVariant.primary,
-                      label: 'Apply',
-                      onPressed: switch ((_rangeStart, _rangeEnd)) {
-                        (final start?, final end?) =>
-                          () => Navigator.of(context).pop(
-                            DateTimeRange(start: start, end: end),
-                          ),
-                        _ => null,
-                      },
+                  daysOfWeekStyle: DaysOfWeekStyle(
+                    weekdayStyle: typography.caption1.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.5),
+                    ),
+                    weekendStyle: typography.caption1.copyWith(
+                      color: onSurfaceColor.withValues(alpha: 0.5),
                     ),
                   ),
-                ],
-              ),
-            ],
+                  onPageChanged: (focusedDay) {
+                    setState(() {
+                      _focusedDay = _normalizeDate(focusedDay);
+                    });
+                  },
+                  onRangeSelected: (start, end, focusedDay) {
+                    setState(() {
+                      _rangeStart = switch (start) {
+                        final value? => _normalizeDate(value),
+                        null => null,
+                      };
+                      _rangeEnd = switch (end) {
+                        final value? => _normalizeDate(value),
+                        null => null,
+                      };
+                      _focusedDay = _normalizeDate(focusedDay);
+                    });
+                  },
+                ),
+                SizedBox(height: Spacing.d12),
+                Text(
+                  _formatSelectedRange(),
+                  textAlign: TextAlign.center,
+                  style: typography.caption1.copyWith(
+                    color: onSurfaceColor.withValues(alpha: 0.7),
+                  ),
+                ),
+                SizedBox(height: Spacing.d16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.ghost,
+                        label: 'Cancel',
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                    SizedBox(width: Spacing.d8),
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.primary,
+                        label: 'Apply',
+                        onPressed: switch ((_rangeStart, _rangeEnd)) {
+                          (final start?, final end?) =>
+                            () => Navigator.of(context).pop(
+                              DateTimeRange(start: start, end: end),
+                            ),
+                          _ => null,
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -572,10 +647,15 @@ class _DateRangePickerDialogContentState
   }
 
   Widget _buildHeader(BuildContext context) {
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
+    final onSurfaceColor = isDark
+        ? theme.colors.neutral1
+        : theme.colors.neutral7;
     return Row(
       children: [
         RoundButton(
-          icon: Icons.chevron_left,
+          icon: const _DatePickerChevron(direction: _DatePickerChevronDir.left),
           tooltip: 'Previous month',
           enable: _canMoveToPreviousMonth,
           onPressed: _canMoveToPreviousMonth
@@ -586,14 +666,16 @@ class _DateRangePickerDialogContentState
           child: Text(
             _monthLabel(_focusedDay),
             textAlign: TextAlign.center,
-            style: context.themeConfigs.typography.base1.copyWith(
-              color: context.theme.colorScheme.onSurface,
+            style: context.fluffyTheme.typography.base1.copyWith(
+              color: onSurfaceColor,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
         RoundButton(
-          icon: Icons.chevron_right,
+          icon: const _DatePickerChevron(
+            direction: _DatePickerChevronDir.right,
+          ),
           tooltip: 'Next month',
           enable: _canMoveToNextMonth,
           onPressed: _canMoveToNextMonth ? () => _moveFocusedMonth(1) : null,
@@ -677,4 +759,63 @@ class _DateRangePickerDialogContentState
     ];
     return '${monthNames[date.month - 1]} ${date.day}, ${date.year}';
   }
+}
+
+enum _DatePickerChevronDir { left, right }
+
+class _DatePickerChevron extends StatelessWidget {
+  final _DatePickerChevronDir direction;
+
+  const _DatePickerChevron({
+    required this.direction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: Spacing.d20,
+      height: Spacing.d20,
+      child: CustomPaint(
+        painter: _DatePickerChevronPainter(
+          direction: direction,
+          color: context.isDark
+              ? context.fluffyTheme.colors.neutral1
+              : context.fluffyTheme.colors.neutral7,
+        ),
+      ),
+    );
+  }
+}
+
+class _DatePickerChevronPainter extends CustomPainter {
+  final _DatePickerChevronDir direction;
+  final Color color;
+
+  _DatePickerChevronPainter({required this.direction, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+
+    final path = Path();
+    if (direction == _DatePickerChevronDir.left) {
+      path.moveTo(size.width * 0.6, size.height * 0.25);
+      path.lineTo(size.width * 0.35, size.height * 0.5);
+      path.lineTo(size.width * 0.6, size.height * 0.75);
+    } else {
+      path.moveTo(size.width * 0.4, size.height * 0.25);
+      path.lineTo(size.width * 0.65, size.height * 0.5);
+      path.lineTo(size.width * 0.4, size.height * 0.75);
+    }
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _DatePickerChevronPainter oldDelegate) =>
+      oldDelegate.direction != direction || oldDelegate.color != color;
 }

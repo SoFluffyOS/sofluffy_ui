@@ -1,6 +1,8 @@
 import 'dart:ui';
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class SwitchToggle extends StatefulWidget {
   final bool value;
@@ -17,7 +19,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   final DoughController _doughController = DoughController();
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 300),
+    duration: FluffyDurations.slow,
   );
   late final Animation<double> _animation = CurvedAnimation(
     parent: _animationController,
@@ -43,8 +45,9 @@ class _SwitchToggleState extends State<SwitchToggle>
       isDesktop ? Spacing.d40 : Spacing.d56;
 
   Radius _sideRadius(bool isDesktop) =>
-      Radius.circular(isDesktop ? 12.0 : 48.0);
-  Radius _roomRadius(bool isDesktop) => Radius.circular(isDesktop ? 4.0 : 12.0);
+      Radius.circular(isDesktop ? Spacing.d12 : Spacing.d48);
+  Radius _roomRadius(bool isDesktop) =>
+      Radius.circular(isDesktop ? Spacing.d4 : Spacing.d12);
 
   @override
   void initState() {
@@ -96,10 +99,10 @@ class _SwitchToggleState extends State<SwitchToggle>
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.themeConfigs;
-    final isDark = context.theme.brightness == Brightness.dark;
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
 
-    final isDesktop = switch (Theme.of(context).platform) {
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -217,7 +220,7 @@ class _SwitchToggleState extends State<SwitchToggle>
               children: [
                 AnimatedContainer(
                   curve: Curves.easeOut,
-                  duration: const Duration(milliseconds: 300),
+                  duration: FluffyDurations.slow,
                   width: _containerWidth(isDesktop),
                   height: _containerHeight(isDesktop),
                   decoration: ShapeDecoration(
@@ -239,7 +242,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                                     (_containerWidth(isDesktop) / 2)
                               : _currentValue,
                         ),
-                        width: 2.0,
+                        width: Spacing.d2,
                         strokeAlign: BorderSide.strokeAlignInside,
                       ),
                     ),
@@ -297,7 +300,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                           controller: _doughController,
                           child: AnimatedContainer(
                             curve: Curves.easeOut,
-                            duration: const Duration(milliseconds: 200),
+                            duration: FluffyDurations.fast,
                             height: realThumbHeight,
                             width: realThumbWidth,
                             decoration: ShapeDecoration(
@@ -321,7 +324,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   }
 
   Color _getBackgroundColor({
-    required AppTheme theme,
+    required FluffyThemeData theme,
     required bool isOn,
     required bool isDark,
   }) {
@@ -335,7 +338,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   }
 
   Color _getBorderColor({
-    required AppTheme theme,
+    required FluffyThemeData theme,
     required bool isOn,
     required bool isDark,
   }) {
@@ -352,7 +355,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   }
 
   Color _getThumbColor({
-    required AppTheme theme,
+    required FluffyThemeData theme,
     required bool isOn,
     required bool isDark,
   }) {

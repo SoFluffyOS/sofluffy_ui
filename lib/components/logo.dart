@@ -1,11 +1,11 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
-class Logo extends StatelessWidget {
+class SoFluffyLogo extends StatelessWidget {
   final double? size;
   final bool isTransparent;
 
-  const Logo({
+  const SoFluffyLogo({
     super.key,
     this.size,
     this.isTransparent = false,
@@ -15,42 +15,43 @@ class Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.theme.primaryColor,
+        color: context.fluffyTheme.colors.primary,
         shape: BoxShape.circle,
       ),
       child: ImageView(
         isTransparent
-            ? DesignSystemAssets.images.logoTransparent
-            : DesignSystemAssets.images.logo,
+            ? FluffyAssets.images.logoTransparent
+            : FluffyAssets.images.logo,
         size: size ?? Spacing.d80,
-        assetPackage: kDesignSystemPackageName,
+        assetPackage: kSofluffyUiPackageName,
       ),
     );
   }
 }
 
-class LogoWithName extends StatelessWidget {
+class SoFluffyLogoWithName extends StatelessWidget {
   final String name;
 
-  const LogoWithName({
+  const SoFluffyLogoWithName({
     super.key,
     this.name = '',
   });
 
   @override
   Widget build(BuildContext context) {
+    final primary = context.fluffyTheme.colors.primary;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           decoration: BoxDecoration(
-            color: context.theme.primaryColor,
+            color: primary,
             shape: BoxShape.circle,
           ),
           child: ImageView(
-            DesignSystemAssets.images.logoTransparent,
+            FluffyAssets.images.logoTransparent,
             size: Spacing.d64,
-            assetPackage: kDesignSystemPackageName,
+            assetPackage: kSofluffyUiPackageName,
           ),
         ),
         Spacing.h8,
@@ -62,7 +63,7 @@ class LogoWithName extends StatelessWidget {
                 TextSpan(
                   text: ' $name',
                   style: TextStyle(
-                    color: context.theme.colorScheme.primary.withValues(
+                    color: primary.withValues(
                       alpha: 0.5,
                     ),
                     fontWeight: FontWeight.w400,
@@ -72,7 +73,7 @@ class LogoWithName extends StatelessWidget {
             ),
             style: TextStyle(
               fontSize: Spacing.d36,
-              color: context.theme.colorScheme.primary,
+              color: primary,
               fontWeight: FontWeight.w600,
               overflow: TextOverflow.ellipsis,
             ),
@@ -85,28 +86,29 @@ class LogoWithName extends StatelessWidget {
   }
 }
 
-class LogoWithNameSmaller extends StatelessWidget {
+class SoFluffyLogoWithNameSmaller extends StatelessWidget {
   final String name;
 
-  const LogoWithNameSmaller({
+  const SoFluffyLogoWithNameSmaller({
     super.key,
     this.name = '',
   });
 
   @override
   Widget build(BuildContext context) {
+    final primary = context.fluffyTheme.colors.primary;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           decoration: BoxDecoration(
-            color: context.theme.primaryColor,
+            color: primary,
             shape: BoxShape.circle,
           ),
           child: ImageView(
-            DesignSystemAssets.images.logoTransparent,
+            FluffyAssets.images.logoTransparent,
             size: Spacing.d48,
-            assetPackage: kDesignSystemPackageName,
+            assetPackage: kSofluffyUiPackageName,
           ),
         ),
         Spacing.h4,
@@ -118,7 +120,7 @@ class LogoWithNameSmaller extends StatelessWidget {
                 TextSpan(
                   text: ' $name',
                   style: TextStyle(
-                    color: context.theme.colorScheme.primary.withValues(
+                    color: primary.withValues(
                       alpha: 0.5,
                     ),
                     fontWeight: FontWeight.w400,
@@ -128,7 +130,7 @@ class LogoWithNameSmaller extends StatelessWidget {
             ),
             style: TextStyle(
               fontSize: Spacing.d24,
-              color: context.theme.colorScheme.primary,
+              color: primary,
               fontWeight: FontWeight.w600,
               overflow: TextOverflow.ellipsis,
             ),

@@ -1,19 +1,19 @@
 import 'dart:convert';
 
-import 'package:design_system/constants/strings.dart';
-import 'package:design_system/themes/app_theme.dart';
 import 'package:flutter/services.dart';
+import 'package:sofluffy_ui/constants/strings.dart';
+import 'package:sofluffy_ui/themes/app_theme.dart';
 
 /// **Deprecated**: Use [ThemeLoader] to load themes and [AppThemeData] to
 /// provide themes to the widget tree.
 ///
 /// This singleton is kept for backward compatibility but should be migrated
 /// to the new context-based system.
-@Deprecated('Use ThemeLoader and AppThemeData instead')
+@Deprecated('Use ThemeLoader and FluffyTheme instead')
 class ThemeConfigs {
-  AppTheme? _theme;
+  FluffyThemeData? _theme;
 
-  AppTheme get theme {
+  FluffyThemeData get theme {
     if (_theme == null) {
       throw Exception('Theme not loaded');
     }
@@ -30,7 +30,7 @@ class ThemeConfigs {
       cache: false,
     );
     final themeJson = jsonDecode(themeData) as Map<String, dynamic>;
-    _theme = AppTheme.fromJson(themeJson);
+    _theme = FluffyThemeData.fromJson(themeJson);
   }
 
   static final ThemeConfigs _instance = ThemeConfigs._();

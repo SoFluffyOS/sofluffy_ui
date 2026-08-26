@@ -1,47 +1,79 @@
-import 'package:design_system/themes/colors.dart';
-import 'package:design_system/themes/typography.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/themes/colors.dart';
+import 'package:sofluffy_ui/themes/typography.dart';
 
-/// Custom theme extension that contains app-specific theming data.
+/// Theme configuration data containing colors, typography, and brightness.
 ///
-/// Access via `Theme.of(context).extension<AppTheme>()` or use the
-/// convenience extension `context.appTheme`.
+/// Access via `FluffyTheme.of(context)` or the convenience extension `context.fluffyTheme`.
 @immutable
-class AppTheme extends ThemeExtension<AppTheme> {
+class FluffyThemeData {
   final ColorData colors;
   final TypographyData typography;
+  final Brightness brightness;
 
-  const AppTheme({
+  const FluffyThemeData({
     required this.colors,
     required this.typography,
+    this.brightness = Brightness.light,
   });
 
-  factory AppTheme.fromJson(Map<String, dynamic> json) {
-    return AppTheme(
+  bool get isDark => brightness == Brightness.dark;
+  bool get isLight => brightness == Brightness.light;
+
+  factory FluffyThemeData.fallback({Brightness brightness = Brightness.light}) {
+    return FluffyThemeData(
+      colors: ColorData.fallback(),
+      typography: TypographyData.fallback(),
+      brightness: brightness,
+    );
+  }
+
+  factory FluffyThemeData.fromJson(
+    Map<String, dynamic> json, {
+    Brightness brightness = Brightness.light,
+  }) {
+    return FluffyThemeData(
       colors: ColorData.fromJson(json['colors'] as Map<String, dynamic>),
       typography: TypographyData.fromJson(
         json['typography'] as Map<String, dynamic>,
       ),
+      brightness: brightness,
     );
   }
 
-  @override
-  AppTheme copyWith({
+  FluffyThemeData copyWith({
     ColorData? colors,
     TypographyData? typography,
+    Brightness? brightness,
   }) {
-    return AppTheme(
+    return FluffyThemeData(
       colors: colors ?? this.colors,
       typography: typography ?? this.typography,
+      brightness: brightness ?? this.brightness,
+    );
+  }
+
+  static FluffyThemeData lerp(
+    FluffyThemeData a,
+    FluffyThemeData b,
+    double t,
+  ) {
+    return FluffyThemeData(
+      colors: ColorData.lerp(a.colors, b.colors, t),
+      typography: TypographyData.lerp(a.typography, b.typography, t),
+      brightness: t < 0.5 ? a.brightness : b.brightness,
     );
   }
 
   @override
-  AppTheme lerp(covariant AppTheme? other, double t) {
-    if (other == null) return this;
-    return AppTheme(
-      colors: ColorData.lerp(colors, other.colors, t),
-      typography: TypographyData.lerp(typography, other.typography, t),
-    );
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is FluffyThemeData &&
+        other.colors == colors &&
+        other.typography == typography &&
+        other.brightness == brightness;
   }
+
+  @override
+  int get hashCode => Object.hash(colors, typography, brightness);
 }

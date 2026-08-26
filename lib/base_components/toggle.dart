@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class Toggle extends StatefulWidget {
   final bool initialValue;
@@ -43,7 +43,7 @@ class _ToggleState extends State<Toggle> {
         child: AnimatedContainer(
           width: Spacing.d48,
           height: Spacing.d24,
-          duration: Durations.medium1,
+          duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
           decoration: ShapeDecoration(
             color: _getBackgroundColor(context),
@@ -62,7 +62,7 @@ class _ToggleState extends State<Toggle> {
             child: AnimatedContainer(
               width: Spacing.d20,
               height: Spacing.d20,
-              duration: Durations.medium1,
+              duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
               decoration: ShapeDecoration(
                 shape: const RoundedSuperellipseBorder(
@@ -78,8 +78,8 @@ class _ToggleState extends State<Toggle> {
   }
 
   Color _getBackgroundColor(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     if (_currentValue) {
       return theme.colors.primary;
     }
@@ -88,8 +88,8 @@ class _ToggleState extends State<Toggle> {
   }
 
   Color _getKnobColor(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     if (isDark && !_currentValue) {
       return theme.colors.neutral7;
     }

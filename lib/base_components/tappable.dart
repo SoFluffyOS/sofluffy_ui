@@ -20,10 +20,10 @@
 
 import 'dart:async';
 
-import 'package:design_system/design_system.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 const _animationDuration = 75;
 
@@ -61,8 +61,7 @@ class Tappable extends StatefulWidget {
   final bool enableHoverOverlay;
 
   final FocusNode? focusNode;
-
-  final EdgeInsets? hoverOverlayPadding;
+  final EdgeInsets hoverOverlayPadding;
   final double? hoverOverlayBorderRadius;
   final Color? hoverOverlayColorTint;
 
@@ -123,9 +122,10 @@ class _TappableState extends State<Tappable> {
       _state == TappableState.pressed;
 
   void _setHovered(bool value) {
-    if (_isHovered == value) return;
-    if (mounted) setState(() => _isHovered = value);
-    widget.onStateChanged?.call(_state);
+    if (_isHovered != value) {
+      if (mounted) setState(() => _isHovered = value);
+      widget.onStateChanged?.call(_state);
+    }
   }
 
   void _setFocused(bool value) {
@@ -258,8 +258,9 @@ class _TappableState extends State<Tappable> {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip ?? '',
+    final theme = context.fluffyTheme;
+    return Semantics(
+      tooltip: widget.tooltip,
       child: FocusableActionDetector(
         enabled:
             _isInteractive || widget.enableHover || widget.enableFocusBorder,
@@ -320,7 +321,7 @@ class _TappableState extends State<Tappable> {
                   scale: widget.enableAnimation ? _state.scale : 1.0,
                   duration: const Duration(milliseconds: _animationDuration),
                   child: Container(
-                    color: Colors.transparent,
+                    color: FluffyColors.transparent,
                     child:
                         widget.builder?.call(context, _state) ?? widget.child,
                   ),
@@ -343,13 +344,14 @@ class _TappableState extends State<Tappable> {
                                   shape: RoundedSuperellipseBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(
-                                        widget.hoverOverlayBorderRadius ?? 12.0,
+                                        widget.hoverOverlayBorderRadius ??
+                                            Spacing.d12,
                                       ),
                                     ),
                                   ),
                                   color:
                                       (widget.hoverOverlayColorTint ??
-                                              context.theme.primaryColor)
+                                              theme.colors.primary)
                                           .withValues(
                                             alpha: _state.backgroundOpacity,
                                           ),
@@ -367,7 +369,7 @@ class _TappableState extends State<Tappable> {
                         margin: widget.hoverOverlayPadding,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: context.theme.focusColor,
+                            color: theme.colors.primary.withValues(alpha: 0.5),
                             width: Spacing.d2,
                           ),
                           borderRadius: widget.hoverOverlayBorderRadius != null

@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class StepperWidget extends StatelessWidget {
   final int stepCount;
@@ -18,13 +18,14 @@ class StepperWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = context.fluffyTheme.colors.primary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         for (int i = 0; i < stepCount; i++)
           AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: FluffyDurations.fast,
             width: Spacing.d8,
             height: Spacing.d8,
             margin: EdgeInsets.symmetric(
@@ -32,11 +33,11 @@ class StepperWidget extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: i <= currentStep
-                  ? activeColor ?? context.theme.colorScheme.primary
-                  : Colors.transparent,
+                  ? activeColor ?? primaryColor
+                  : FluffyColors.transparent,
               shape: BoxShape.circle,
               border: Border.all(
-                color: context.theme.colorScheme.primary,
+                color: primaryColor,
               ),
             ),
           ),

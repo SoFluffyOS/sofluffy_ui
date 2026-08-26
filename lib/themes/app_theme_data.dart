@@ -1,25 +1,80 @@
-import 'package:design_system/themes/app_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/themes/app_theme.dart';
+import 'package:sofluffy_ui/themes/typography.dart';
 
-/// Extension on [BuildContext] for convenient theme access.
-extension ThemeConfigsExtension on BuildContext {
-  /// Access the [AppTheme] from ThemeData extensions.
-  ///
-  /// Throws if no [AppTheme] is found in the theme extensions.
-  AppTheme get themeConfigs {
-    final theme = Theme.of(this).extension<AppTheme>();
-    if (theme == null) {
-      throw FlutterError(
-        'themeConfigs called with a context that does not contain an AppTheme extension.\n'
-        'Make sure to use appTheme.getTheme() which includes the AppTheme extension.',
-      );
-    }
-    return theme;
+/// Theme provider that supplies [FluffyThemeData] and default text styling down the widget tree.
+class FluffyTheme extends StatelessWidget {
+  final FluffyThemeData data;
+  final Widget child;
+
+  const FluffyTheme({
+    super.key,
+    required this.data,
+    required this.child,
+  });
+
+  /// Access the [FluffyThemeData] from the nearest [FluffyTheme] ancestor.
+  static FluffyThemeData of(BuildContext context) {
+    return maybeOf(context) ?? FluffyThemeData.fallback();
   }
 
-  /// Access the [AppTheme] from ThemeData extensions, or null if not found.
-  AppTheme? get maybeThemeConfigs => Theme.of(this).extension<AppTheme>();
+  /// Access the [FluffyThemeData] from the nearest [FluffyTheme] ancestor, or null if not found.
+  static FluffyThemeData? maybeOf(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_FluffyThemeInherited>()
+        ?.data;
+  }
 
-  /// Alias for [themeConfigs].
-  AppTheme get appTheme => themeConfigs;
+  @override
+  Widget build(BuildContext context) {
+    final onSurface = data.isDark ? data.colors.neutral1 : data.colors.neutral7;
+    return _FluffyThemeInherited(
+      data: data,
+      child: DefaultTextStyle(
+        style: data.typography.base2.copyWith(
+          color: onSurface,
+          decoration: TextDecoration.none,
+        ),
+        child: IconTheme(
+          data: IconThemeData(
+            color: onSurface,
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _FluffyThemeInherited extends InheritedWidget {
+  final FluffyThemeData data;
+
+  const _FluffyThemeInherited({
+    required this.data,
+    required super.child,
+  });
+
+  @override
+  bool updateShouldNotify(covariant _FluffyThemeInherited oldWidget) {
+    return data != oldWidget.data;
+  }
+}
+
+/// Extension on [BuildContext] for convenient theme access.
+extension FluffyThemeExtension on BuildContext {
+  /// Access the [FluffyThemeData] from [FluffyTheme].
+  FluffyThemeData get fluffyTheme => FluffyTheme.of(this);
+
+  /// Access the [FluffyThemeData] from [FluffyTheme], or null if not found.
+  FluffyThemeData? get maybeFluffyTheme => FluffyTheme.maybeOf(this);
+
+  /// Check whether the current theme or platform is dark mode.
+  bool get isDark {
+    final explicit = maybeFluffyTheme?.isDark;
+    if (explicit != null) return explicit;
+    return MediaQuery.maybePlatformBrightnessOf(this) == Brightness.dark;
+  }
+
+  /// Check whether the current theme or platform is light mode.
+  bool get isLight => !isDark;
 }

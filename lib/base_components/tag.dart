@@ -1,5 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class Tag extends StatelessWidget {
   final String text;
@@ -10,13 +11,13 @@ class Tag extends StatelessWidget {
   const Tag(
     this.text, {
     super.key,
-    this.color = Colors.white,
+    this.color = FluffyColors.white,
     this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (Theme.of(context).platform) {
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -36,18 +37,16 @@ class Tag extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.1),
         shape: const RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12.0),
-          ),
+          borderRadius: Spacing.r12,
           side: BorderSide(
-            color: Colors.transparent,
+            color: FluffyColors.transparent,
             strokeAlign: BorderSide.strokeAlignInside,
           ),
         ),
       ),
       child: Text(
         text,
-        style: context.theme.textTheme.labelSmall?.copyWith(
+        style: context.fluffyTheme.typography.caption2.copyWith(
           color: color,
           fontWeight: FontWeight.w500,
         ),

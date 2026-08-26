@@ -58,16 +58,16 @@ class CheckBoxListTile extends StatelessWidget {
                 titleStyle ??
                 switch (style) {
                   CheckBoxListTileStyle.compact =>
-                    context.theme.textTheme.bodySmall,
+                    context.fluffyTheme.typography.caption1,
                   CheckBoxListTileStyle.standard =>
-                    context.theme.textTheme.bodyLarge,
+                    context.fluffyTheme.typography.base1,
                 },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Spacing.v4,
             Text(
               subtitle,
-              style: subtitleStyle ?? context.theme.textTheme.bodySmall,
+              style: subtitleStyle ?? context.fluffyTheme.typography.caption2,
             ),
           ],
         ],

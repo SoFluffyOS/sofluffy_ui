@@ -1,6 +1,7 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 typedef DecorationBuilder =
     Decoration Function(
@@ -52,7 +53,7 @@ class InputText extends StatefulWidget {
   final DecorationBuilder? decorationBuilder;
   final TextStyle? textStyle;
 
-  final EdgeInsets? inputPadding;
+  final EdgeInsetsGeometry? inputPadding;
   final double? cursorHeight;
   final double cursorWidth;
 
@@ -67,15 +68,15 @@ class InputText extends StatefulWidget {
     this.errorText,
     this.maxLength,
     this.maxLines = 1,
-    this.prefixIcon,
-    this.prefix,
-    this.suffixIcon,
-    this.suffix,
-    this.onSuffixTap,
     this.obscureText = false,
     this.isPasswordField = false,
     this.enableCounter = false,
     this.readOnly = false,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.onSuffixTap,
+    this.prefix,
+    this.suffix,
     this.autoFillHints,
     this.keyboardType,
     this.onChanged,
@@ -143,8 +144,9 @@ class _InputTextState extends State<InputText> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.themeConfigs;
-    final isDesktop = switch (Theme.of(context).platform) {
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -153,6 +155,33 @@ class _InputTextState extends State<InputText> {
     final baseTextStyle =
         widget.textStyle ??
         (isDesktop ? theme.typography.caption1 : theme.typography.base2);
+    final textStyle = baseTextStyle.copyWith(
+      color: getTextColor(context),
+    );
+    final placeholderStyle = baseTextStyle.copyWith(
+      color: theme.colors.neutral4.withValues(alpha: 0.5),
+    );
+
+    final resolvedPadding =
+        widget.inputPadding ??
+        (isDesktop
+            ? EdgeInsets.only(
+                left: widget.prefixIcon == null && widget.prefix == null
+                    ? Spacing.d12
+                    : Spacing.d8,
+                right: Spacing.d12,
+                top: Spacing.d8,
+                bottom: Spacing.d8,
+              )
+            : EdgeInsets.only(
+                left: widget.prefixIcon == null && widget.prefix == null
+                    ? Spacing.d16
+                    : Spacing.d12,
+                right: Spacing.d16,
+                top: Spacing.d14,
+                bottom: Spacing.d14,
+              ));
+
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
@@ -189,6 +218,7 @@ class _InputTextState extends State<InputText> {
             ),
           Flexible(
             child: MouseRegion(
+              cursor: SystemMouseCursors.text,
               onEnter: (_) {
                 setState(() {
                   isHovering = true;
@@ -199,86 +229,38 @@ class _InputTextState extends State<InputText> {
                   isHovering = false;
                 });
               },
-              child: Container(
-                decoration:
-                    widget.decorationBuilder?.call(
-                      context,
-                      isHovering,
-                      hasContent,
-                      hasFocus,
-                    ) ??
-                    ShapeDecoration(
-                      color: getBackgroundColor(context),
-                      shape: RoundedSuperellipseBorder(
-                        borderRadius: switch (widget.borderRadius) {
-                          final borderRadius? => BorderRadius.all(
-                            Radius.circular(borderRadius),
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => _focusNode.requestFocus(),
+                child: Container(
+                  decoration:
+                      widget.decorationBuilder?.call(
+                        context,
+                        isHovering,
+                        hasContent,
+                        hasFocus,
+                      ) ??
+                      ShapeDecoration(
+                        color: getBackgroundColor(context),
+                        shape: RoundedSuperellipseBorder(
+                          borderRadius: switch (widget.borderRadius) {
+                            final borderRadius? => BorderRadius.all(
+                              Radius.circular(borderRadius),
+                            ),
+                            _ => Spacing.r12,
+                          },
+                          side: BorderSide(
+                            color: getBorderColor(context),
+                            width: 2.0,
                           ),
-                          _ => Spacing.r12,
-                        },
-                        side: BorderSide(
-                          color: getBorderColor(context),
-                          width: 2.0,
                         ),
                       ),
-                    ),
-                child: CupertinoTextField(
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  style: baseTextStyle.copyWith(
-                    color: getTextColor(context),
-                  ),
-                  scrollPadding: EdgeInsets.zero,
-                  decoration: const BoxDecoration(),
-                  cursorHeight: widget.cursorHeight,
-                  cursorWidth: widget.cursorWidth,
-                  obscureText: widget.obscureText,
-                  autocorrect: !widget.isPasswordField,
-                  enableIMEPersonalizedLearning: !widget.isPasswordField,
-                  enableSuggestions: !widget.isPasswordField,
-                  enableInteractiveSelection: !widget.isPasswordField,
-                  autofillHints: widget.isPasswordField
-                      ? [AutofillHints.password]
-                      : widget.autoFillHints,
-                  keyboardType: widget.isPasswordField
-                      ? TextInputType.visiblePassword
-                      : widget.keyboardType,
-                  placeholder: widget.hintText,
-                  maxLength: widget.maxLength,
-                  maxLines: widget.maxLines,
-                  readOnly: widget.readOnly,
-                  onChanged: widget.onChanged,
-                  onSubmitted: widget.onSubmitted,
-                  onEditingComplete: widget.onEditingComplete,
-                  textInputAction: widget.textInputAction,
-                  placeholderStyle: baseTextStyle.copyWith(
-                    color: theme.colors.neutral4.withValues(
-                      alpha: 0.5,
-                    ),
-                  ),
-                  padding:
-                      widget.inputPadding ??
-                      (isDesktop
-                          ? EdgeInsets.only(
-                              left: widget.prefixIcon == null
-                                  ? Spacing.d12
-                                  : Spacing.d8,
-                              right: Spacing.d12,
-                              top: Spacing.d8,
-                              bottom: Spacing.d8,
-                            )
-                          : EdgeInsets.only(
-                              left: widget.prefixIcon == null
-                                  ? Spacing.d16
-                                  : Spacing.d12,
-                              right: Spacing.d16,
-                              top: Spacing.d14,
-                              bottom: Spacing.d14,
-                            )),
-                  prefix: widget.prefix == null && widget.prefixIcon == null
-                      ? null
-                      : Padding(
-                          padding: EdgeInsets.only(left: Spacing.d16),
+                  padding: resolvedPadding,
+                  child: Row(
+                    children: [
+                      if (widget.prefix != null || widget.prefixIcon != null)
+                        Padding(
+                          padding: EdgeInsets.only(right: Spacing.d8),
                           child:
                               widget.prefix ??
                               ImageView(
@@ -288,10 +270,61 @@ class _InputTextState extends State<InputText> {
                                 color: getIconColor(context),
                               ),
                         ),
-                  suffix: widget.suffix == null && widget.suffixIcon == null
-                      ? null
-                      : Padding(
-                          padding: EdgeInsets.only(right: Spacing.d16),
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.centerLeft,
+                          children: [
+                            if (_controller.text.isEmpty &&
+                                widget.hintText != null)
+                              IgnorePointer(
+                                child: Text(
+                                  widget.hintText!,
+                                  style: placeholderStyle,
+                                  maxLines: widget.maxLines,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            EditableText(
+                              controller: _controller,
+                              focusNode: _focusNode,
+                              style: textStyle,
+                              cursorColor: theme.colors.primary,
+                              selectionColor: theme.colors.primary.withValues(
+                                alpha: 0.3,
+                              ),
+                              backgroundCursorColor: isDark
+                                  ? theme.colors.neutral5
+                                  : theme.colors.neutral3,
+                              cursorHeight: widget.cursorHeight,
+                              cursorWidth: widget.cursorWidth,
+                              obscureText: widget.obscureText,
+                              autocorrect: !widget.isPasswordField,
+                              enableSuggestions: !widget.isPasswordField,
+                              autofillHints: widget.isPasswordField
+                                  ? [AutofillHints.password]
+                                  : widget.autoFillHints,
+                              keyboardType: widget.isPasswordField
+                                  ? TextInputType.visiblePassword
+                                  : widget.keyboardType,
+                              inputFormatters: [
+                                if (widget.maxLength != null)
+                                  LengthLimitingTextInputFormatter(
+                                    widget.maxLength,
+                                  ),
+                              ],
+                              maxLines: widget.maxLines,
+                              readOnly: widget.readOnly,
+                              onChanged: widget.onChanged,
+                              onSubmitted: widget.onSubmitted,
+                              onEditingComplete: widget.onEditingComplete,
+                              textInputAction: widget.textInputAction,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (widget.suffix != null || widget.suffixIcon != null)
+                        Padding(
+                          padding: EdgeInsets.only(left: Spacing.d8),
                           child:
                               widget.suffix ??
                               Tappable(
@@ -304,6 +337,8 @@ class _InputTextState extends State<InputText> {
                                 ),
                               ),
                         ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -314,7 +349,7 @@ class _InputTextState extends State<InputText> {
               child: Text(
                 error,
                 style: theme.typography.caption2.copyWith(
-                  color: Theme.of(context).colorScheme.error,
+                  color: FluffyColors.error,
                 ),
               ),
             ),
@@ -324,8 +359,8 @@ class _InputTextState extends State<InputText> {
   }
 
   Color getBackgroundColor(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     if (hasFocus) {
       return isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     }
@@ -334,7 +369,7 @@ class _InputTextState extends State<InputText> {
   }
 
   Color getIconColor(BuildContext context) {
-    final theme = context.themeConfigs;
+    final theme = context.fluffyTheme;
     if (hasContent) {
       return theme.colors.neutral4;
     }
@@ -343,16 +378,16 @@ class _InputTextState extends State<InputText> {
   }
 
   Color getTextColor(BuildContext context) {
-    final theme = context.themeConfigs;
+    final theme = context.fluffyTheme;
     if (isHovering) {
       return theme.colors.primary;
     }
 
     if (hasError) {
-      return Theme.of(context).colorScheme.error;
+      return FluffyColors.error;
     }
 
-    final isDark = context.theme.brightness == Brightness.dark;
+    final isDark = context.isDark;
     return isDark ? theme.colors.neutral1 : theme.colors.neutral6;
   }
 
@@ -360,14 +395,14 @@ class _InputTextState extends State<InputText> {
     if (!hasFocus) {
       return getBackgroundColor(context);
     }
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     return isDark ? theme.colors.neutral5 : theme.colors.neutral2;
   }
 
   Color _getLabelColor(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     if (hasFocus) {
       return isDark ? theme.colors.neutral1 : theme.colors.neutral7;
     }

@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class SoFluffyTab {
   final Widget icon;
@@ -15,7 +15,7 @@ class SoFluffyTab {
   });
 }
 
-class SoFluffyTabBar extends StatelessWidget {
+class SoSoFluffyTabBar extends StatelessWidget {
   final List<SoFluffyTab> items;
 
   final int selectedIndex;
@@ -29,7 +29,7 @@ class SoFluffyTabBar extends StatelessWidget {
 
   final Widget? tabDivider;
 
-  const SoFluffyTabBar({
+  const SoSoFluffyTabBar({
     super.key,
     required this.items,
     required this.selectedIndex,
@@ -45,6 +45,15 @@ class SoFluffyTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
+    final defaultSelectedColor = isDark
+        ? theme.colors.neutral7
+        : theme.colors.neutral1;
+    final defaultUnselectedColor = isDark
+        ? theme.colors.neutral6
+        : theme.colors.neutral2;
+
     return Container(
       width: double.infinity,
       height: tabBarSize,
@@ -68,15 +77,15 @@ class SoFluffyTabBar extends StatelessWidget {
           final hasTitle = title != null && title.isNotEmpty;
           return Container(
             decoration: ShapeDecoration(
-              shape: const RoundedSuperellipseBorder(
+              shape: RoundedSuperellipseBorder(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12.0),
-                  topRight: Radius.circular(12.0),
+                  topLeft: Radius.circular(Spacing.d12),
+                  topRight: Radius.circular(Spacing.d12),
                 ),
               ),
               color: isSelected
-                  ? selectedTabColor ?? context.theme.scaffoldBackgroundColor
-                  : unselectedTabColor ?? context.theme.cardColor,
+                  ? selectedTabColor ?? defaultSelectedColor
+                  : unselectedTabColor ?? defaultUnselectedColor,
             ),
             child: Tappable(
               behavior: HitTestBehavior.translucent,
@@ -105,7 +114,7 @@ class SoFluffyTabBar extends StatelessWidget {
                       SizedBox(width: Spacing.d8),
                       Text(
                         title,
-                        style: context.theme.textTheme.bodyMedium,
+                        style: theme.typography.base2,
                       ),
                     ],
                     if (isClosable) ...[
@@ -116,9 +125,10 @@ class SoFluffyTabBar extends StatelessWidget {
                         onTap: () {
                           onTabClose(index);
                         },
-                        child: Icon(
-                          Icons.close,
-                          color: context.theme.textTheme.bodyMedium?.color,
+                        child: _CloseIcon(
+                          color: isDark
+                              ? theme.colors.neutral1
+                              : theme.colors.neutral7,
                           size: Spacing.d16,
                         ),
                       ),
@@ -132,4 +142,51 @@ class SoFluffyTabBar extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CloseIcon extends StatelessWidget {
+  final Color color;
+  final double size;
+
+  const _CloseIcon({required this.color, required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(
+        painter: _CloseIconPainter(color),
+      ),
+    );
+  }
+}
+
+class _CloseIconPainter extends CustomPainter {
+  final Color color;
+
+  _CloseIconPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+    const padding = 3.0;
+    canvas.drawLine(
+      const Offset(padding, padding),
+      Offset(size.width - padding, size.height - padding),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width - padding, padding),
+      Offset(padding, size.height - padding),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CloseIconPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

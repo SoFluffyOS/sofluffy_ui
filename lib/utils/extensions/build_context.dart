@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:design_system/design_system.dart';
 import 'package:flash/flash.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 extension BuildContextExtension on BuildContext {
-  ThemeData get theme => Theme.of(this);
-
   NavigatorState get navigator => Navigator.of(this);
 
   void toast(

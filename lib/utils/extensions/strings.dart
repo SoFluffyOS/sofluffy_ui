@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 extension ColorExtension on String {
   Color hexToColor() {
-    return toColor() ?? Colors.transparent;
+    return toColor() ?? FluffyColors.transparent;
   }
 
   Color? toColor() {

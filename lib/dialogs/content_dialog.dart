@@ -1,6 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class ContentDialog {
   static Future<ConfirmAction> show(
@@ -14,18 +14,24 @@ class ContentDialog {
   }) async {
     final controller = ScrollController();
     try {
-      final result = await showDialog(
+      final result = await showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        builder: (BuildContext context) {
-          final isDesktop = switch (Theme.of(context).platform) {
-            TargetPlatform.macOS ||
-            TargetPlatform.windows ||
-            TargetPlatform.linux => true,
-            _ => false,
-          };
-          final theme = context.theme;
-
+        barrierLabel: 'Dismiss',
+        barrierColor: FluffyColors.barrier,
+        transitionDuration: FluffyDurations.dialogTransition,
+        transitionBuilder: (context, anim1, anim2, child) {
+          return FadeTransition(
+            opacity: anim1,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
+              ),
+              child: child,
+            ),
+          );
+        },
+        pageBuilder: (BuildContext context, anim1, anim2) {
           void submitPrimaryAction() {
             if (positiveText != null) {
               context.navigator.pop(ConfirmAction.positive);
@@ -36,17 +42,9 @@ class ContentDialog {
             }
           }
 
-          final dialog = AlertDialog(
-            shape: isDesktop
-                ? RoundedSuperellipseBorder(
-                    borderRadius: Spacing.r12,
-                    side: BorderSide(color: theme.dividerColor, width: 0.25),
-                  )
-                : null,
-            backgroundColor: isDesktop ? theme.scaffoldBackgroundColor : null,
-            elevation: isDesktop ? 0 : null,
+          final dialog = DialogCard(
             title: title != null ? Text(title) : null,
-            content: Scrollbar(
+            content: RawScrollbar(
               controller: controller,
               child: SingleChildScrollView(
                 controller: controller,
@@ -59,7 +57,7 @@ class ContentDialog {
                 ),
               ),
             ),
-            actions: <Widget>[
+            actions: [
               Row(
                 children: [
                   if (negativeText case String negativeText)

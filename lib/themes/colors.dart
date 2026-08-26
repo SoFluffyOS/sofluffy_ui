@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/utils/extensions/strings.dart';
 
 @immutable
 class ColorData {
@@ -25,6 +25,20 @@ class ColorData {
     required this.neutral6,
     required this.neutral7,
   });
+
+  factory ColorData.fallback() {
+    return const ColorData(
+      primary: Color(0xFF007AFF),
+      secondary: Color(0xFF5856D6),
+      neutral1: Color(0xFFFFFFFF),
+      neutral2: Color(0xFFF2F2F7),
+      neutral3: Color(0xFFE5E5EA),
+      neutral4: Color(0xFFD1D1D6),
+      neutral5: Color(0xFF8E8E93),
+      neutral6: Color(0xFF1C1C1E),
+      neutral7: Color(0xFF000000),
+    );
+  }
 
   factory ColorData.fromJson(Map<String, dynamic> json) {
     return ColorData(

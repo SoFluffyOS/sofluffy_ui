@@ -1,6 +1,7 @@
-import 'package:design_system/design_system.dart';
 import 'package:example/main.directories.g.dart';
+import 'package:example/theme_adapter.dart';
 import 'package:flutter/material.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -12,7 +13,7 @@ Future<void> main() async {
 
 @widgetbook.App()
 class WidgetbookApp extends StatelessWidget {
-  final AppTheme appTheme;
+  final FluffyThemeData appTheme;
 
   const WidgetbookApp({super.key, required this.appTheme});
 
@@ -29,8 +30,6 @@ class WidgetbookApp extends StatelessWidget {
       ),
     ];
     return Widgetbook.material(
-      // The [directories] variable1 does not exist yet,
-      // it will be generated in the next step
       directories: directories,
       addons: [
         ViewportAddon([
@@ -46,6 +45,18 @@ class WidgetbookApp extends StatelessWidget {
         MaterialThemeAddon(
           initialTheme: themes.first,
           themes: themes,
+        ),
+        BuilderAddon(
+          name: 'FluffyTheme',
+          builder: (context, child) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            return FluffyTheme(
+              data: appTheme.copyWith(
+                brightness: isDark ? Brightness.dark : Brightness.light,
+              ),
+              child: child,
+            );
+          },
         ),
         BuilderAddon(
           name: 'Spacing',

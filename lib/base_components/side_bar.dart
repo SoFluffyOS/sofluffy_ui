@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class SideBar extends StatelessWidget {
   final Widget child;
@@ -23,7 +23,7 @@ class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSize(
-      duration: Durations.medium2,
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
       alignment: Alignment.centerLeft,
       child: SizedBox(

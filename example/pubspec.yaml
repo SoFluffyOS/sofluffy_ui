@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  design_system:
+  sofluffy_ui:
     path: ../
 
   widgetbook: ^3.17.0

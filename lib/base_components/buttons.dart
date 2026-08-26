@@ -1,12 +1,17 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 part 'round_button.dart';
 
 enum ButtonState { normal, hover, focus, pressing, disabled }
 
 enum ButtonTitleExpand { none, shrink, expand }
+
+Brightness _estimateBrightnessForColor(Color color) {
+  return color.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
+}
 
 enum ButtonVariant {
   primary,
@@ -18,12 +23,12 @@ enum ButtonVariant {
     ButtonState state,
     Color? fillColor,
   ) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     switch (this) {
       case ButtonVariant.primary:
         final baseColor = fillColor ?? theme.colors.primary;
-        return switch (ThemeData.estimateBrightnessForColor(baseColor)) {
+        return switch (_estimateBrightnessForColor(baseColor)) {
           Brightness.light => theme.colors.neutral7,
           Brightness.dark => theme.colors.neutral1,
         };
@@ -49,24 +54,24 @@ enum ButtonVariant {
     ButtonState state,
     Color? fillColor,
   ) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     switch (this) {
       /// ButtonVariant.primary.
       case ButtonVariant.primary:
         final baseColor = getBackgroundColor(context, state, fillColor);
         if (state == ButtonState.disabled) {
-          return Colors.transparent;
+          return FluffyColors.transparent;
         }
         if (state == ButtonState.pressing) {
-          return Color.lerp(baseColor, Colors.black, 0.1);
+          return Color.lerp(baseColor, FluffyColors.black, 0.1);
         }
         return baseColor;
 
       /// ButtonVariant.ghost.
       case ButtonVariant.ghost:
         if (fillColor != null && state == ButtonState.pressing) {
-          return Colors.transparent;
+          return FluffyColors.transparent;
         }
         final baseColor =
             fillColor?.withValues(alpha: 0.25) ??
@@ -85,7 +90,7 @@ enum ButtonVariant {
             fillColor,
           );
         }
-        return Colors.transparent;
+        return FluffyColors.transparent;
     }
   }
 
@@ -94,8 +99,8 @@ enum ButtonVariant {
     ButtonState state,
     Color? fillColor,
   ) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     switch (this) {
       /// ButtonVariant.primary.
       case ButtonVariant.primary:
@@ -116,14 +121,14 @@ enum ButtonVariant {
               : theme.colors.neutral3;
           if (fillColor != null) {
             return Color.lerp(
-              context.theme.colorScheme.surface,
+              isDark ? theme.colors.neutral7 : theme.colors.neutral1,
               fillColor,
               0.25,
             );
           }
           return baseColor;
         }
-        return context.theme.colorScheme.surface;
+        return isDark ? theme.colors.neutral7 : theme.colors.neutral1;
 
       /// ButtonVariant.secondary.
       case ButtonVariant.secondary:
@@ -219,7 +224,7 @@ class _ButtonState extends State<Button> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (Theme.of(context).platform) {
+    final isDesktop = switch (defaultTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -227,10 +232,10 @@ class _ButtonState extends State<Button> {
     };
 
     late final Widget child;
-    if (widget.child case Widget thisChild) {
+    if (widget.child case final thisChild?) {
       child = thisChild;
-    } else if (widget.label case String label) {
-      final typography = context.themeConfigs.typography;
+    } else if (widget.label case final label?) {
+      final typography = context.fluffyTheme.typography;
       child = Text(
         label,
         style: (isDesktop ? typography.caption1 : typography.base1).copyWith(
@@ -244,6 +249,8 @@ class _ButtonState extends State<Button> {
         overflow: TextOverflow.ellipsis,
         textAlign: widget.labelTextAlign ?? TextAlign.center,
       );
+    } else {
+      child = const SizedBox.shrink();
     }
     return Semantics(
       label: widget.semanticLabel ?? widget.tooltip,
@@ -302,7 +309,7 @@ class _ButtonState extends State<Button> {
                   constraints: BoxConstraints(
                     minHeight: isDesktop ? Spacing.d32 : Spacing.d36,
                   ),
-                  duration: Durations.medium4,
+                  duration: const Duration(milliseconds: 400),
                   curve: Curves.easeOut,
                   padding:
                       widget.padding ??
@@ -334,7 +341,7 @@ class _ButtonState extends State<Button> {
                               state,
                               widget.color,
                             ) ??
-                            Colors.transparent,
+                            FluffyColors.transparent,
                         width: widget.borderWidth ?? Spacing.d2,
                         strokeAlign: BorderSide.strokeAlignInside,
                       ),

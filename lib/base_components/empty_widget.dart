@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class EmptyWidget extends StatelessWidget {
   final String icon;
@@ -15,23 +15,24 @@ class EmptyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.fluffyTheme;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ImageView(
           icon,
           size: Spacing.d72,
-          color: context.theme.colorScheme.primary,
+          color: theme.colors.primary,
         ),
         Spacing.v16,
         Text(
           title,
-          style: context.theme.textTheme.titleSmall,
+          style: theme.typography.headline6,
         ),
         if (subtitle case String subtitle when subtitle.isNotEmpty)
           Text(
             subtitle,
-            style: context.theme.textTheme.bodySmall,
+            style: theme.typography.caption1,
           ),
       ],
     );

@@ -1,6 +1,5 @@
-import 'package:design_system/design_system.dart'
-    show AfterLayoutMixin, Spacing, BuildContextExtension;
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class BottomContainer extends StatefulWidget {
   final Widget child;
@@ -64,25 +63,24 @@ class _BottomContainerState extends State<BottomContainer>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.fluffyTheme;
+    final isDark = context.isDark;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
       decoration: ShapeDecoration(
         color:
             widget.color ??
-            switch (context.theme.brightness) {
-              Brightness.light => context.theme.colorScheme.surface,
-              Brightness.dark => context.theme.cardColor,
-            },
-        shape: const RoundedSuperellipseBorder(
+            (isDark ? theme.colors.neutral6 : theme.colors.neutral1),
+        shape: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16.0),
+            top: Radius.circular(Spacing.d16),
           ),
         ),
         shadows: switch (_shouldShowShadow) {
           true => [
             BoxShadow(
-              color: context.theme.colorScheme.shadow.withValues(alpha: 0.1),
+              color: FluffyColors.shadowLight,
               blurRadius: Spacing.d4,
               offset: const Offset(0.0, -2.0),
             ),

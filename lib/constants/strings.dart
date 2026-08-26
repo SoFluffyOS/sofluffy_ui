@@ -1,3 +1,3 @@
 const kDefaultThemeName = 'default';
 
-const kDesignSystemPackageName = 'design_system';
+const kSofluffyUiPackageName = 'sofluffy_ui';

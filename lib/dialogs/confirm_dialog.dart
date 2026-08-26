@@ -1,6 +1,6 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 enum ConfirmAction { positive, negative, dismiss }
 
@@ -13,45 +13,28 @@ class ConfirmDialog {
     required String positiveText,
     bool barrierDismissible = true,
   }) async {
-    final result = await showDialog(
+    final result = await showGeneralDialog(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (BuildContext context) {
-        final isDesktop = switch (Theme.of(context).platform) {
-          TargetPlatform.macOS ||
-          TargetPlatform.windows ||
-          TargetPlatform.linux => true,
-          _ => false,
-        };
-        final theme = context.theme;
-
-        final dialog = AlertDialog(
-          shape: isDesktop
-              ? RoundedSuperellipseBorder(
-                  borderRadius: Spacing.r12,
-                  side: BorderSide(color: theme.dividerColor, width: 0.25),
-                )
-              : null,
-          backgroundColor: isDesktop ? theme.scaffoldBackgroundColor : null,
-          elevation: isDesktop ? 0 : null,
-          title: Text(title),
-          content: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: isDesktop ? 360 : double.infinity,
+      barrierLabel: 'Dismiss',
+      barrierColor: FluffyColors.barrier,
+      transitionDuration: FluffyDurations.dialogTransition,
+      transitionBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+              CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (message case String message when message.isNotEmpty) ...[
-                  Text(
-                    message,
-                  ),
-                ],
-              ],
-            ),
+            child: child,
           ),
-          actions: <Widget>[
+        );
+      },
+      pageBuilder: (BuildContext context, anim1, anim2) {
+        final dialog = DialogCard(
+          title: Text(title),
+          content: message != null && message.isNotEmpty ? Text(message) : null,
+          actions: [
             Row(
               children: [
                 Expanded(

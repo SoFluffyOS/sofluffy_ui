@@ -1,8 +1,10 @@
-import 'package:design_system/design_system.dart';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class ImageView extends StatelessWidget {
   final dynamic data;
@@ -41,38 +43,43 @@ class ImageView extends StatelessWidget {
         width: size ?? width,
         height: size ?? height,
         child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade200,
+          baseColor: FluffyColors.shimmerBaseLight,
+          highlightColor: FluffyColors.shimmerHighlightLight,
           child: Container(
-            color: Colors.white,
+            color: FluffyColors.white,
           ),
         ),
       );
     }
 
     if (url.isEmpty) {
-      final isDark = context.theme.brightness == Brightness.dark;
+      final isDark = context.isDark;
       return SizedBox(
         width: size ?? width,
         height: size ?? height,
         child: Shimmer.fromColors(
-          baseColor: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
-          highlightColor: isDark ? Colors.grey.shade600 : Colors.grey.shade200,
+          baseColor: isDark
+              ? FluffyColors.shimmerBaseDark
+              : FluffyColors.shimmerBaseLight,
+          highlightColor: isDark
+              ? FluffyColors.shimmerHighlightDark
+              : FluffyColors.shimmerHighlightLight,
           child: Container(
-            color: Colors.white,
+            color: FluffyColors.white,
           ),
         ),
       );
     }
 
     if (url.startsWith('/') && !kIsWeb) {
-      return Image.network(
-        url,
+      return Image.file(
+        File(url),
         width: size ?? width,
         height: size ?? height,
-        fit: fit ?? BoxFit.cover,
+        fit: fit,
         alignment: alignment ?? Alignment.center,
         color: color,
+        errorBuilder: (context, error, stackTrace) => const SizedBox(),
       );
     }
 
@@ -102,6 +109,7 @@ class ImageView extends StatelessWidget {
         alignment: alignment ?? Alignment.center,
         color: color,
         package: assetPackage,
+        errorBuilder: (context, error, stackTrace) => const SizedBox(),
       );
     }
 
@@ -128,6 +136,7 @@ class ImageView extends StatelessWidget {
       fit: fit ?? BoxFit.cover,
       alignment: alignment ?? Alignment.center,
       color: color,
+      errorBuilder: (context, error, stackTrace) => const SizedBox(),
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) {
           return child;
@@ -137,10 +146,10 @@ class ImageView extends StatelessWidget {
           width: size ?? width,
           height: size ?? height,
           child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade200,
+            baseColor: FluffyColors.shimmerBaseLight,
+            highlightColor: FluffyColors.shimmerHighlightLight,
             child: Container(
-              color: Colors.white,
+              color: FluffyColors.white,
             ),
           ),
         );

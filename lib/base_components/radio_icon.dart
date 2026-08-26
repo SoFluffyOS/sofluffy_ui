@@ -1,5 +1,5 @@
-import 'package:design_system/design_system.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 part 'radio_list_tile.dart';
 
@@ -81,7 +81,7 @@ class _RadioIconView extends StatelessWidget {
       width: Spacing.d24,
       height: Spacing.d24,
       curve: Curves.easeOut,
-      duration: Durations.medium2,
+      duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
@@ -91,7 +91,7 @@ class _RadioIconView extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: AnimatedScale(
-        duration: Durations.medium2,
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
         scale: state != RadioIconState.checked ? 0 : 1.0,
         child: Container(
@@ -107,8 +107,8 @@ class _RadioIconView extends StatelessWidget {
   }
 
   Color _getBackgroundColor(BuildContext context, RadioIconState state) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     return switch (state) {
       RadioIconState.checked => theme.colors.primary,
       RadioIconState.unchecked =>
@@ -119,8 +119,8 @@ class _RadioIconView extends StatelessWidget {
   }
 
   Color _getBorderColor(BuildContext context, RadioIconState state) {
-    final isDark = context.theme.brightness == Brightness.dark;
-    final theme = context.themeConfigs;
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     return switch (state) {
       RadioIconState.checked => theme.colors.primary,
       _ => isDark ? theme.colors.neutral3 : theme.colors.neutral4,
