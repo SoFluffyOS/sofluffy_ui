@@ -13,6 +13,7 @@ class ContentDialog {
     bool useHtmlWidget = false,
   }) async {
     final controller = ScrollController();
+    final fluffyTheme = context.fluffyTheme;
     try {
       final result = await showGeneralDialog(
         context: context,
@@ -104,16 +105,19 @@ class ContentDialog {
             ],
           );
 
-          return CallbackShortcuts(
-            bindings: {
-              const SingleActivator(LogicalKeyboardKey.enter):
-                  submitPrimaryAction,
-              const SingleActivator(LogicalKeyboardKey.numpadEnter):
-                  submitPrimaryAction,
-            },
-            child: Focus(
-              autofocus: true,
-              child: dialog,
+          return FluffyTheme(
+            data: fluffyTheme,
+            child: CallbackShortcuts(
+              bindings: {
+                const SingleActivator(LogicalKeyboardKey.enter):
+                    submitPrimaryAction,
+                const SingleActivator(LogicalKeyboardKey.numpadEnter):
+                    submitPrimaryAction,
+              },
+              child: Focus(
+                autofocus: true,
+                child: dialog,
+              ),
             ),
           );
         },

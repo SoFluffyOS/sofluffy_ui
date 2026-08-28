@@ -16,6 +16,7 @@ class InputSliderDialog {
     String Function(double value)? hintBuilder,
   }) async {
     final selectedValueNotifier = ValueNotifier<double>(initialValue ?? min);
+    final fluffyTheme = context.fluffyTheme;
     try {
       final result = await showGeneralDialog(
         context: context,
@@ -112,14 +113,17 @@ class InputSliderDialog {
             ],
           );
 
-          return CallbackShortcuts(
-            bindings: {
-              const SingleActivator(LogicalKeyboardKey.enter): confirm,
-              const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
-            },
-            child: Focus(
-              autofocus: true,
-              child: dialog,
+          return FluffyTheme(
+            data: fluffyTheme,
+            child: CallbackShortcuts(
+              bindings: {
+                const SingleActivator(LogicalKeyboardKey.enter): confirm,
+                const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
+              },
+              child: Focus(
+                autofocus: true,
+                child: dialog,
+              ),
             ),
           );
         },

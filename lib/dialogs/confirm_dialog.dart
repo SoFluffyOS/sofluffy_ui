@@ -13,6 +13,7 @@ class ConfirmDialog {
     required String positiveText,
     bool barrierDismissible = true,
   }) async {
+    final fluffyTheme = context.fluffyTheme;
     final result = await showGeneralDialog(
       context: context,
       barrierDismissible: barrierDismissible,
@@ -63,18 +64,21 @@ class ConfirmDialog {
           ],
         );
 
-        return CallbackShortcuts(
-          bindings: {
-            const SingleActivator(LogicalKeyboardKey.enter): () {
-              context.navigator.pop(ConfirmAction.positive);
+        return FluffyTheme(
+          data: fluffyTheme,
+          child: CallbackShortcuts(
+            bindings: {
+              const SingleActivator(LogicalKeyboardKey.enter): () {
+                context.navigator.pop(ConfirmAction.positive);
+              },
+              const SingleActivator(LogicalKeyboardKey.numpadEnter): () {
+                context.navigator.pop(ConfirmAction.positive);
+              },
             },
-            const SingleActivator(LogicalKeyboardKey.numpadEnter): () {
-              context.navigator.pop(ConfirmAction.positive);
-            },
-          },
-          child: Focus(
-            autofocus: true,
-            child: dialog,
+            child: Focus(
+              autofocus: true,
+              child: dialog,
+            ),
           ),
         );
       },

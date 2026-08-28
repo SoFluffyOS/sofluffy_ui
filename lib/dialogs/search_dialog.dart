@@ -29,6 +29,7 @@ class SearchDialog<T> extends StatefulWidget {
     String? hintText,
     required String searchIcon,
   }) {
+    final fluffyTheme = context.fluffyTheme;
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -41,12 +42,15 @@ class SearchDialog<T> extends StatefulWidget {
           child: child,
         );
       },
-      pageBuilder: (context, anim1, anim2) => SearchDialog<T>(
-        onSearch: onSearch,
-        itemBuilder: itemBuilder,
-        onItemSelected: onItemSelected,
-        hintText: hintText,
-        searchIcon: searchIcon,
+      pageBuilder: (context, anim1, anim2) => FluffyTheme(
+        data: fluffyTheme,
+        child: SearchDialog<T>(
+          onSearch: onSearch,
+          itemBuilder: itemBuilder,
+          onItemSelected: onItemSelected,
+          hintText: hintText,
+          searchIcon: searchIcon,
+        ),
       ),
     );
   }

@@ -15,6 +15,7 @@ class RadioOptionsDialog {
     required String Function(T) itemLabelBuilder,
   }) async {
     final ValueNotifier<T?> notifier = ValueNotifier(initialValue);
+    final fluffyTheme = context.fluffyTheme;
     try {
       final result = await showGeneralDialog(
         context: context,
@@ -144,21 +145,25 @@ class RadioOptionsDialog {
             ],
           );
 
-          return CallbackShortcuts(
-            bindings: {
-              const SingleActivator(LogicalKeyboardKey.enter): confirmSelected,
-              const SingleActivator(LogicalKeyboardKey.numpadEnter):
-                  confirmSelected,
-              const SingleActivator(LogicalKeyboardKey.arrowUp): () {
-                moveSelection(-1);
+          return FluffyTheme(
+            data: fluffyTheme,
+            child: CallbackShortcuts(
+              bindings: {
+                const SingleActivator(LogicalKeyboardKey.enter):
+                    confirmSelected,
+                const SingleActivator(LogicalKeyboardKey.numpadEnter):
+                    confirmSelected,
+                const SingleActivator(LogicalKeyboardKey.arrowUp): () {
+                  moveSelection(-1);
+                },
+                const SingleActivator(LogicalKeyboardKey.arrowDown): () {
+                  moveSelection(1);
+                },
               },
-              const SingleActivator(LogicalKeyboardKey.arrowDown): () {
-                moveSelection(1);
-              },
-            },
-            child: Focus(
-              autofocus: true,
-              child: dialog,
+              child: Focus(
+                autofocus: true,
+                child: dialog,
+              ),
             ),
           );
         },

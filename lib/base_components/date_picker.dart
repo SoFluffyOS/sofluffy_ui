@@ -26,6 +26,7 @@ class DatePicker {
     DateTime? firstDate,
     DateTime? lastDate,
   }) async {
+    final fluffyTheme = context.fluffyTheme;
     final pickedDate = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -44,10 +45,13 @@ class DatePicker {
         );
       },
       pageBuilder: (context, anim1, anim2) {
-        return _DatePickerDialog(
-          initialDate: initialDate,
-          firstDate: firstDate,
-          lastDate: lastDate,
+        return FluffyTheme(
+          data: fluffyTheme,
+          child: _DatePickerDialog(
+            initialDate: initialDate,
+            firstDate: firstDate,
+            lastDate: lastDate,
+          ),
         );
       },
     );
@@ -61,6 +65,7 @@ class DatePicker {
     DateTime? firstDate,
     DateTime? lastDate,
   }) async {
+    final fluffyTheme = context.fluffyTheme;
     final pickedRange = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -79,11 +84,14 @@ class DatePicker {
         );
       },
       pageBuilder: (context, anim1, anim2) {
-        return _DateRangePickerDialog(
-          initialStartDate: initialStartDate,
-          initialEndDate: initialEndDate,
-          firstDate: firstDate,
-          lastDate: lastDate,
+        return FluffyTheme(
+          data: fluffyTheme,
+          child: _DateRangePickerDialog(
+            initialStartDate: initialStartDate,
+            initialEndDate: initialEndDate,
+            firstDate: firstDate,
+            lastDate: lastDate,
+          ),
         );
       },
     );

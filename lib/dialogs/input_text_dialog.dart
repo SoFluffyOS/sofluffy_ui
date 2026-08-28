@@ -15,6 +15,7 @@ class InputTextDialog {
     final TextEditingController controller = TextEditingController(
       text: initialValue,
     );
+    final fluffyTheme = context.fluffyTheme;
 
     try {
       final result = await showGeneralDialog(
@@ -78,14 +79,17 @@ class InputTextDialog {
             ],
           );
 
-          return CallbackShortcuts(
-            bindings: {
-              const SingleActivator(LogicalKeyboardKey.enter): confirm,
-              const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
-            },
-            child: Focus(
-              autofocus: true,
-              child: dialog,
+          return FluffyTheme(
+            data: fluffyTheme,
+            child: CallbackShortcuts(
+              bindings: {
+                const SingleActivator(LogicalKeyboardKey.enter): confirm,
+                const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
+              },
+              child: Focus(
+                autofocus: true,
+                child: dialog,
+              ),
             ),
           );
         },
