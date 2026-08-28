@@ -44,4 +44,28 @@ void main() {
       const TextSelection(baseOffset: 0, extentOffset: 11),
     );
   });
+
+  testWidgets('disables personalized input and selection for passwords', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FluffyTheme(
+          data: FluffyThemeData.fallback(),
+          child: const Center(
+            child: InputText(
+              obscureText: true,
+              isPasswordField: true,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final editableText = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editableText.enableIMEPersonalizedLearning, isFalse);
+    expect(editableText.enableInteractiveSelection, isFalse);
+    expect(editableText.autocorrect, isFalse);
+    expect(editableText.enableSuggestions, isFalse);
+  });
 }

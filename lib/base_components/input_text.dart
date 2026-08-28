@@ -123,7 +123,10 @@ class _InputTextState extends State<InputText>
   bool get forcePressEnabled => false;
 
   @override
-  bool get selectionEnabled => true;
+  bool get selectionEnabled => switch (widget.isPasswordField) {
+    true => false,
+    false => true,
+  };
 
   @override
   void initState() {
@@ -320,7 +323,13 @@ class _InputTextState extends State<InputText>
                                 cursorWidth: widget.cursorWidth,
                                 obscureText: widget.obscureText,
                                 autocorrect: !widget.isPasswordField,
+                                enableIMEPersonalizedLearning:
+                                    switch (widget.isPasswordField) {
+                                      true => false,
+                                      false => true,
+                                    },
                                 enableSuggestions: !widget.isPasswordField,
+                                enableInteractiveSelection: selectionEnabled,
                                 autofillHints: widget.isPasswordField
                                     ? [AutofillHints.password]
                                     : widget.autoFillHints,
