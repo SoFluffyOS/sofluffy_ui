@@ -259,7 +259,7 @@ class _TappableState extends State<Tappable> {
   @override
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
-    return Semantics(
+    final content = Semantics(
       tooltip: widget.tooltip,
       child: FocusableActionDetector(
         enabled:
@@ -386,6 +386,13 @@ class _TappableState extends State<Tappable> {
           ),
         ),
       ),
+    );
+    final tooltip = widget.tooltip;
+    if (tooltip == null || tooltip.isEmpty) return content;
+
+    return FluffyTooltip(
+      message: tooltip,
+      child: content,
     );
   }
 }

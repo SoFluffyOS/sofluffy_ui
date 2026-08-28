@@ -23,3 +23,4 @@ export 'table_header_cell.dart';
 export 'tag.dart';
 export 'tappable.dart';
 export 'toggle.dart';
+export 'tooltip.dart';
