@@ -1,4 +1,5 @@
-import 'package:easy_debounce/easy_debounce.dart' show EasyDebounce;
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -63,12 +64,14 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
     with AfterLayoutMixin {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final FocusNode _keyboardFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  Timer? _debounceTimer;
 
   List<T> _results = [];
   bool _isLoading = false;
   int _selectedIndex = 0;
-  String _lastQuery = '';
+  int _searchGeneration = 0;
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -77,18 +80,25 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _controller.dispose();
     _focusNode.dispose();
+    _keyboardFocusNode.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _handleSearch(String query) async {
-    if (query == _lastQuery) {
-      return;
-    }
+  void _scheduleSearch(String query) {
+    _debounceTimer?.cancel();
+    final searchGeneration = ++_searchGeneration;
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      unawaited(_handleSearch(query, searchGeneration));
+    });
+  }
 
-    _lastQuery = query;
+  Future<void> _handleSearch(String query, int searchGeneration) async {
+    if (!mounted || searchGeneration != _searchGeneration) return;
 
     if (query.isEmpty) {
       setState(() {
@@ -106,11 +116,9 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
 
     try {
       final results = await widget.onSearch(query);
-      if (!mounted) {
-        return;
-      }
-
-      if (_controller.text != query) {
+      if (!mounted ||
+          searchGeneration != _searchGeneration ||
+          _controller.text != query) {
         return;
       }
 
@@ -119,7 +127,9 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
         _isLoading = false;
       });
     } catch (_) {
-      if (!mounted) {
+      if (!mounted ||
+          searchGeneration != _searchGeneration ||
+          _controller.text != query) {
         return;
       }
       _isLoading = false;
@@ -206,19 +216,13 @@ class _SearchDialogState<T> extends State<SearchDialog<T>>
             mainAxisSize: MainAxisSize.min,
             children: [
               Focus(
-                focusNode: FocusNode(),
+                focusNode: _keyboardFocusNode,
                 onKeyEvent: _handleKeyEvent,
                 child: InputText(
                   focusNode: _focusNode,
                   controller: _controller,
                   hintText: widget.hintText ?? 'Search...',
-                  onChanged: (text) {
-                    EasyDebounce.debounce(
-                      'search-posts',
-                      const Duration(milliseconds: 500),
-                      () => _handleSearch(text),
-                    );
-                  },
+                  onChanged: _scheduleSearch,
                   prefixIcon: widget.searchIcon,
                   inputPadding: EdgeInsets.all(Spacing.d16),
                   decorationBuilder: (context, _, _, _) {
