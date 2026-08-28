@@ -212,6 +212,49 @@ void main() {
       message: 'A wide tooltip near the right window edge',
     );
   });
+
+  testWidgets('keeps long tooltips inside vertical window edges', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(400, 120);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FluffyTheme(
+          data: FluffyThemeData.fallback(),
+          child: Center(
+            child: Tappable(
+              key: const ValueKey('vertical-tooltip-target'),
+              tooltip:
+                  'A long tooltip that wraps over several lines while the '
+                  'available window height is deliberately very small.',
+              onTap: () {},
+              child: SizedBox(width: Spacing.d40, height: Spacing.d40),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer();
+    await gesture.moveTo(
+      tester.getCenter(
+        find.byKey(const ValueKey('vertical-tooltip-target')),
+      ),
+    );
+    await tester.pump(FluffyDurations.tooltip);
+    await tester.pump();
+
+    final surfaceRect = tester.getRect(
+      find.byKey(const ValueKey('fluffy-tooltip-surface')),
+    );
+    expect(surfaceRect.top, greaterThanOrEqualTo(Spacing.d8));
+    expect(surfaceRect.bottom, lessThanOrEqualTo(120 - Spacing.d8));
+  });
 }
 
 Future<void> _pumpTappable(
