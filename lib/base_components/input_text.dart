@@ -339,6 +339,7 @@ class _InputTextState extends State<InputText>
                                 contextMenuBuilder:
                                     (context, editableTextState) {
                                       return _InputTextContextMenu(
+                                        theme: theme,
                                         anchors: editableTextState
                                             .contextMenuAnchors,
                                         buttonItems: editableTextState

@@ -60,11 +60,14 @@ void main() {
 
       Widget buildWidget() {
         return MaterialApp(
-          home: Center(
-            child: Tappable(
-              key: const ValueKey('target'),
-              onDoubleTap: () => doubleTapCount++,
-              child: const SizedBox(width: 100, height: 40),
+          home: FluffyTheme(
+            data: FluffyThemeData.fallback(),
+            child: Center(
+              child: Tappable(
+                key: const ValueKey('target'),
+                onDoubleTap: () => doubleTapCount++,
+                child: const SizedBox(width: 100, height: 40),
+              ),
             ),
           ),
         );
@@ -218,14 +221,17 @@ Future<void> _pumpTappable(
 }) {
   return tester.pumpWidget(
     MaterialApp(
-      home: Center(
-        child: Tappable(
-          key: const ValueKey('target'),
-          onTap: onTap,
-          onDoubleTap: onDoubleTap,
-          child: const SizedBox(
-            width: 100,
-            height: 40,
+      home: FluffyTheme(
+        data: FluffyThemeData.fallback(),
+        child: Center(
+          child: Tappable(
+            key: const ValueKey('target'),
+            onTap: onTap,
+            onDoubleTap: onDoubleTap,
+            child: const SizedBox(
+              width: 100,
+              height: 40,
+            ),
           ),
         ),
       ),

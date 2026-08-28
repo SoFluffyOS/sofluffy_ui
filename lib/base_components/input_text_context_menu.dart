@@ -2,10 +2,12 @@ part of 'input_text.dart';
 
 class _InputTextContextMenu extends StatelessWidget {
   const _InputTextContextMenu({
+    required this.theme,
     required this.anchors,
     required this.buttonItems,
   });
 
+  final FluffyThemeData theme;
   final TextSelectionToolbarAnchors anchors;
   final List<ContextMenuButtonItem> buttonItems;
 
@@ -14,14 +16,17 @@ class _InputTextContextMenu extends StatelessWidget {
     if (buttonItems.isEmpty) return const SizedBox.shrink();
 
     final fallbackAnchor = anchors.secondaryAnchor ?? anchors.primaryAnchor;
-    return Padding(
-      padding: EdgeInsets.all(Spacing.d8),
-      child: CustomSingleChildLayout(
-        delegate: TextSelectionToolbarLayoutDelegate(
-          anchorAbove: anchors.primaryAnchor - Offset(Spacing.d8, Spacing.d8),
-          anchorBelow: fallbackAnchor + Offset(Spacing.d8, Spacing.d8),
+    return FluffyTheme(
+      data: theme,
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.d8),
+        child: CustomSingleChildLayout(
+          delegate: TextSelectionToolbarLayoutDelegate(
+            anchorAbove: anchors.primaryAnchor - Offset(Spacing.d8, Spacing.d8),
+            anchorBelow: fallbackAnchor + Offset(Spacing.d8, Spacing.d8),
+          ),
+          child: _InputTextContextMenuPanel(buttonItems: buttonItems),
         ),
-        child: _InputTextContextMenuPanel(buttonItems: buttonItems),
       ),
     );
   }

@@ -15,7 +15,14 @@ class FluffyTheme extends StatelessWidget {
 
   /// Access the [FluffyThemeData] from the nearest [FluffyTheme] ancestor.
   static FluffyThemeData of(BuildContext context) {
-    return maybeOf(context) ?? FluffyThemeData.fallback();
+    if (maybeOf(context) case final theme?) return theme;
+
+    throw FlutterError(
+      'FluffyTheme.of() called with a context that does not contain a '
+      'FluffyTheme. Wrap the application or screen in FluffyTheme before '
+      'using sofluffy_ui components. Use FluffyThemeData.fallback() as the '
+      'provider data when default styling is intended.',
+    );
   }
 
   /// Access the [FluffyThemeData] from the nearest [FluffyTheme] ancestor, or null if not found.
