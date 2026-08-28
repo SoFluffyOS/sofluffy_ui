@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
+part 'input_text_context_menu.dart';
+
 typedef DecorationBuilder =
     Decoration Function(
       BuildContext context,
@@ -95,7 +97,14 @@ class InputText extends StatefulWidget {
   State<InputText> createState() => _InputTextState();
 }
 
-class _InputTextState extends State<InputText> {
+class _InputTextState extends State<InputText>
+    implements TextSelectionGestureDetectorBuilderDelegate {
+  final GlobalKey<EditableTextState> _editableTextKey =
+      GlobalKey<EditableTextState>();
+
+  late final TextSelectionGestureDetectorBuilder _selectionGestureBuilder =
+      TextSelectionGestureDetectorBuilder(delegate: this);
+
   late final TextEditingController _controller =
       widget.controller ?? TextEditingController();
 
@@ -106,6 +115,15 @@ class _InputTextState extends State<InputText> {
 
   bool get hasError => widget.errorText != null;
   late bool hasContent = _controller.text.isNotEmpty;
+
+  @override
+  GlobalKey<EditableTextState> get editableTextKey => _editableTextKey;
+
+  @override
+  bool get forcePressEnabled => false;
+
+  @override
+  bool get selectionEnabled => true;
 
   @override
   void initState() {
@@ -284,40 +302,54 @@ class _InputTextState extends State<InputText> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            EditableText(
-                              controller: _controller,
-                              focusNode: _focusNode,
-                              style: textStyle,
-                              cursorColor: theme.colors.primary,
-                              selectionColor: theme.colors.primary.withValues(
-                                alpha: 0.3,
+                            _selectionGestureBuilder.buildGestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              child: EditableText(
+                                key: _editableTextKey,
+                                controller: _controller,
+                                focusNode: _focusNode,
+                                style: textStyle,
+                                cursorColor: theme.colors.primary,
+                                selectionColor: theme.colors.primary.withValues(
+                                  alpha: 0.3,
+                                ),
+                                backgroundCursorColor: isDark
+                                    ? theme.colors.neutral5
+                                    : theme.colors.neutral3,
+                                cursorHeight: widget.cursorHeight,
+                                cursorWidth: widget.cursorWidth,
+                                obscureText: widget.obscureText,
+                                autocorrect: !widget.isPasswordField,
+                                enableSuggestions: !widget.isPasswordField,
+                                autofillHints: widget.isPasswordField
+                                    ? [AutofillHints.password]
+                                    : widget.autoFillHints,
+                                keyboardType: widget.isPasswordField
+                                    ? TextInputType.visiblePassword
+                                    : widget.keyboardType,
+                                inputFormatters: [
+                                  if (widget.maxLength != null)
+                                    LengthLimitingTextInputFormatter(
+                                      widget.maxLength,
+                                    ),
+                                ],
+                                maxLines: widget.maxLines,
+                                readOnly: widget.readOnly,
+                                rendererIgnoresPointer: true,
+                                contextMenuBuilder:
+                                    (context, editableTextState) {
+                                      return _InputTextContextMenu(
+                                        anchors: editableTextState
+                                            .contextMenuAnchors,
+                                        buttonItems: editableTextState
+                                            .contextMenuButtonItems,
+                                      );
+                                    },
+                                onChanged: widget.onChanged,
+                                onSubmitted: widget.onSubmitted,
+                                onEditingComplete: widget.onEditingComplete,
+                                textInputAction: widget.textInputAction,
                               ),
-                              backgroundCursorColor: isDark
-                                  ? theme.colors.neutral5
-                                  : theme.colors.neutral3,
-                              cursorHeight: widget.cursorHeight,
-                              cursorWidth: widget.cursorWidth,
-                              obscureText: widget.obscureText,
-                              autocorrect: !widget.isPasswordField,
-                              enableSuggestions: !widget.isPasswordField,
-                              autofillHints: widget.isPasswordField
-                                  ? [AutofillHints.password]
-                                  : widget.autoFillHints,
-                              keyboardType: widget.isPasswordField
-                                  ? TextInputType.visiblePassword
-                                  : widget.keyboardType,
-                              inputFormatters: [
-                                if (widget.maxLength != null)
-                                  LengthLimitingTextInputFormatter(
-                                    widget.maxLength,
-                                  ),
-                              ],
-                              maxLines: widget.maxLines,
-                              readOnly: widget.readOnly,
-                              onChanged: widget.onChanged,
-                              onSubmitted: widget.onSubmitted,
-                              onEditingComplete: widget.onEditingComplete,
-                              textInputAction: widget.textInputAction,
                             ),
                           ],
                         ),
