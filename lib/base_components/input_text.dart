@@ -105,10 +105,17 @@ class _InputTextState extends State<InputText>
   late final TextSelectionGestureDetectorBuilder _selectionGestureBuilder =
       TextSelectionGestureDetectorBuilder(delegate: this);
 
-  late final TextEditingController _controller =
-      widget.controller ?? TextEditingController();
+  late final bool _ownsController = widget.controller == null;
+  late final TextEditingController _controller = switch (widget.controller) {
+    final controller? => controller,
+    null => TextEditingController(),
+  };
 
-  late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
+  late final bool _ownsFocusNode = widget.focusNode == null;
+  late final FocusNode _focusNode = switch (widget.focusNode) {
+    final focusNode? => focusNode,
+    null => FocusNode(),
+  };
 
   bool hasFocus = false;
   bool isHovering = false;
@@ -151,6 +158,8 @@ class _InputTextState extends State<InputText>
   void dispose() {
     _controller.removeListener(_controllerListener);
     _focusNode.removeListener(_focusNodeListener);
+    if (_ownsController) _controller.dispose();
+    if (_ownsFocusNode) _focusNode.dispose();
     super.dispose();
   }
 

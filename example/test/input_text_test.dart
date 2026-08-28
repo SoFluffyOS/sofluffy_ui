@@ -68,4 +68,27 @@ void main() {
     expect(editableText.autocorrect, isFalse);
     expect(editableText.enableSuggestions, isFalse);
   });
+
+  testWidgets('does not dispose caller-owned input resources', (tester) async {
+    final controller = TextEditingController();
+    final focusNode = FocusNode();
+    addTearDown(controller.dispose);
+    addTearDown(focusNode.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FluffyTheme(
+          data: FluffyThemeData.fallback(),
+          child: InputText(
+            controller: controller,
+            focusNode: focusNode,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+
+    expect(() => controller.text = 'still owned by caller', returnsNormally);
+    expect(focusNode.requestFocus, returnsNormally);
+  });
 }
