@@ -21,4 +21,23 @@ void main() {
       throwsA(isA<FlutterError>()),
     );
   });
+
+  testWidgets('uses the theme platform for responsive component sizing', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FluffyTheme(
+          data: FluffyThemeData.fallback().copyWith(
+            platform: TargetPlatform.iOS,
+          ),
+          child: const Center(
+            child: CheckBoxIcon(state: CheckBoxIconState.unchecked),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.getSize(find.byType(CheckBoxIcon)), const Size(24, 24));
+  });
 }

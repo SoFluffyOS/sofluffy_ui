@@ -52,7 +52,11 @@ class WidgetbookApp extends StatelessWidget {
             final isDark = Theme.of(context).brightness == Brightness.dark;
             return FluffyTheme(
               data: appTheme.copyWith(
-                brightness: isDark ? Brightness.dark : Brightness.light,
+                brightness: switch (isDark) {
+                  true => Brightness.dark,
+                  false => Brightness.light,
+                },
+                platform: Theme.of(context).platform,
               ),
               child: child,
             );

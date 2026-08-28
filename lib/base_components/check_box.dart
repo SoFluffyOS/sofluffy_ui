@@ -40,7 +40,7 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
@@ -85,7 +85,7 @@ class CheckBoxIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,

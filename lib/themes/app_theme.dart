@@ -10,11 +10,13 @@ class FluffyThemeData {
   final ColorData colors;
   final TypographyData typography;
   final Brightness brightness;
+  final TargetPlatform? platform;
 
   const FluffyThemeData({
     required this.colors,
     required this.typography,
     this.brightness = Brightness.light,
+    this.platform,
   });
 
   bool get isDark => brightness == Brightness.dark;
@@ -45,11 +47,13 @@ class FluffyThemeData {
     ColorData? colors,
     TypographyData? typography,
     Brightness? brightness,
+    TargetPlatform? platform,
   }) {
     return FluffyThemeData(
       colors: colors ?? this.colors,
       typography: typography ?? this.typography,
       brightness: brightness ?? this.brightness,
+      platform: platform ?? this.platform,
     );
   }
 
@@ -61,7 +65,14 @@ class FluffyThemeData {
     return FluffyThemeData(
       colors: ColorData.lerp(a.colors, b.colors, t),
       typography: TypographyData.lerp(a.typography, b.typography, t),
-      brightness: t < 0.5 ? a.brightness : b.brightness,
+      brightness: switch (t < 0.5) {
+        true => a.brightness,
+        false => b.brightness,
+      },
+      platform: switch (t < 0.5) {
+        true => a.platform,
+        false => b.platform,
+      },
     );
   }
 
@@ -71,9 +82,10 @@ class FluffyThemeData {
     return other is FluffyThemeData &&
         other.colors == colors &&
         other.typography == typography &&
-        other.brightness == brightness;
+        other.brightness == brightness &&
+        other.platform == platform;
   }
 
   @override
-  int get hashCode => Object.hash(colors, typography, brightness);
+  int get hashCode => Object.hash(colors, typography, brightness, platform);
 }

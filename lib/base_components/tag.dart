@@ -17,7 +17,7 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,

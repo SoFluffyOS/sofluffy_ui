@@ -39,7 +39,7 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typography = context.fluffyTheme.typography;
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,

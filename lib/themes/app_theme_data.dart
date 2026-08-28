@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/themes/app_theme.dart';
 import 'package:sofluffy_ui/themes/typography.dart';
@@ -84,4 +85,8 @@ extension FluffyThemeExtension on BuildContext {
 
   /// Check whether the current theme or platform is light mode.
   bool get isLight => !isDark;
+
+  /// Platform used by responsive components, falling back to the host platform.
+  TargetPlatform get fluffyTargetPlatform =>
+      fluffyTheme.platform ?? defaultTargetPlatform;
 }

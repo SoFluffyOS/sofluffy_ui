@@ -24,7 +24,7 @@ class DialogCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,

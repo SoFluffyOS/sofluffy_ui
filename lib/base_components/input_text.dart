@@ -167,7 +167,7 @@ class _InputTextState extends State<InputText>
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,

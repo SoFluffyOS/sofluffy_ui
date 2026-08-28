@@ -102,7 +102,7 @@ class _SwitchToggleState extends State<SwitchToggle>
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
 
-    final isDesktop = switch (defaultTargetPlatform) {
+    final isDesktop = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
       TargetPlatform.linux => true,
