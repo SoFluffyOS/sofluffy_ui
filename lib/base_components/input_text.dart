@@ -211,6 +211,7 @@ class _InputTextState extends State<InputText>
                 top: Spacing.d14,
                 bottom: Spacing.d14,
               ));
+    final inputPadding = resolvedPadding.resolve(Directionality.of(context));
 
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
@@ -285,7 +286,10 @@ class _InputTextState extends State<InputText>
                           ),
                         ),
                       ),
-                  padding: resolvedPadding,
+                  padding: EdgeInsets.only(
+                    left: inputPadding.left,
+                    right: inputPadding.right,
+                  ),
                   child: Row(
                     children: [
                       if (widget.prefix != null || widget.prefixIcon != null)
@@ -301,76 +305,83 @@ class _InputTextState extends State<InputText>
                               ),
                         ),
                       Expanded(
-                        child: Stack(
-                          alignment: Alignment.centerLeft,
-                          children: [
-                            if (_controller.text.isEmpty &&
-                                widget.hintText != null)
-                              IgnorePointer(
-                                child: Text(
-                                  widget.hintText!,
-                                  style: placeholderStyle,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: inputPadding.top,
+                            bottom: inputPadding.bottom,
+                          ),
+                          child: Stack(
+                            alignment: Alignment.centerLeft,
+                            children: [
+                              if (_controller.text.isEmpty &&
+                                  widget.hintText != null)
+                                IgnorePointer(
+                                  child: Text(
+                                    widget.hintText!,
+                                    style: placeholderStyle,
+                                    maxLines: widget.maxLines,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              _selectionGestureBuilder.buildGestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                child: EditableText(
+                                  key: _editableTextKey,
+                                  controller: _controller,
+                                  focusNode: _focusNode,
+                                  style: textStyle,
+                                  cursorColor: theme.colors.primary,
+                                  selectionColor: theme.colors.primary
+                                      .withValues(
+                                        alpha: 0.3,
+                                      ),
+                                  backgroundCursorColor: isDark
+                                      ? theme.colors.neutral5
+                                      : theme.colors.neutral3,
+                                  cursorHeight: widget.cursorHeight,
+                                  cursorWidth: widget.cursorWidth,
+                                  obscureText: widget.obscureText,
+                                  autocorrect: !widget.isPasswordField,
+                                  enableIMEPersonalizedLearning:
+                                      switch (widget.isPasswordField) {
+                                        true => false,
+                                        false => true,
+                                      },
+                                  enableSuggestions: !widget.isPasswordField,
+                                  enableInteractiveSelection: selectionEnabled,
+                                  autofillHints: widget.isPasswordField
+                                      ? [AutofillHints.password]
+                                      : widget.autoFillHints,
+                                  keyboardType: widget.isPasswordField
+                                      ? TextInputType.visiblePassword
+                                      : widget.keyboardType,
+                                  inputFormatters: [
+                                    if (widget.maxLength != null)
+                                      LengthLimitingTextInputFormatter(
+                                        widget.maxLength,
+                                      ),
+                                  ],
                                   maxLines: widget.maxLines,
-                                  overflow: TextOverflow.ellipsis,
+                                  readOnly: widget.readOnly,
+                                  rendererIgnoresPointer: true,
+                                  contextMenuBuilder:
+                                      (context, editableTextState) {
+                                        return _InputTextContextMenu(
+                                          theme: theme,
+                                          anchors: editableTextState
+                                              .contextMenuAnchors,
+                                          buttonItems: editableTextState
+                                              .contextMenuButtonItems,
+                                        );
+                                      },
+                                  onChanged: widget.onChanged,
+                                  onSubmitted: widget.onSubmitted,
+                                  onEditingComplete: widget.onEditingComplete,
+                                  textInputAction: widget.textInputAction,
                                 ),
                               ),
-                            _selectionGestureBuilder.buildGestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              child: EditableText(
-                                key: _editableTextKey,
-                                controller: _controller,
-                                focusNode: _focusNode,
-                                style: textStyle,
-                                cursorColor: theme.colors.primary,
-                                selectionColor: theme.colors.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                backgroundCursorColor: isDark
-                                    ? theme.colors.neutral5
-                                    : theme.colors.neutral3,
-                                cursorHeight: widget.cursorHeight,
-                                cursorWidth: widget.cursorWidth,
-                                obscureText: widget.obscureText,
-                                autocorrect: !widget.isPasswordField,
-                                enableIMEPersonalizedLearning:
-                                    switch (widget.isPasswordField) {
-                                      true => false,
-                                      false => true,
-                                    },
-                                enableSuggestions: !widget.isPasswordField,
-                                enableInteractiveSelection: selectionEnabled,
-                                autofillHints: widget.isPasswordField
-                                    ? [AutofillHints.password]
-                                    : widget.autoFillHints,
-                                keyboardType: widget.isPasswordField
-                                    ? TextInputType.visiblePassword
-                                    : widget.keyboardType,
-                                inputFormatters: [
-                                  if (widget.maxLength != null)
-                                    LengthLimitingTextInputFormatter(
-                                      widget.maxLength,
-                                    ),
-                                ],
-                                maxLines: widget.maxLines,
-                                readOnly: widget.readOnly,
-                                rendererIgnoresPointer: true,
-                                contextMenuBuilder:
-                                    (context, editableTextState) {
-                                      return _InputTextContextMenu(
-                                        theme: theme,
-                                        anchors: editableTextState
-                                            .contextMenuAnchors,
-                                        buttonItems: editableTextState
-                                            .contextMenuButtonItems,
-                                      );
-                                    },
-                                onChanged: widget.onChanged,
-                                onSubmitted: widget.onSubmitted,
-                                onEditingComplete: widget.onEditingComplete,
-                                textInputAction: widget.textInputAction,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       if (widget.suffix != null || widget.suffixIcon != null)
