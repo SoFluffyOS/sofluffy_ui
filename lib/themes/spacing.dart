@@ -73,6 +73,8 @@ class Spacing {
 
   static double get d360 => d4 * 90;
 
+  static double get d440 => d4 * 110;
+
   static Widget vertical(double value) {
     return SizedBox(height: value);
   }

@@ -47,7 +47,8 @@ class DialogCard extends StatelessWidget {
           borderColor: borderColor,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: maxWidth ?? (isDesktop ? 440 : 360),
+              minWidth: isDesktop ? Spacing.d320 : Spacing.d280,
+              maxWidth: maxWidth ?? (isDesktop ? Spacing.d440 : Spacing.d360),
               maxHeight: maxHeight ?? (screenSize.height * 0.85),
             ),
             child: Column(

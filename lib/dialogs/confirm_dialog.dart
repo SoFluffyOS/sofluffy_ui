@@ -43,6 +43,7 @@ class ConfirmDialog {
                     variant: ButtonVariant.ghost,
                     tooltip: negativeText,
                     label: negativeText,
+                    titleExpand: ButtonTitleExpand.shrink,
                     onPressed: () {
                       context.navigator.pop(ConfirmAction.negative);
                     },
@@ -54,6 +55,7 @@ class ConfirmDialog {
                     variant: ButtonVariant.primary,
                     tooltip: positiveText,
                     label: positiveText,
+                    titleExpand: ButtonTitleExpand.shrink,
                     onPressed: () {
                       context.navigator.pop(ConfirmAction.positive);
                     },

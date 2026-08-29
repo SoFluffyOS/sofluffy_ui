@@ -42,4 +42,42 @@ void main() {
     final dialogContext = tester.element(find.byType(DialogCard));
     expect(dialogContext.fluffyTheme.colors.primary, primaryColor);
   });
+
+  testWidgets('keeps long confirmation actions within the dialog', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FluffyTheme(
+          data: FluffyThemeData.fallback(),
+          child: Builder(
+            builder: (context) {
+              return Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    await ConfirmDialog.show(
+                      context,
+                      title: 'Confirm',
+                      negativeText: 'Cancel',
+                      positiveText: 'Paste Anyway',
+                    );
+                  },
+                  child: const Text('Open'),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(
+      tester.getSize(find.byType(DialogCard)).width,
+      greaterThanOrEqualTo(Spacing.d320),
+    );
+  });
 }
