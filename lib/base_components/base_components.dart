@@ -12,6 +12,7 @@ export 'link_text.dart';
 export 'list_item.dart';
 export 'loading_box.dart';
 export 'loading_text.dart';
+export 'multi_select_dropdown.dart';
 export 'radio_icon.dart';
 export 'round_card.dart';
 export 'side_bar.dart';
