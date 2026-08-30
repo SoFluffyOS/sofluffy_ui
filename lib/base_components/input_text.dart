@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -311,7 +310,10 @@ class _InputTextState extends State<InputText>
                             bottom: inputPadding.bottom,
                           ),
                           child: Stack(
-                            alignment: Alignment.centerLeft,
+                            alignment: switch (widget.maxLines) {
+                              1 => Alignment.centerLeft,
+                              _ => Alignment.topLeft,
+                            },
                             children: [
                               if (_controller.text.isEmpty &&
                                   widget.hintText != null)
