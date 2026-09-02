@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -291,8 +290,7 @@ class _ButtonState extends State<Button> {
                   }
                 : null,
             enableHover: widget.enableHover,
-            hoverOverlayBorderRadius:
-                widget.radius ?? (isDesktop ? Spacing.d8 : Spacing.d12),
+            hoverOverlayBorderRadius: widget.radius ?? Spacing.d12,
             hoverOverlayColorTint:
                 widget.color ??
                 widget.variant.getBackgroundColor(context, state, widget.color),
@@ -331,7 +329,7 @@ class _ButtonState extends State<Button> {
                     shape: RoundedSuperellipseBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(
-                          widget.radius ?? (isDesktop ? 8.0 : 12.0),
+                          widget.radius ?? 12.0,
                         ),
                       ),
                       side: BorderSide(
