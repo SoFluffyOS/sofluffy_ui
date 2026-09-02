@@ -6,14 +6,18 @@ part 'radio_list_tile.dart';
 class RadioIcon<T> extends StatefulWidget {
   final T? groupValue;
   final T value;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T>? onChanged;
+  final double size;
+  final EdgeInsetsGeometry? padding;
 
-  const RadioIcon({
+  RadioIcon({
     super.key,
     required this.groupValue,
     required this.value,
-    required this.onChanged,
-  });
+    this.onChanged,
+    double? size,
+    this.padding,
+  }) : size = size ?? Spacing.d24;
 
   @override
   State<RadioIcon<T>> createState() => _RadioIconState<T>();
@@ -46,16 +50,17 @@ class _RadioIconState<T> extends State<RadioIcon<T>> {
         if (_isSelected) {
           return;
         }
-        widget.onChanged(widget.value);
+        widget.onChanged?.call(widget.value);
       },
       child: Padding(
-        padding: EdgeInsets.all(Spacing.d8),
+        padding: widget.padding ?? EdgeInsets.all(Spacing.d8),
         child: _RadioIconView(
           state: _isSelected
               ? RadioIconState.checked
               : _isHovering
               ? RadioIconState.hover
               : RadioIconState.unchecked,
+          size: widget.size,
         ),
       ),
     );
@@ -70,23 +75,26 @@ enum RadioIconState {
 
 class _RadioIconView extends StatelessWidget {
   final RadioIconState state;
+  final double size;
 
-  const _RadioIconView({
+  _RadioIconView({
     required this.state,
-  });
+    double? size,
+  }) : size = size ?? Spacing.d24;
 
   @override
   Widget build(BuildContext context) {
+    final innerSize = (size * 14.0 / 24.0).roundToDouble();
     return AnimatedContainer(
-      width: Spacing.d24,
-      height: Spacing.d24,
+      width: size,
+      height: size,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
           color: _getBorderColor(context, state),
-          width: 2.0,
+          width: size < Spacing.d20 ? 1.5 : 2.0,
         ),
       ),
       alignment: Alignment.center,
@@ -95,8 +103,8 @@ class _RadioIconView extends StatelessWidget {
         curve: Curves.easeOut,
         scale: state != RadioIconState.checked ? 0 : 1.0,
         child: Container(
-          width: Spacing.d14,
-          height: Spacing.d14,
+          width: innerSize,
+          height: innerSize,
           decoration: BoxDecoration(
             color: _getBackgroundColor(context, state),
             shape: BoxShape.circle,
