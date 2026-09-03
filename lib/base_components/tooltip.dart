@@ -34,11 +34,10 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
     _showTimer = null;
     final entry = _entry;
     if (entry == null) return;
+    _entry = null;
     try {
       entry.remove();
     } catch (_) {}
-    entry.dispose();
-    _entry = null;
   }
 
   void _showTooltip() {
