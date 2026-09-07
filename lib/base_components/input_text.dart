@@ -171,6 +171,17 @@ class _InputTextState extends State<InputText>
     super.didUpdateWidget(oldWidget);
   }
 
+  Widget _buildContextMenu(
+    BuildContext context,
+    EditableTextState editableTextState,
+  ) {
+    return _InputTextContextMenu(
+      theme: context.fluffyTheme,
+      anchors: editableTextState.contextMenuAnchors,
+      buttonItems: editableTextState.contextMenuButtonItems,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
@@ -366,16 +377,7 @@ class _InputTextState extends State<InputText>
                                   maxLines: widget.maxLines,
                                   readOnly: widget.readOnly,
                                   rendererIgnoresPointer: true,
-                                  contextMenuBuilder:
-                                      (context, editableTextState) {
-                                        return _InputTextContextMenu(
-                                          theme: theme,
-                                          anchors: editableTextState
-                                              .contextMenuAnchors,
-                                          buttonItems: editableTextState
-                                              .contextMenuButtonItems,
-                                        );
-                                      },
+                                  contextMenuBuilder: _buildContextMenu,
                                   onChanged: widget.onChanged,
                                   onSubmitted: widget.onSubmitted,
                                   onEditingComplete: widget.onEditingComplete,
