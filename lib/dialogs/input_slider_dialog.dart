@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -36,11 +37,19 @@ class InputSliderDialog {
           );
         },
         pageBuilder: (BuildContext context, anim1, anim2) {
-          final theme = context.fluffyTheme;
+          final theme = fluffyTheme;
 
           void confirm() {
             context.navigator.pop(selectedValueNotifier.value);
           }
+
+          final targetPlatform = fluffyTheme.platform ?? defaultTargetPlatform;
+          final isDesktop = switch (targetPlatform) {
+            TargetPlatform.macOS ||
+            TargetPlatform.windows ||
+            TargetPlatform.linux => true,
+            _ => false,
+          };
 
           final dialog = DialogCard(
             title: Text(title),
@@ -53,7 +62,10 @@ class InputSliderDialog {
                     Row(
                       children: [
                         Text(
-                          labelBuilder?.call(min) ?? min.toString(),
+                          switch (labelBuilder?.call(min)) {
+                            final label? => label,
+                            null => min.toString(),
+                          },
                           style: theme.typography.caption1,
                         ),
                         Spacing.h8,
@@ -70,15 +82,18 @@ class InputSliderDialog {
                         ),
                         Spacing.h8,
                         Text(
-                          labelBuilder?.call(max) ?? max.toString(),
+                          switch (labelBuilder?.call(max)) {
+                            final label? => label,
+                            null => max.toString(),
+                          },
                           style: theme.typography.caption1,
                         ),
                       ],
                     ),
-                    if (hintBuilder != null) ...[
-                      Spacing.v4,
+                    if (hintBuilder case final hint?) ...[
+                      Spacing.v8,
                       Text(
-                        hintBuilder(selectedValue),
+                        hint(selectedValue),
                         style: theme.typography.caption1,
                       ),
                     ],
@@ -88,27 +103,62 @@ class InputSliderDialog {
             ),
             actions: [
               Row(
-                children: [
-                  Expanded(
-                    child: Button(
+                mainAxisAlignment: switch (isDesktop) {
+                  true => MainAxisAlignment.end,
+                  false => MainAxisAlignment.center,
+                },
+                children: switch (isDesktop) {
+                  true => [
+                    Button(
                       variant: ButtonVariant.ghost,
                       tooltip: cancelText,
                       label: cancelText,
+                      mainAxisSize: MainAxisSize.min,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Spacing.d16,
+                        vertical: Spacing.d8,
+                      ),
                       onPressed: () {
                         context.navigator.pop();
                       },
                     ),
-                  ),
-                  Spacing.h8,
-                  Expanded(
-                    child: Button(
+                    Spacing.h8,
+                    Button(
                       variant: ButtonVariant.primary,
                       tooltip: confirmText,
                       label: confirmText,
+                      mainAxisSize: MainAxisSize.min,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Spacing.d16,
+                        vertical: Spacing.d8,
+                      ),
                       onPressed: confirm,
                     ),
-                  ),
-                ],
+                  ],
+                  false => [
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.ghost,
+                        tooltip: cancelText,
+                        label: cancelText,
+                        titleExpand: ButtonTitleExpand.shrink,
+                        onPressed: () {
+                          context.navigator.pop();
+                        },
+                      ),
+                    ),
+                    Spacing.h8,
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.primary,
+                        tooltip: confirmText,
+                        label: confirmText,
+                        titleExpand: ButtonTitleExpand.shrink,
+                        onPressed: confirm,
+                      ),
+                    ),
+                  ],
+                },
               ),
             ],
           );

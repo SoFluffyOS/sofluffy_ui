@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -40,6 +41,14 @@ class InputTextDialog {
             context.navigator.pop(controller.text);
           }
 
+          final targetPlatform = fluffyTheme.platform ?? defaultTargetPlatform;
+          final isDesktop = switch (targetPlatform) {
+            TargetPlatform.macOS ||
+            TargetPlatform.windows ||
+            TargetPlatform.linux => true,
+            _ => false,
+          };
+
           final dialog = DialogCard(
             title: Text(title),
             content: Column(
@@ -49,32 +58,68 @@ class InputTextDialog {
                   controller: controller,
                   label: labelText,
                   hintText: hintText,
+                  onSubmitted: (_) => confirm(),
                 ),
               ],
             ),
             actions: [
               Row(
-                children: [
-                  Expanded(
-                    child: Button(
+                mainAxisAlignment: switch (isDesktop) {
+                  true => MainAxisAlignment.end,
+                  false => MainAxisAlignment.center,
+                },
+                children: switch (isDesktop) {
+                  true => [
+                    Button(
                       variant: ButtonVariant.ghost,
                       tooltip: cancelText,
                       label: cancelText,
+                      mainAxisSize: MainAxisSize.min,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Spacing.d16,
+                        vertical: Spacing.d8,
+                      ),
                       onPressed: () {
                         context.navigator.pop();
                       },
                     ),
-                  ),
-                  Spacing.h8,
-                  Expanded(
-                    child: Button(
+                    Spacing.h8,
+                    Button(
                       variant: ButtonVariant.primary,
                       tooltip: confirmText,
                       label: confirmText,
+                      mainAxisSize: MainAxisSize.min,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Spacing.d16,
+                        vertical: Spacing.d8,
+                      ),
                       onPressed: confirm,
                     ),
-                  ),
-                ],
+                  ],
+                  false => [
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.ghost,
+                        tooltip: cancelText,
+                        label: cancelText,
+                        titleExpand: ButtonTitleExpand.shrink,
+                        onPressed: () {
+                          context.navigator.pop();
+                        },
+                      ),
+                    ),
+                    Spacing.h8,
+                    Expanded(
+                      child: Button(
+                        variant: ButtonVariant.primary,
+                        tooltip: confirmText,
+                        label: confirmText,
+                        titleExpand: ButtonTitleExpand.shrink,
+                        onPressed: confirm,
+                      ),
+                    ),
+                  ],
+                },
               ),
             ],
           );

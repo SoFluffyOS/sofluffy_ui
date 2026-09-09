@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -60,6 +61,14 @@ class RadioOptionsDialog {
             notifier.value = values[(startIndex + delta) % values.length];
           }
 
+          final targetPlatform = fluffyTheme.platform ?? defaultTargetPlatform;
+          final isDesktop = switch (targetPlatform) {
+            TargetPlatform.macOS ||
+            TargetPlatform.windows ||
+            TargetPlatform.linux => true,
+            _ => false,
+          };
+
           final dialog = DialogCard(
             title: Text(title),
             contentPadding: EdgeInsets.zero,
@@ -115,30 +124,68 @@ class RadioOptionsDialog {
                 valueListenable: notifier,
                 builder: (context, groupValue, child) {
                   return Row(
-                    children: [
-                      Expanded(
-                        child: Button(
+                    mainAxisAlignment: switch (isDesktop) {
+                      true => MainAxisAlignment.end,
+                      false => MainAxisAlignment.center,
+                    },
+                    children: switch (isDesktop) {
+                      true => [
+                        Button(
                           variant: ButtonVariant.ghost,
                           tooltip: cancelText,
                           label: cancelText,
+                          mainAxisSize: MainAxisSize.min,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Spacing.d16,
+                            vertical: Spacing.d8,
+                          ),
                           onPressed: () {
                             context.navigator.pop();
                           },
                         ),
-                      ),
-                      Spacing.h8,
-                      Expanded(
-                        child: Button(
+                        Spacing.h8,
+                        Button(
                           enable: groupValue != null,
                           variant: ButtonVariant.primary,
                           tooltip: confirmText,
                           label: confirmText,
+                          mainAxisSize: MainAxisSize.min,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Spacing.d16,
+                            vertical: Spacing.d8,
+                          ),
                           onPressed: () {
                             confirmSelected();
                           },
                         ),
-                      ),
-                    ],
+                      ],
+                      false => [
+                        Expanded(
+                          child: Button(
+                            variant: ButtonVariant.ghost,
+                            tooltip: cancelText,
+                            label: cancelText,
+                            titleExpand: ButtonTitleExpand.shrink,
+                            onPressed: () {
+                              context.navigator.pop();
+                            },
+                          ),
+                        ),
+                        Spacing.h8,
+                        Expanded(
+                          child: Button(
+                            enable: groupValue != null,
+                            variant: ButtonVariant.primary,
+                            tooltip: confirmText,
+                            label: confirmText,
+                            titleExpand: ButtonTitleExpand.shrink,
+                            onPressed: () {
+                              confirmSelected();
+                            },
+                          ),
+                        ),
+                      ],
+                    },
                   );
                 },
               ),

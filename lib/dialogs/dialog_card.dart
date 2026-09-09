@@ -30,60 +30,97 @@ class DialogCard extends StatelessWidget {
       _ => false,
     };
 
-    final scaffoldBg = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
-    final borderColor = isDark ? theme.colors.neutral5 : theme.colors.neutral3;
+    final scaffoldBg = switch (isDark) {
+      true => theme.colors.neutral7,
+      false => theme.colors.neutral1,
+    };
+    final borderColor = switch (isDark) {
+      true => theme.colors.neutral5,
+      false => theme.colors.neutral3,
+    };
     final screenSize = MediaQuery.sizeOf(context);
 
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? Spacing.d32 : Spacing.d16,
-          vertical: isDesktop ? Spacing.d40 : Spacing.d24,
+          horizontal: switch (isDesktop) {
+            true => Spacing.d32,
+            false => Spacing.d16,
+          },
+          vertical: switch (isDesktop) {
+            true => Spacing.d40,
+            false => Spacing.d24,
+          },
         ),
         child: RoundCard(
-          padding: EdgeInsets.all(Spacing.d24),
+          padding: EdgeInsets.all(
+            switch (isDesktop) {
+              true => Spacing.d20,
+              false => Spacing.d24,
+            },
+          ),
           color: scaffoldBg,
           borderColor: borderColor,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minWidth: isDesktop ? Spacing.d320 : Spacing.d280,
-              maxWidth: maxWidth ?? (isDesktop ? Spacing.d440 : Spacing.d360),
-              maxHeight: maxHeight ?? (screenSize.height * 0.85),
+              minWidth: switch (isDesktop) {
+                true => Spacing.d320,
+                false => Spacing.d280,
+              },
+              maxWidth: switch (maxWidth) {
+                final w? => w,
+                null => switch (isDesktop) {
+                  true => Spacing.d360,
+                  false => Spacing.d360,
+                },
+              },
+              maxHeight: switch (maxHeight) {
+                final h? => h,
+                null => screenSize.height * 0.85,
+              },
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (title != null) ...[
+                if (title case final heading?) ...[
                   DefaultTextStyle(
                     style: theme.typography.headline6.copyWith(
-                      color: isDark
-                          ? theme.colors.neutral1
-                          : theme.colors.neutral7,
+                      color: switch (isDark) {
+                        true => theme.colors.neutral1,
+                        false => theme.colors.neutral7,
+                      },
                       fontWeight: FontWeight.w600,
                     ),
-                    child: title!,
+                    child: heading,
                   ),
                   Spacing.v16,
                 ],
-                if (content != null) ...[
+                if (content case final body?) ...[
                   Flexible(
                     child: Padding(
-                      padding: contentPadding ?? EdgeInsets.zero,
+                      padding: switch (contentPadding) {
+                        final pad? => pad,
+                        null => EdgeInsets.zero,
+                      },
                       child: DefaultTextStyle(
                         style: theme.typography.base2.copyWith(
-                          color: isDark
-                              ? theme.colors.neutral1
-                              : theme.colors.neutral7,
+                          color: switch (isDark) {
+                            true => theme.colors.neutral1,
+                            false => theme.colors.neutral7,
+                          },
                         ),
-                        child: content!,
+                        child: body,
                       ),
                     ),
                   ),
                 ],
-                if (actions != null && actions!.isNotEmpty) ...[
-                  Spacing.v24,
-                  ...actions!,
+                if (actions case final buttons? when buttons.isNotEmpty) ...[
+                  switch (isDesktop) {
+                    true => Spacing.v16,
+                    false => Spacing.v24,
+                  },
+                  ...buttons,
                 ],
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -32,36 +33,82 @@ class ConfirmDialog {
         );
       },
       pageBuilder: (BuildContext context, anim1, anim2) {
+        final targetPlatform = fluffyTheme.platform ?? defaultTargetPlatform;
+        final isDesktop = switch (targetPlatform) {
+          TargetPlatform.macOS ||
+          TargetPlatform.windows ||
+          TargetPlatform.linux => true,
+          _ => false,
+        };
+
         final dialog = DialogCard(
           title: Text(title),
-          content: message != null && message.isNotEmpty ? Text(message) : null,
+          content: switch (message) {
+            final m? when m.isNotEmpty => Text(m),
+            _ => null,
+          },
           actions: [
             Row(
-              children: [
-                Expanded(
-                  child: Button(
+              mainAxisAlignment: switch (isDesktop) {
+                true => MainAxisAlignment.end,
+                false => MainAxisAlignment.center,
+              },
+              children: switch (isDesktop) {
+                true => [
+                  Button(
                     variant: ButtonVariant.ghost,
                     tooltip: negativeText,
                     label: negativeText,
-                    titleExpand: ButtonTitleExpand.shrink,
+                    mainAxisSize: MainAxisSize.min,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Spacing.d16,
+                      vertical: Spacing.d8,
+                    ),
                     onPressed: () {
                       context.navigator.pop(ConfirmAction.negative);
                     },
                   ),
-                ),
-                Spacing.h8,
-                Expanded(
-                  child: Button(
+                  Spacing.h8,
+                  Button(
                     variant: ButtonVariant.primary,
                     tooltip: positiveText,
                     label: positiveText,
-                    titleExpand: ButtonTitleExpand.shrink,
+                    mainAxisSize: MainAxisSize.min,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Spacing.d16,
+                      vertical: Spacing.d8,
+                    ),
                     onPressed: () {
                       context.navigator.pop(ConfirmAction.positive);
                     },
                   ),
-                ),
-              ],
+                ],
+                false => [
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.ghost,
+                      tooltip: negativeText,
+                      label: negativeText,
+                      titleExpand: ButtonTitleExpand.shrink,
+                      onPressed: () {
+                        context.navigator.pop(ConfirmAction.negative);
+                      },
+                    ),
+                  ),
+                  Spacing.h8,
+                  Expanded(
+                    child: Button(
+                      variant: ButtonVariant.primary,
+                      tooltip: positiveText,
+                      label: positiveText,
+                      titleExpand: ButtonTitleExpand.shrink,
+                      onPressed: () {
+                        context.navigator.pop(ConfirmAction.positive);
+                      },
+                    ),
+                  ),
+                ],
+              },
             ),
           ],
         );

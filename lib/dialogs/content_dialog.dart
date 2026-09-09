@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -43,8 +44,19 @@ class ContentDialog {
             }
           }
 
+          final targetPlatform = fluffyTheme.platform ?? defaultTargetPlatform;
+          final isDesktop = switch (targetPlatform) {
+            TargetPlatform.macOS ||
+            TargetPlatform.windows ||
+            TargetPlatform.linux => true,
+            _ => false,
+          };
+
           final dialog = DialogCard(
-            title: title != null ? Text(title) : null,
+            title: switch (title) {
+              final t? => Text(t),
+              null => null,
+            },
             content: RawScrollbar(
               controller: controller,
               child: SingleChildScrollView(
@@ -52,54 +64,112 @@ class ContentDialog {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (useHtmlWidget) HtmlWidget(content),
-                    if (!useHtmlWidget) Text(content),
+                    switch (useHtmlWidget) {
+                      true => HtmlWidget(content),
+                      false => Text(content),
+                    },
                   ],
                 ),
               ),
             ),
             actions: [
               Row(
+                mainAxisAlignment: switch (isDesktop) {
+                  true => MainAxisAlignment.end,
+                  false => MainAxisAlignment.center,
+                },
                 children: [
-                  if (negativeText case String negativeText)
-                    Expanded(
-                      child: Button(
-                        tooltip: negativeText,
+                  if (negativeText case final neg?)
+                    switch (isDesktop) {
+                      true => Button(
+                        tooltip: neg,
                         variant: ButtonVariant.ghost,
-                        label: negativeText,
+                        label: neg,
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: () {
                           context.navigator.pop(ConfirmAction.negative);
                         },
                       ),
-                    ),
+                      false => Expanded(
+                        child: Button(
+                          tooltip: neg,
+                          variant: ButtonVariant.ghost,
+                          label: neg,
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: () {
+                            context.navigator.pop(ConfirmAction.negative);
+                          },
+                        ),
+                      ),
+                    },
                   if (negativeText != null && positiveText != null) Spacing.h8,
-                  if (positiveText case String positiveText)
-                    Expanded(
-                      child: Button(
-                        tooltip: positiveText,
+                  if (positiveText case final pos?)
+                    switch (isDesktop) {
+                      true => Button(
+                        tooltip: pos,
                         variant: ButtonVariant.primary,
-                        label: positiveText,
+                        label: pos,
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: () {
                           context.navigator.pop(ConfirmAction.positive);
                         },
                       ),
-                    ),
+                      false => Expanded(
+                        child: Button(
+                          tooltip: pos,
+                          variant: ButtonVariant.primary,
+                          label: pos,
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: () {
+                            context.navigator.pop(ConfirmAction.positive);
+                          },
+                        ),
+                      ),
+                    },
                 ],
               ),
               if (negativeText != null || positiveText != null) Spacing.v8,
-              if (neutralText case String neutralText)
+              if (neutralText case final neutral?)
                 Row(
+                  mainAxisAlignment: switch (isDesktop) {
+                    true => MainAxisAlignment.end,
+                    false => MainAxisAlignment.center,
+                  },
                   children: [
-                    Expanded(
-                      child: Button(
+                    switch (isDesktop) {
+                      true => Button(
                         variant: ButtonVariant.primary,
-                        tooltip: neutralText,
-                        label: neutralText,
+                        tooltip: neutral,
+                        label: neutral,
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: () {
                           context.navigator.pop();
                         },
                       ),
-                    ),
+                      false => Expanded(
+                        child: Button(
+                          variant: ButtonVariant.primary,
+                          tooltip: neutral,
+                          label: neutral,
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: () {
+                            context.navigator.pop();
+                          },
+                        ),
+                      ),
+                    },
                   ],
                 ),
             ],
