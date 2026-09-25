@@ -8,8 +8,27 @@ enum ButtonState { normal, hover, focus, pressing, disabled }
 
 enum ButtonTitleExpand { none, shrink, expand }
 
-Brightness _estimateBrightnessForColor(Color color) {
-  return color.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
+Color _highestContrastColor(
+  Color background,
+  Color first,
+  Color second,
+) {
+  final backgroundLuminance = background.computeLuminance();
+  final firstLuminance = first.computeLuminance();
+  final secondLuminance = second.computeLuminance();
+  final firstContrast = _contrastRatio(backgroundLuminance, firstLuminance);
+  final secondContrast = _contrastRatio(backgroundLuminance, secondLuminance);
+  return firstContrast >= secondContrast ? first : second;
+}
+
+double _contrastRatio(double firstLuminance, double secondLuminance) {
+  final lighter = firstLuminance > secondLuminance
+      ? firstLuminance
+      : secondLuminance;
+  final darker = firstLuminance > secondLuminance
+      ? secondLuminance
+      : firstLuminance;
+  return (lighter + 0.05) / (darker + 0.05);
 }
 
 enum ButtonVariant {
@@ -27,10 +46,11 @@ enum ButtonVariant {
     switch (this) {
       case ButtonVariant.primary:
         final baseColor = fillColor ?? theme.colors.primary;
-        return switch (_estimateBrightnessForColor(baseColor)) {
-          Brightness.light => theme.colors.neutral7,
-          Brightness.dark => theme.colors.neutral1,
-        };
+        return _highestContrastColor(
+          baseColor,
+          theme.colors.neutral7,
+          theme.colors.neutral1,
+        );
       case ButtonVariant.secondary:
         if (fillColor != null) {
           return ButtonVariant.primary.getForegroundColor(
