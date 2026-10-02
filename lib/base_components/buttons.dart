@@ -353,6 +353,9 @@ class _ButtonState extends State<Button> {
                         ),
                       ),
                       side: BorderSide(
+                        style: widget.borderWidth == 0
+                            ? BorderStyle.none
+                            : BorderStyle.solid,
                         color:
                             widget.variant.getBorderColor(
                               context,
