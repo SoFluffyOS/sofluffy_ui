@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
@@ -32,6 +33,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   bool _isHovered = false;
   bool _isDragging = false;
   double _dragPositionX = 0;
+  Timer? _tapTimer;
 
   double _outerPadding(bool isDesktop) => isDesktop ? Spacing.d4 : Spacing.d8;
   double _innerPadding(bool isDesktop) => isDesktop ? Spacing.d4 : Spacing.d2;
@@ -59,7 +61,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   @override
   void didUpdateWidget(covariant SwitchToggle oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.value != oldWidget.value) {
+    if (widget.value != oldWidget.value || widget.value != _currentValue) {
       _currentValue = widget.value;
       if (_currentValue) {
         _animationController.forward();
@@ -71,21 +73,24 @@ class _SwitchToggleState extends State<SwitchToggle>
 
   @override
   void dispose() {
+    _tapTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
 
   void _handleValueChanged(bool newValue) {
+    if (!mounted) return;
     if (_currentValue != newValue) {
       _currentValue = newValue;
       widget.onChanged(_currentValue);
-      setState(() {});
+      if (mounted) setState(() {});
     }
   }
 
   Future<void> _handleTap() async {
     final newValue = !_currentValue;
-    Future.delayed(
+    _tapTimer?.cancel();
+    _tapTimer = Timer(
       const Duration(milliseconds: 150),
       () => _handleValueChanged(newValue),
     );
