@@ -90,6 +90,8 @@ class CheckBoxIcon extends StatelessWidget {
       TargetPlatform.linux => true,
       _ => false,
     };
+    final isDark = context.isDark;
+    final theme = context.fluffyTheme;
     return AnimatedContainer(
       width: isDesktop ? Spacing.d16 : Spacing.d24,
       height: isDesktop ? Spacing.d16 : Spacing.d24,
@@ -113,7 +115,7 @@ class CheckBoxIcon extends StatelessWidget {
               FluffyAssets.icons.tick02Solid,
               width: isDesktop ? Spacing.d12 : Spacing.d18,
               height: isDesktop ? Spacing.d12 : Spacing.d18,
-              color: context.fluffyTheme.colors.neutral1,
+              color: isDark ? theme.colors.neutral7 : theme.colors.neutral1,
               assetPackage: kSofluffyUiPackageName,
             ),
     );
