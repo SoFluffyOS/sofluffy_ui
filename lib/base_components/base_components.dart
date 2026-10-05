@@ -5,6 +5,7 @@ export 'check_box.dart';
 export 'date_picker.dart';
 export 'disable_widget.dart';
 export 'empty_widget.dart';
+export 'fluffy_slider.dart';
 export 'image_view.dart';
 export 'inner_shadow_wrapper.dart';
 export 'input_text.dart';

@@ -70,7 +70,7 @@ class InputSliderDialog {
                         ),
                         Spacing.h8,
                         Expanded(
-                          child: _SimpleSlider(
+                          child: FluffySlider(
                             value: selectedValue,
                             min: min,
                             max: max,
@@ -187,102 +187,5 @@ class InputSliderDialog {
     } finally {
       selectedValueNotifier.dispose();
     }
-  }
-}
-
-class _SimpleSlider extends StatelessWidget {
-  final double value;
-  final double min;
-  final double max;
-  final int? divisions;
-  final ValueChanged<double> onChanged;
-
-  const _SimpleSlider({
-    required this.value,
-    required this.min,
-    required this.max,
-    this.divisions,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.fluffyTheme;
-    final isDark = context.isDark;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final trackWidth = constraints.maxWidth;
-        final fraction = (max > min)
-            ? ((value - min) / (max - min)).clamp(0.0, 1.0)
-            : 0.0;
-
-        void updateFromPosition(double dx) {
-          final newFraction = (dx / trackWidth).clamp(0.0, 1.0);
-          double newValue = min + newFraction * (max - min);
-          if (divisions != null && divisions! > 0) {
-            final step = (max - min) / divisions!;
-            newValue = (min + ((newValue - min) / step).round() * step).clamp(
-              min,
-              max,
-            );
-          }
-          onChanged(newValue);
-        }
-
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onHorizontalDragUpdate: (details) =>
-              updateFromPosition(details.localPosition.dx),
-          onTapDown: (details) => updateFromPosition(details.localPosition.dx),
-          child: SizedBox(
-            height: Spacing.d32,
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                Container(
-                  height: Spacing.d4,
-                  width: trackWidth,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? theme.colors.neutral5
-                        : theme.colors.neutral3,
-                    borderRadius: BorderRadius.circular(Spacing.d2),
-                  ),
-                ),
-                Container(
-                  height: Spacing.d4,
-                  width: trackWidth * fraction,
-                  decoration: BoxDecoration(
-                    color: theme.colors.primary,
-                    borderRadius: BorderRadius.circular(Spacing.d2),
-                  ),
-                ),
-                Positioned(
-                  left: (trackWidth * fraction - Spacing.d8).clamp(
-                    0.0,
-                    trackWidth - Spacing.d16,
-                  ),
-                  child: Container(
-                    width: Spacing.d16,
-                    height: Spacing.d16,
-                    decoration: BoxDecoration(
-                      color: theme.colors.primary,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: FluffyColors.shadow,
-                          blurRadius: Spacing.d4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }
