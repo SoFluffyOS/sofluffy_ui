@@ -124,6 +124,7 @@ class _FluffySliderState extends State<FluffySlider> {
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
+    final textDirection = Directionality.of(context);
     final min = widget.min;
     final max = widget.max;
 
@@ -136,16 +137,24 @@ class _FluffySliderState extends State<FluffySlider> {
           0.0,
           trackWidth,
         );
-        final thumbCenter = trackInset + activeTrackWidth * fraction;
+        final visualFraction = switch (textDirection) {
+          TextDirection.ltr => fraction,
+          TextDirection.rtl => 1 - fraction,
+        };
+        final thumbCenter = trackInset + activeTrackWidth * visualFraction;
         final thumbLeft = thumbCenter - Spacing.d8;
 
         void updateFromPosition(double dx) {
           if (activeTrackWidth <= 0) return;
 
-          final newFraction = ((dx - trackInset) / activeTrackWidth).clamp(
+          final pointerFraction = ((dx - trackInset) / activeTrackWidth).clamp(
             0.0,
             1.0,
           );
+          final newFraction = switch (textDirection) {
+            TextDirection.ltr => pointerFraction,
+            TextDirection.rtl => 1 - pointerFraction,
+          };
           var newValue = min + newFraction * (max - min);
           if (widget.divisions case final divisions?) {
             final step = (max - min) / divisions;
@@ -223,15 +232,16 @@ class _FluffySliderState extends State<FluffySlider> {
                           height: Spacing.d4,
                           width: activeTrackWidth,
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? theme.colors.neutral5
-                                : theme.colors.neutral3,
+                            color: switch (isDark) {
+                              true => theme.colors.neutral5,
+                              false => theme.colors.neutral3,
+                            },
                             borderRadius: BorderRadius.circular(Spacing.d2),
                           ),
                         ),
                       ),
-                      Positioned(
-                        left: trackInset,
+                      PositionedDirectional(
+                        start: trackInset,
                         child: Container(
                           height: Spacing.d4,
                           width: activeTrackWidth * fraction,
@@ -244,7 +254,10 @@ class _FluffySliderState extends State<FluffySlider> {
                       Positioned(
                         left: thumbLeft,
                         child: AnimatedScale(
-                          scale: _isPointerDown ? 0.9 : 1,
+                          scale: switch (_isPointerDown) {
+                            true => 0.9,
+                            false => 1,
+                          },
                           duration: FluffyDurations.fast,
                           curve: Curves.easeOut,
                           child: AnimatedContainer(
@@ -255,9 +268,10 @@ class _FluffySliderState extends State<FluffySlider> {
                             decoration: ShapeDecoration(
                               color: thumbColor,
                               shape: RoundedSuperellipseBorder(
-                                borderRadius: _isPointerDown
-                                    ? Spacing.r4
-                                    : Spacing.r6,
+                                borderRadius: switch (_isPointerDown) {
+                                  true => Spacing.r4,
+                                  false => Spacing.r6,
+                                },
                                 side: switch (_showFocusHighlight) {
                                   true when _isPointerDown => BorderSide(
                                     color: thumbColor,
