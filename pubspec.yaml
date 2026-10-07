@@ -1,4 +1,13 @@
 name: sofluffy_ui
+description: A fluffy and customizable UI package for Flutter app across all platforms.
+version: 1.0.0
+repository: https://github.com/SoFluffyOS/sofluffy_ui
+issue_tracker: https://github.com/SoFluffyOS/lumide/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A%20sofluffy_ui%22
+
+topics:
+  - ui
+  - widgets
+  - sofluffy
 
 environment:
   sdk: ^3.8.0
