@@ -12,6 +12,7 @@ class ContentDialog {
     String? positiveText,
     String? neutralText,
     bool useHtmlWidget = false,
+    String barrierLabel = 'Dismiss',
   }) async {
     final controller = ScrollController();
     final fluffyTheme = context.fluffyTheme;
@@ -19,7 +20,7 @@ class ContentDialog {
       final result = await showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        barrierLabel: 'Dismiss',
+        barrierLabel: barrierLabel,
         barrierColor: FluffyColors.barrier,
         transitionDuration: FluffyDurations.dialogTransition,
         transitionBuilder: (context, anim1, anim2, child) {

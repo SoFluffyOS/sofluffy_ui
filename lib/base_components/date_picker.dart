@@ -25,12 +25,17 @@ class DatePicker {
     DateTime? initialDate,
     DateTime? firstDate,
     DateTime? lastDate,
+    String cancelText = 'Cancel',
+    String applyText = 'Apply',
+    String previousMonthTooltip = 'Previous month',
+    String nextMonthTooltip = 'Next month',
+    String barrierLabel = 'Dismiss',
   }) async {
     final fluffyTheme = context.fluffyTheme;
     final pickedDate = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Dismiss',
+      barrierLabel: barrierLabel,
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
       transitionBuilder: (context, anim1, anim2, child) {
@@ -51,6 +56,10 @@ class DatePicker {
             initialDate: initialDate,
             firstDate: firstDate,
             lastDate: lastDate,
+            cancelText: cancelText,
+            applyText: applyText,
+            previousMonthTooltip: previousMonthTooltip,
+            nextMonthTooltip: nextMonthTooltip,
           ),
         );
       },
@@ -64,12 +73,17 @@ class DatePicker {
     DateTime? initialEndDate,
     DateTime? firstDate,
     DateTime? lastDate,
+    String cancelText = 'Cancel',
+    String applyText = 'Apply',
+    String previousMonthTooltip = 'Previous month',
+    String nextMonthTooltip = 'Next month',
+    String barrierLabel = 'Dismiss',
   }) async {
     final fluffyTheme = context.fluffyTheme;
     final pickedRange = await showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Dismiss',
+      barrierLabel: barrierLabel,
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
       transitionBuilder: (context, anim1, anim2, child) {
@@ -91,6 +105,10 @@ class DatePicker {
             initialEndDate: initialEndDate,
             firstDate: firstDate,
             lastDate: lastDate,
+            cancelText: cancelText,
+            applyText: applyText,
+            previousMonthTooltip: previousMonthTooltip,
+            nextMonthTooltip: nextMonthTooltip,
           ),
         );
       },
@@ -107,11 +125,19 @@ class _DatePickerDialog extends StatelessWidget {
     this.initialDate,
     this.firstDate,
     this.lastDate,
+    required this.cancelText,
+    required this.applyText,
+    required this.previousMonthTooltip,
+    required this.nextMonthTooltip,
   });
 
   final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final String cancelText;
+  final String applyText;
+  final String previousMonthTooltip;
+  final String nextMonthTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +145,10 @@ class _DatePickerDialog extends StatelessWidget {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      cancelText: cancelText,
+      applyText: applyText,
+      previousMonthTooltip: previousMonthTooltip,
+      nextMonthTooltip: nextMonthTooltip,
     );
   }
 }
@@ -128,11 +158,19 @@ class _DatePickerDialogContent extends StatefulWidget {
     required this.initialDate,
     required this.firstDate,
     required this.lastDate,
+    required this.cancelText,
+    required this.applyText,
+    required this.previousMonthTooltip,
+    required this.nextMonthTooltip,
   });
 
   final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final String cancelText;
+  final String applyText;
+  final String previousMonthTooltip;
+  final String nextMonthTooltip;
 
   @override
   State<_DatePickerDialogContent> createState() =>
@@ -287,8 +325,8 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
                     true => [
                       Button(
                         variant: ButtonVariant.ghost,
-                        tooltip: 'Cancel',
-                        label: 'Cancel',
+                        tooltip: widget.cancelText,
+                        label: widget.cancelText,
                         mainAxisSize: MainAxisSize.min,
                         padding: EdgeInsets.symmetric(
                           horizontal: Spacing.d16,
@@ -299,8 +337,8 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
                       Spacing.h8,
                       Button(
                         variant: ButtonVariant.primary,
-                        tooltip: 'Apply',
-                        label: 'Apply',
+                        tooltip: widget.applyText,
+                        label: widget.applyText,
                         mainAxisSize: MainAxisSize.min,
                         padding: EdgeInsets.symmetric(
                           horizontal: Spacing.d16,
@@ -314,8 +352,8 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
                       Expanded(
                         child: Button(
                           variant: ButtonVariant.ghost,
-                          tooltip: 'Cancel',
-                          label: 'Cancel',
+                          tooltip: widget.cancelText,
+                          label: widget.cancelText,
                           titleExpand: ButtonTitleExpand.shrink,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
@@ -324,8 +362,8 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
                       Expanded(
                         child: Button(
                           variant: ButtonVariant.primary,
-                          tooltip: 'Apply',
-                          label: 'Apply',
+                          tooltip: widget.applyText,
+                          label: widget.applyText,
                           titleExpand: ButtonTitleExpand.shrink,
                           onPressed: () =>
                               Navigator.of(context).pop(_selectedDay),
@@ -352,7 +390,7 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
       children: [
         RoundButton(
           icon: const _DatePickerChevron(direction: _DatePickerChevronDir.left),
-          tooltip: 'Previous month',
+          tooltip: widget.previousMonthTooltip,
           enable: _canMoveToPreviousMonth,
           onPressed: _canMoveToPreviousMonth
               ? () => _moveFocusedMonth(-1)
@@ -372,7 +410,7 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
           icon: const _DatePickerChevron(
             direction: _DatePickerChevronDir.right,
           ),
-          tooltip: 'Next month',
+          tooltip: widget.nextMonthTooltip,
           enable: _canMoveToNextMonth,
           onPressed: _canMoveToNextMonth ? () => _moveFocusedMonth(1) : null,
         ),
@@ -456,12 +494,20 @@ class _DateRangePickerDialog extends StatelessWidget {
     this.initialEndDate,
     this.firstDate,
     this.lastDate,
+    required this.cancelText,
+    required this.applyText,
+    required this.previousMonthTooltip,
+    required this.nextMonthTooltip,
   });
 
   final DateTime? initialStartDate;
   final DateTime? initialEndDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final String cancelText;
+  final String applyText;
+  final String previousMonthTooltip;
+  final String nextMonthTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -470,6 +516,10 @@ class _DateRangePickerDialog extends StatelessWidget {
       initialEndDate: initialEndDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      cancelText: cancelText,
+      applyText: applyText,
+      previousMonthTooltip: previousMonthTooltip,
+      nextMonthTooltip: nextMonthTooltip,
     );
   }
 }
@@ -480,12 +530,20 @@ class _DateRangePickerDialogContent extends StatefulWidget {
     required this.initialEndDate,
     required this.firstDate,
     required this.lastDate,
+    required this.cancelText,
+    required this.applyText,
+    required this.previousMonthTooltip,
+    required this.nextMonthTooltip,
   });
 
   final DateTime? initialStartDate;
   final DateTime? initialEndDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final String cancelText;
+  final String applyText;
+  final String previousMonthTooltip;
+  final String nextMonthTooltip;
 
   @override
   State<_DateRangePickerDialogContent> createState() =>
@@ -678,8 +736,8 @@ class _DateRangePickerDialogContentState
                     true => [
                       Button(
                         variant: ButtonVariant.ghost,
-                        tooltip: 'Cancel',
-                        label: 'Cancel',
+                        tooltip: widget.cancelText,
+                        label: widget.cancelText,
                         mainAxisSize: MainAxisSize.min,
                         padding: EdgeInsets.symmetric(
                           horizontal: Spacing.d16,
@@ -690,8 +748,8 @@ class _DateRangePickerDialogContentState
                       Spacing.h8,
                       Button(
                         variant: ButtonVariant.primary,
-                        tooltip: 'Apply',
-                        label: 'Apply',
+                        tooltip: widget.applyText,
+                        label: widget.applyText,
                         mainAxisSize: MainAxisSize.min,
                         padding: EdgeInsets.symmetric(
                           horizontal: Spacing.d16,
@@ -710,8 +768,8 @@ class _DateRangePickerDialogContentState
                       Expanded(
                         child: Button(
                           variant: ButtonVariant.ghost,
-                          tooltip: 'Cancel',
-                          label: 'Cancel',
+                          tooltip: widget.cancelText,
+                          label: widget.cancelText,
                           titleExpand: ButtonTitleExpand.shrink,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
@@ -720,8 +778,8 @@ class _DateRangePickerDialogContentState
                       Expanded(
                         child: Button(
                           variant: ButtonVariant.primary,
-                          tooltip: 'Apply',
-                          label: 'Apply',
+                          tooltip: widget.applyText,
+                          label: widget.applyText,
                           titleExpand: ButtonTitleExpand.shrink,
                           onPressed: switch ((_rangeStart, _rangeEnd)) {
                             (final start?, final end?) => () =>
@@ -753,7 +811,7 @@ class _DateRangePickerDialogContentState
       children: [
         RoundButton(
           icon: const _DatePickerChevron(direction: _DatePickerChevronDir.left),
-          tooltip: 'Previous month',
+          tooltip: widget.previousMonthTooltip,
           enable: _canMoveToPreviousMonth,
           onPressed: _canMoveToPreviousMonth
               ? () => _moveFocusedMonth(-1)
@@ -773,7 +831,7 @@ class _DateRangePickerDialogContentState
           icon: const _DatePickerChevron(
             direction: _DatePickerChevronDir.right,
           ),
-          tooltip: 'Next month',
+          tooltip: widget.nextMonthTooltip,
           enable: _canMoveToNextMonth,
           onPressed: _canMoveToNextMonth ? () => _moveFocusedMonth(1) : null,
         ),

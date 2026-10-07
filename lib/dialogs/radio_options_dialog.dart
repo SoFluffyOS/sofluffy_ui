@@ -14,6 +14,7 @@ class RadioOptionsDialog {
     T? initialValue,
     List<T> values = const [],
     required String Function(T) itemLabelBuilder,
+    String barrierLabel = 'Dismiss',
   }) async {
     final ValueNotifier<T?> notifier = ValueNotifier(initialValue);
     final fluffyTheme = context.fluffyTheme;
@@ -21,7 +22,7 @@ class RadioOptionsDialog {
       final result = await showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        barrierLabel: 'Dismiss',
+        barrierLabel: barrierLabel,
         barrierColor: FluffyColors.barrier,
         transitionDuration: FluffyDurations.dialogTransition,
         transitionBuilder: (context, anim1, anim2, child) {

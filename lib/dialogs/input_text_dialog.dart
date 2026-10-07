@@ -12,6 +12,7 @@ class InputTextDialog {
     required String cancelText,
     required String confirmText,
     String initialValue = '',
+    String barrierLabel = 'Dismiss',
   }) async {
     final TextEditingController controller = TextEditingController(
       text: initialValue,
@@ -22,7 +23,7 @@ class InputTextDialog {
       final result = await showGeneralDialog(
         context: context,
         barrierDismissible: false,
-        barrierLabel: 'Dismiss',
+        barrierLabel: barrierLabel,
         barrierColor: FluffyColors.barrier,
         transitionDuration: FluffyDurations.dialogTransition,
         transitionBuilder: (context, anim1, anim2, child) {

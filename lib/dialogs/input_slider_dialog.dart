@@ -15,6 +15,7 @@ class InputSliderDialog {
     required double max,
     String Function(double value)? labelBuilder,
     String Function(double value)? hintBuilder,
+    String barrierLabel = 'Dismiss',
   }) async {
     final selectedValueNotifier = ValueNotifier<double>(initialValue ?? min);
     final fluffyTheme = context.fluffyTheme;
@@ -22,7 +23,7 @@ class InputSliderDialog {
       final result = await showGeneralDialog(
         context: context,
         barrierDismissible: false,
-        barrierLabel: 'Dismiss',
+        barrierLabel: barrierLabel,
         barrierColor: FluffyColors.barrier,
         transitionDuration: FluffyDurations.dialogTransition,
         transitionBuilder: (context, anim1, anim2, child) {

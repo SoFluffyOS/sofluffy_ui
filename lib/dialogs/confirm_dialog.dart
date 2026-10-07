@@ -13,12 +13,13 @@ class ConfirmDialog {
     required String negativeText,
     required String positiveText,
     bool barrierDismissible = true,
+    String barrierLabel = 'Dismiss',
   }) async {
     final fluffyTheme = context.fluffyTheme;
     final result = await showGeneralDialog(
       context: context,
       barrierDismissible: barrierDismissible,
-      barrierLabel: 'Dismiss',
+      barrierLabel: barrierLabel,
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
       transitionBuilder: (context, anim1, anim2, child) {

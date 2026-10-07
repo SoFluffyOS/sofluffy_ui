@@ -29,12 +29,13 @@ class SearchDialog<T> extends StatefulWidget {
     required void Function(T item) onItemSelected,
     String? hintText,
     required String searchIcon,
+    String barrierLabel = 'Dismiss',
   }) {
     final fluffyTheme = context.fluffyTheme;
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Dismiss',
+      barrierLabel: barrierLabel,
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
       transitionBuilder: (context, anim1, anim2, child) {
