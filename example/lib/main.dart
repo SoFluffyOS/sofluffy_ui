@@ -12,13 +12,23 @@ Future<void> main() async {
 }
 
 @widgetbook.App()
-class WidgetbookApp extends StatelessWidget {
+class WidgetbookApp extends StatefulWidget {
   final FluffyThemeData appTheme;
 
   const WidgetbookApp({super.key, required this.appTheme});
 
   @override
+  State<WidgetbookApp> createState() => _WidgetbookAppState();
+}
+
+class _WidgetbookAppState extends State<WidgetbookApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  bool get _isDark => _themeMode == ThemeMode.dark;
+
+  @override
   Widget build(BuildContext context) {
+    final appTheme = widget.appTheme;
     final themes = [
       WidgetbookTheme(
         name: 'Light',
@@ -29,8 +39,16 @@ class WidgetbookApp extends StatelessWidget {
         data: appTheme.getTheme(isDark: true),
       ),
     ];
-    return Widgetbook.material(
-      directories: directories,
+    // Place Overview category first
+    final sortedDirectories = List.of(directories)
+      ..sort((a, b) {
+        if (a.name == 'Overview') return -1;
+        if (b.name == 'Overview') return 1;
+        return a.name.compareTo(b.name);
+      });
+
+    final widgetbook = Widgetbook.material(
+      directories: sortedDirectories,
       addons: [
         ViewportAddon([
           Viewports.none,
@@ -43,7 +61,7 @@ class WidgetbookApp extends StatelessWidget {
         InspectorAddon(),
         TextScaleAddon(),
         MaterialThemeAddon(
-          initialTheme: themes.first,
+          initialTheme: _isDark ? themes.last : themes.first,
           themes: themes,
         ),
         BuilderAddon(
@@ -73,7 +91,34 @@ class WidgetbookApp extends StatelessWidget {
         ),
         AlignmentAddon(),
       ],
-      themeMode: ThemeMode.light,
+      themeMode: _themeMode,
+    );
+
+    // Global light/dark toggle for the whole Widgetbook shell.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        children: [
+          widgetbook,
+          Positioned(
+            left: 12,
+            bottom: 12,
+            child: Material(
+              color: _isDark ? Colors.white12 : Colors.black12,
+              shape: const CircleBorder(),
+              child: IconButton(
+                icon: Icon(
+                  _isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  color: _isDark ? Colors.white : Colors.black87,
+                ),
+                onPressed: () => setState(
+                  () => _themeMode = _isDark ? ThemeMode.light : ThemeMode.dark,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
