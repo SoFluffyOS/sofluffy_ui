@@ -36,11 +36,10 @@ class RadioOptionsDialog {
           );
         },
         pageBuilder: (BuildContext context, anim1, anim2) {
-          final theme = context.fluffyTheme;
-          final isDark = context.isDark;
+          final isDark = fluffyTheme.isDark;
           final onSurfaceColor = isDark
-              ? theme.colors.neutral1
-              : theme.colors.neutral7;
+              ? fluffyTheme.colors.neutral1
+              : fluffyTheme.colors.neutral7;
 
           void confirmSelected() {
             final value = notifier.value;
