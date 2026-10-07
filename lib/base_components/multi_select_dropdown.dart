@@ -85,37 +85,41 @@ class _MultiSelectDropdownState<T> extends State<MultiSelectDropdown<T>> {
     final spaceBelow =
         screenHeight - anchorOffset.dy - anchorSize.height - Spacing.d8;
     final openAbove = spaceBelow < menuHeight && anchorOffset.dy > spaceBelow;
+    final theme = context.fluffyTheme;
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: anchorSize.width,
-        child: CompositedTransformFollower(
-          link: _layerLink,
-          showWhenUnlinked: false,
-          targetAnchor: switch (openAbove) {
-            true => Alignment.topLeft,
-            false => Alignment.bottomLeft,
-          },
-          followerAnchor: switch (openAbove) {
-            true => Alignment.bottomLeft,
-            false => Alignment.topLeft,
-          },
-          offset: Offset(
-            0,
-            switch (openAbove) {
-              true => -Spacing.d4,
-              false => Spacing.d4,
+      builder: (overlayContext) => FluffyTheme(
+        data: theme,
+        child: Positioned(
+          width: anchorSize.width,
+          child: CompositedTransformFollower(
+            link: _layerLink,
+            showWhenUnlinked: false,
+            targetAnchor: switch (openAbove) {
+              true => Alignment.topLeft,
+              false => Alignment.bottomLeft,
             },
-          ),
-          child: TapRegion(
-            groupId: _layerLink,
-            onTapOutside: (_) => _removeOverlay(),
-            child: _MultiSelectMenu<T>(
-              items: widget.items,
-              selectedValues: widget.selectedValues,
-              maxHeight: maxMenuHeight,
-              onChanged: widget.onChanged,
-              onDismiss: _removeOverlay,
+            followerAnchor: switch (openAbove) {
+              true => Alignment.bottomLeft,
+              false => Alignment.topLeft,
+            },
+            offset: Offset(
+              0,
+              switch (openAbove) {
+                true => -Spacing.d4,
+                false => Spacing.d4,
+              },
+            ),
+            child: TapRegion(
+              groupId: _layerLink,
+              onTapOutside: (_) => _removeOverlay(),
+              child: _MultiSelectMenu<T>(
+                items: widget.items,
+                selectedValues: widget.selectedValues,
+                maxHeight: maxMenuHeight,
+                onChanged: widget.onChanged,
+                onDismiss: _removeOverlay,
+              ),
             ),
           ),
         ),
