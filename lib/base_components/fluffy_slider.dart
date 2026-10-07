@@ -161,10 +161,6 @@ class _FluffySliderState extends State<FluffySlider> {
           true => theme.colors.neutral1,
           false => theme.colors.neutral7,
         };
-        final ringColor = switch (isDark) {
-          true => theme.colors.neutral5,
-          false => theme.colors.neutral3,
-        };
         final platform = context.fluffyTargetPlatform;
         final semanticsValue = _formatSemanticValue(widget.value);
         final increasedValue = _formatSemanticValue(_adjustValue(1, platform));

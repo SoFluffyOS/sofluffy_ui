@@ -22,7 +22,7 @@ class WidgetbookApp extends StatefulWidget {
 }
 
 class _WidgetbookAppState extends State<WidgetbookApp> {
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode _themeMode = ThemeMode.dark;
 
   bool get _isDark => _themeMode == ThemeMode.dark;
 
@@ -101,7 +101,7 @@ class _WidgetbookAppState extends State<WidgetbookApp> {
         children: [
           widgetbook,
           Positioned(
-            left: 12,
+            right: 12,
             bottom: 12,
             child: Material(
               color: _isDark ? Colors.white12 : Colors.black12,

@@ -373,10 +373,9 @@ class _ButtonState extends State<Button> {
                     child: DefaultTextStyle.merge(
                       style: TextStyle(color: fgColor),
                       child: Row(
-                        mainAxisSize: widget.mainAxisSize ??
-                            (isDesktop
-                                ? MainAxisSize.min
-                                : MainAxisSize.max),
+                        mainAxisSize:
+                            widget.mainAxisSize ??
+                            (isDesktop ? MainAxisSize.min : MainAxisSize.max),
                         mainAxisAlignment:
                             widget.mainAxisAlignment ??
                             MainAxisAlignment.center,

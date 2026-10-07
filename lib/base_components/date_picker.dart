@@ -756,10 +756,10 @@ class _DateRangePickerDialogContentState
                           vertical: Spacing.d8,
                         ),
                         onPressed: switch ((_rangeStart, _rangeEnd)) {
-                          (final start?, final end?) => () =>
-                              Navigator.of(context).pop(
-                                DateTimeRange(start: start, end: end),
-                              ),
+                          (final start?, final end?) =>
+                            () => Navigator.of(context).pop(
+                              DateTimeRange(start: start, end: end),
+                            ),
                           _ => null,
                         },
                       ),
@@ -782,10 +782,10 @@ class _DateRangePickerDialogContentState
                           label: widget.applyText,
                           titleExpand: ButtonTitleExpand.shrink,
                           onPressed: switch ((_rangeStart, _rangeEnd)) {
-                            (final start?, final end?) => () =>
-                                Navigator.of(context).pop(
-                                  DateTimeRange(start: start, end: end),
-                                ),
+                            (final start?, final end?) =>
+                              () => Navigator.of(context).pop(
+                                DateTimeRange(start: start, end: end),
+                              ),
                             _ => null,
                           },
                         ),
@@ -927,7 +927,8 @@ class _DatePickerChevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = IconTheme.of(context).color ??
+    final effectiveColor =
+        IconTheme.of(context).color ??
         (context.isDark
             ? context.fluffyTheme.colors.neutral1
             : context.fluffyTheme.colors.neutral7);
