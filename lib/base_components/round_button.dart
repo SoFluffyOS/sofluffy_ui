@@ -94,16 +94,16 @@ class _RoundButtonState extends State<RoundButton> {
                   ButtonState.disabled => theme.colors.neutral4.withValues(
                     alpha: 0.2,
                   ),
-                  _ => theme.colors.neutral4,
+                  _ => theme.colors.neutral1,
                 }
               : switch (state) {
                   ButtonState.pressing ||
                   ButtonState.focus ||
                   ButtonState.hover => theme.colors.neutral1,
-                  ButtonState.disabled => theme.colors.neutral5.withValues(
+                  ButtonState.disabled => theme.colors.neutral4.withValues(
                     alpha: 0.2,
                   ),
-                  _ => theme.colors.neutral5,
+                  _ => theme.colors.neutral7,
                 };
           return Tappable(
             onTap: widget.enable ? widget.onPressed : null,
@@ -131,29 +131,37 @@ class _RoundButtonState extends State<RoundButton> {
             child: Container(
               width: Spacing.d40,
               height: Spacing.d40,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: backgroundColor,
                 border: Border.all(color: borderColor, width: Spacing.d2),
                 borderRadius: BorderRadius.circular(Spacing.d20),
               ),
-              padding: EdgeInsets.all(Spacing.d8),
-              child: switch (widget.icon.runtimeType) {
-                const (IconData) => Icon(
-                  widget.icon,
-                  size: Spacing.d24,
+              child: IconTheme(
+                data: IconThemeData(
                   color: iconColor,
+                  size: Spacing.d20,
                 ),
-                const (String) => ImageView(
-                  widget.icon,
-                  size: Spacing.d24,
-                  color: iconColor,
+                child: Center(
+                  child: switch (widget.icon) {
+                    final IconData iconData => Icon(
+                      iconData,
+                      size: Spacing.d20,
+                      color: iconColor,
+                    ),
+                    final String assetPath => ImageView(
+                      assetPath,
+                      size: Spacing.d20,
+                      color: iconColor,
+                    ),
+                    final Widget iconWidget => SizedBox.square(
+                      dimension: Spacing.d20,
+                      child: Center(child: iconWidget),
+                    ),
+                    _ => SizedBox.square(dimension: Spacing.d20),
+                  },
                 ),
-                const (Widget) => SizedBox.square(
-                  dimension: Spacing.d24,
-                  child: widget.icon,
-                ),
-                _ => SizedBox.square(dimension: Spacing.d24),
-              },
+              ),
             ),
           );
         },
