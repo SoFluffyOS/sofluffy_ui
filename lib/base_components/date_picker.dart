@@ -179,6 +179,12 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
         : theme.colors.neutral7;
     final scaffoldBg = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     final borderColor = isDark ? theme.colors.neutral5 : theme.colors.neutral3;
+    final isDesktop = switch (context.fluffyTargetPlatform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
 
     return Center(
       child: Padding(
@@ -273,24 +279,60 @@ class _DatePickerDialogContentState extends State<_DatePickerDialogContent> {
                 ),
                 SizedBox(height: Spacing.d16),
                 Row(
-                  children: [
-                    Expanded(
-                      child: Button(
+                  mainAxisAlignment: switch (isDesktop) {
+                    true => MainAxisAlignment.end,
+                    false => MainAxisAlignment.center,
+                  },
+                  children: switch (isDesktop) {
+                    true => [
+                      Button(
                         variant: ButtonVariant.ghost,
+                        tooltip: 'Cancel',
                         label: 'Cancel',
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                    ),
-                    SizedBox(width: Spacing.d8),
-                    Expanded(
-                      child: Button(
+                      Spacing.h8,
+                      Button(
                         variant: ButtonVariant.primary,
+                        tooltip: 'Apply',
                         label: 'Apply',
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: () =>
                             Navigator.of(context).pop(_selectedDay),
                       ),
-                    ),
-                  ],
+                    ],
+                    false => [
+                      Expanded(
+                        child: Button(
+                          variant: ButtonVariant.ghost,
+                          tooltip: 'Cancel',
+                          label: 'Cancel',
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ),
+                      Spacing.h8,
+                      Expanded(
+                        child: Button(
+                          variant: ButtonVariant.primary,
+                          tooltip: 'Apply',
+                          label: 'Apply',
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: () =>
+                              Navigator.of(context).pop(_selectedDay),
+                        ),
+                      ),
+                    ],
+                  },
                 ),
               ],
             ),
@@ -508,6 +550,12 @@ class _DateRangePickerDialogContentState
         : theme.colors.neutral7;
     final scaffoldBg = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     final borderColor = isDark ? theme.colors.neutral5 : theme.colors.neutral3;
+    final isDesktop = switch (context.fluffyTargetPlatform) {
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => true,
+      _ => false,
+    };
 
     return Center(
       child: Padding(
@@ -622,29 +670,70 @@ class _DateRangePickerDialogContentState
                 ),
                 SizedBox(height: Spacing.d16),
                 Row(
-                  children: [
-                    Expanded(
-                      child: Button(
+                  mainAxisAlignment: switch (isDesktop) {
+                    true => MainAxisAlignment.end,
+                    false => MainAxisAlignment.center,
+                  },
+                  children: switch (isDesktop) {
+                    true => [
+                      Button(
                         variant: ButtonVariant.ghost,
+                        tooltip: 'Cancel',
                         label: 'Cancel',
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                    ),
-                    SizedBox(width: Spacing.d8),
-                    Expanded(
-                      child: Button(
+                      Spacing.h8,
+                      Button(
                         variant: ButtonVariant.primary,
+                        tooltip: 'Apply',
                         label: 'Apply',
+                        mainAxisSize: MainAxisSize.min,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Spacing.d16,
+                          vertical: Spacing.d8,
+                        ),
                         onPressed: switch ((_rangeStart, _rangeEnd)) {
-                          (final start?, final end?) =>
-                            () => Navigator.of(context).pop(
-                              DateTimeRange(start: start, end: end),
-                            ),
+                          (final start?, final end?) => () =>
+                              Navigator.of(context).pop(
+                                DateTimeRange(start: start, end: end),
+                              ),
                           _ => null,
                         },
                       ),
-                    ),
-                  ],
+                    ],
+                    false => [
+                      Expanded(
+                        child: Button(
+                          variant: ButtonVariant.ghost,
+                          tooltip: 'Cancel',
+                          label: 'Cancel',
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ),
+                      Spacing.h8,
+                      Expanded(
+                        child: Button(
+                          variant: ButtonVariant.primary,
+                          tooltip: 'Apply',
+                          label: 'Apply',
+                          titleExpand: ButtonTitleExpand.shrink,
+                          onPressed: switch ((_rangeStart, _rangeEnd)) {
+                            (final start?, final end?) => () =>
+                                Navigator.of(context).pop(
+                                  DateTimeRange(start: start, end: end),
+                                ),
+                            _ => null,
+                          },
+                        ),
+                      ),
+                    ],
+                  },
                 ),
               ],
             ),
@@ -780,15 +869,18 @@ class _DatePickerChevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = IconTheme.of(context).color ??
+        (context.isDark
+            ? context.fluffyTheme.colors.neutral1
+            : context.fluffyTheme.colors.neutral7);
+
     return SizedBox(
       width: Spacing.d20,
       height: Spacing.d20,
       child: CustomPaint(
         painter: _DatePickerChevronPainter(
           direction: direction,
-          color: context.isDark
-              ? context.fluffyTheme.colors.neutral1
-              : context.fluffyTheme.colors.neutral7,
+          color: effectiveColor,
         ),
       ),
     );
