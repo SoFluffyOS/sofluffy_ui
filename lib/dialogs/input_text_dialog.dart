@@ -14,9 +14,17 @@ class InputTextDialog {
     String initialValue = '',
     String barrierLabel = 'Dismiss',
   }) async {
-    final TextEditingController controller = TextEditingController(
-      text: initialValue,
+    // A prefilled value starts selected, so typing replaces it.
+    final TextEditingController controller = TextEditingController.fromValue(
+      TextEditingValue(
+        text: initialValue,
+        selection: TextSelection(
+          baseOffset: 0,
+          extentOffset: initialValue.length,
+        ),
+      ),
     );
+    final focusNode = FocusNode(debugLabel: 'InputTextDialog');
     final fluffyTheme = context.fluffyTheme;
 
     try {
@@ -55,11 +63,15 @@ class InputTextDialog {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                InputText(
-                  controller: controller,
-                  label: labelText,
-                  hintText: hintText,
-                  onSubmitted: (_) => confirm(),
+                _AutofocusInput(
+                  focusNode: focusNode,
+                  child: InputText(
+                    controller: controller,
+                    focusNode: focusNode,
+                    label: labelText,
+                    hintText: hintText,
+                    onSubmitted: (_) => confirm(),
+                  ),
                 ),
               ],
             ),
@@ -132,10 +144,7 @@ class InputTextDialog {
                 const SingleActivator(LogicalKeyboardKey.enter): confirm,
                 const SingleActivator(LogicalKeyboardKey.numpadEnter): confirm,
               },
-              child: Focus(
-                autofocus: true,
-                child: dialog,
-              ),
+              child: dialog,
             ),
           );
         },
@@ -148,6 +157,32 @@ class InputTextDialog {
       return result;
     } finally {
       controller.dispose();
+      focusNode.dispose();
     }
   }
+}
+
+/// Puts the cursor in the dialog's field when it opens, so the user can
+/// type straight away.
+class _AutofocusInput extends StatefulWidget {
+  const _AutofocusInput({required this.focusNode, required this.child});
+
+  final FocusNode focusNode;
+  final Widget child;
+
+  @override
+  State<_AutofocusInput> createState() => _AutofocusInputState();
+}
+
+class _AutofocusInputState extends State<_AutofocusInput> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.focusNode.requestFocus();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
