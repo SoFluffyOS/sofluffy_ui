@@ -25,6 +25,7 @@ class InputText extends StatefulWidget {
 
   final int? maxLength;
   final int? maxLines;
+  final int? minLines;
 
   final bool obscureText;
   final bool isPasswordField;
@@ -69,6 +70,7 @@ class InputText extends StatefulWidget {
     this.errorText,
     this.maxLength,
     this.maxLines = 1,
+    this.minLines,
     this.obscureText = false,
     this.isPasswordField = false,
     this.enableCounter = false,
@@ -375,6 +377,7 @@ class _InputTextState extends State<InputText>
                                       ),
                                   ],
                                   maxLines: widget.maxLines,
+                                  minLines: widget.minLines,
                                   readOnly: widget.readOnly,
                                   rendererIgnoresPointer: true,
                                   contextMenuBuilder: _buildContextMenu,
