@@ -134,11 +134,10 @@ class CheckBoxIcon extends StatelessWidget {
   }
 
   Color _getBorderColor(BuildContext context, CheckBoxIconState state) {
-    final isDark = context.isDark;
     final theme = context.fluffyTheme;
     return switch (state) {
       CheckBoxIconState.checked => theme.colors.primary,
-      _ => isDark ? theme.colors.neutral6 : theme.colors.neutral3,
+      _ => theme.colors.neutral4,
     };
   }
 }
