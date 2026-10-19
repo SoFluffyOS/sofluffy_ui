@@ -70,6 +70,9 @@ class _CheckBoxState extends State<CheckBox> {
 
 enum CheckBoxIconState {
   checked,
+
+  /// Some of what it stands for is checked: a dash.
+  mixed,
   unchecked,
   hover,
 }
@@ -92,6 +95,7 @@ class CheckBoxIcon extends StatelessWidget {
     };
     final isDark = context.isDark;
     final theme = context.fluffyTheme;
+    final markColor = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     return AnimatedContainer(
       width: isDesktop ? Spacing.d16 : Spacing.d24,
       height: isDesktop ? Spacing.d16 : Spacing.d24,
@@ -109,15 +113,24 @@ class CheckBoxIcon extends StatelessWidget {
         ),
       ),
       alignment: Alignment.center,
-      child: state != CheckBoxIconState.checked
-          ? null
-          : ImageView(
-              FluffyAssets.icons.tick02Solid,
-              width: isDesktop ? Spacing.d12 : Spacing.d18,
-              height: isDesktop ? Spacing.d12 : Spacing.d18,
-              color: isDark ? theme.colors.neutral7 : theme.colors.neutral1,
-              assetPackage: kSofluffyUiPackageName,
-            ),
+      child: switch (state) {
+        CheckBoxIconState.checked => ImageView(
+          FluffyAssets.icons.tick02Solid,
+          width: isDesktop ? Spacing.d12 : Spacing.d18,
+          height: isDesktop ? Spacing.d12 : Spacing.d18,
+          color: markColor,
+          assetPackage: kSofluffyUiPackageName,
+        ),
+        CheckBoxIconState.mixed => Container(
+          width: isDesktop ? Spacing.d8 : Spacing.d12,
+          height: Spacing.d2,
+          decoration: BoxDecoration(
+            color: markColor,
+            borderRadius: Spacing.r4,
+          ),
+        ),
+        CheckBoxIconState.unchecked || CheckBoxIconState.hover => null,
+      },
     );
   }
 
@@ -125,7 +138,8 @@ class CheckBoxIcon extends StatelessWidget {
     final isDark = context.isDark;
     final theme = context.fluffyTheme;
     return switch (state) {
-      CheckBoxIconState.checked => theme.colors.primary,
+      CheckBoxIconState.checked ||
+      CheckBoxIconState.mixed => theme.colors.primary,
       CheckBoxIconState.unchecked =>
         isDark ? theme.colors.neutral7 : theme.colors.neutral1,
       CheckBoxIconState.hover =>
@@ -136,7 +150,8 @@ class CheckBoxIcon extends StatelessWidget {
   Color _getBorderColor(BuildContext context, CheckBoxIconState state) {
     final theme = context.fluffyTheme;
     return switch (state) {
-      CheckBoxIconState.checked => theme.colors.primary,
+      CheckBoxIconState.checked ||
+      CheckBoxIconState.mixed => theme.colors.primary,
       _ => theme.colors.neutral4,
     };
   }
