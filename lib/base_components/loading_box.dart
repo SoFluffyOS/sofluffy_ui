@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class LoadingBox extends StatelessWidget {
@@ -22,7 +21,7 @@ class LoadingBox extends StatelessWidget {
     return SizedBox(
       width: size ?? width,
       height: size ?? height,
-      child: Shimmer.fromColors(
+      child: FluffyShimmer(
         baseColor: isDark
             ? FluffyColors.shimmerBaseDark
             : FluffyColors.shimmerBaseLight,

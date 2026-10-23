@@ -23,14 +23,9 @@ class ConfirmDialog {
       barrierColor: FluffyColors.barrier,
       transitionDuration: FluffyDurations.dialogTransition,
       transitionBuilder: (context, anim1, anim2, child) {
-        return FadeTransition(
-          opacity: anim1,
-          child: ScaleTransition(
-            scale: Tween<double>(begin: 0.95, end: 1.0).animate(
-              CurvedAnimation(parent: anim1, curve: Curves.easeOutCubic),
-            ),
-            child: child,
-          ),
+        return FluffyDialogTransition(
+          animation: anim1,
+          child: child,
         );
       },
       pageBuilder: (BuildContext context, anim1, anim2) {

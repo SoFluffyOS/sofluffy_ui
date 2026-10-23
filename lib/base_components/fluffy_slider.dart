@@ -258,7 +258,7 @@ class _FluffySliderState extends State<FluffySlider> {
                             true => 0.9,
                             false => 1,
                           },
-                          duration: FluffyDurations.fast,
+                          duration: context.motion(FluffyDurations.fast),
                           curve: Curves.easeOut,
                           child: AnimatedContainer(
                             width: Spacing.d16,

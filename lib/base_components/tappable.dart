@@ -259,6 +259,7 @@ class _TappableState extends State<Tappable> {
   @override
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
+    final scalesOnPress = widget.enableAnimation && !context.reducesMotion;
     final content = Semantics(
       tooltip: widget.tooltip,
       child: FocusableActionDetector(
@@ -318,7 +319,10 @@ class _TappableState extends State<Tappable> {
             child: Stack(
               children: [
                 AnimatedScale(
-                  scale: widget.enableAnimation ? _state.scale : 1.0,
+                  scale: switch (scalesOnPress) {
+                    true => _state.scale,
+                    false => 1.0,
+                  },
                   duration: const Duration(milliseconds: _animationDuration),
                   child: Container(
                     color: FluffyColors.transparent,
@@ -330,7 +334,10 @@ class _TappableState extends State<Tappable> {
                   Positioned.fill(
                     child: IgnorePointer(
                       child: AnimatedScale(
-                        scale: widget.enableAnimation ? _state.scale : 1.0,
+                        scale: switch (scalesOnPress) {
+                          true => _state.scale,
+                          false => 1.0,
+                        },
                         duration: const Duration(
                           milliseconds: _animationDuration,
                         ),

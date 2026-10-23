@@ -13,7 +13,7 @@ class _DropdownChevron extends StatelessWidget {
         true => 0.5,
         false => 0,
       },
-      duration: FluffyDurations.fast,
+      duration: context.motion(FluffyDurations.fast),
       child: CustomPaint(
         size: Size.square(Spacing.d14),
         painter: _DropdownChevronPainter(color),

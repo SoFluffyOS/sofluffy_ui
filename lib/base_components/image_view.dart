@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 class ImageView extends StatelessWidget {
@@ -42,7 +41,7 @@ class ImageView extends StatelessWidget {
       return SizedBox(
         width: size ?? width,
         height: size ?? height,
-        child: Shimmer.fromColors(
+        child: FluffyShimmer(
           baseColor: FluffyColors.shimmerBaseLight,
           highlightColor: FluffyColors.shimmerHighlightLight,
           child: Container(
@@ -57,7 +56,7 @@ class ImageView extends StatelessWidget {
       return SizedBox(
         width: size ?? width,
         height: size ?? height,
-        child: Shimmer.fromColors(
+        child: FluffyShimmer(
           baseColor: isDark
               ? FluffyColors.shimmerBaseDark
               : FluffyColors.shimmerBaseLight,
@@ -145,7 +144,7 @@ class ImageView extends StatelessWidget {
         return SizedBox(
           width: size ?? width,
           height: size ?? height,
-          child: Shimmer.fromColors(
+          child: FluffyShimmer(
             baseColor: FluffyColors.shimmerBaseLight,
             highlightColor: FluffyColors.shimmerHighlightLight,
             child: Container(

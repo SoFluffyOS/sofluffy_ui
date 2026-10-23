@@ -28,6 +28,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   );
 
   late bool _currentValue = widget.value;
+  bool _reducesMotion = false;
 
   bool _isPointerDown = false;
   bool _isHovered = false;
@@ -59,16 +60,32 @@ class _SwitchToggleState extends State<SwitchToggle>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reducesMotion = context.reducesMotion;
+  }
+
+  @override
   void didUpdateWidget(covariant SwitchToggle oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.value != oldWidget.value || widget.value != _currentValue) {
       _currentValue = widget.value;
-      if (_currentValue) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
+      _moveThumb(on: _currentValue);
     }
+  }
+
+  /// Slides the thumb to [on]'s side, or puts it there when motion is
+  /// reduced.
+  TickerFuture _moveThumb({required bool on}) {
+    if (_reducesMotion) {
+      _animationController.value = switch (on) {
+        true => 1.0,
+        false => 0.0,
+      };
+      return TickerFuture.complete();
+    }
+    if (on) return _animationController.forward();
+    return _animationController.reverse();
   }
 
   @override
@@ -94,11 +111,7 @@ class _SwitchToggleState extends State<SwitchToggle>
       const Duration(milliseconds: 150),
       () => _handleValueChanged(newValue),
     );
-    if (newValue) {
-      await _animationController.forward();
-    } else {
-      await _animationController.reverse();
-    }
+    await _moveThumb(on: newValue);
   }
 
   @override
@@ -211,11 +224,7 @@ class _SwitchToggleState extends State<SwitchToggle>
             final dragProgress = (_dragPositionX - minX) / (maxX - minX);
             _animationController.value = dragProgress.clamp(0.0, 1.0);
             _handleValueChanged(newTargetValue);
-            if (newTargetValue) {
-              _animationController.forward();
-            } else {
-              _animationController.reverse();
-            }
+            _moveThumb(on: newTargetValue);
           },
           child: Padding(
             padding: EdgeInsets.all(_outerPadding(isDesktop)),
@@ -304,7 +313,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                           controller: _doughController,
                           child: AnimatedContainer(
                             curve: Curves.easeOut,
-                            duration: FluffyDurations.fast,
+                            duration: context.motion(FluffyDurations.fast),
                             height: realThumbHeight,
                             width: realThumbWidth,
                             decoration: ShapeDecoration(

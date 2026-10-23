@@ -226,7 +226,7 @@ class _InputTextState extends State<InputText>
     final inputPadding = resolvedPadding.resolve(Directionality.of(context));
 
     return AnimatedSize(
-      duration: const Duration(milliseconds: 200),
+      duration: context.motion(const Duration(milliseconds: 200)),
       curve: Curves.easeOut,
       alignment: Alignment.topCenter,
       child: Column(

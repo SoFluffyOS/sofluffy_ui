@@ -99,7 +99,7 @@ class _RadioIconView extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: AnimatedScale(
-        duration: const Duration(milliseconds: 300),
+        duration: context.motion(const Duration(milliseconds: 300)),
         curve: Curves.easeOut,
         scale: state != RadioIconState.checked ? 0 : 1.0,
         child: Container(
