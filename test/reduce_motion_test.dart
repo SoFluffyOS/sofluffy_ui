@@ -267,4 +267,48 @@ void main() {
       expect(find.byType(GentlePulse), findsNothing);
     });
   }
+
+  for (final reducesMotion in [false, true]) {
+    testWidgets('scrolling glides unless motion is reduced, then jumps '
+        '(reduced: $reducesMotion)', (tester) async {
+      final controller = ScrollController();
+      addTearDown(controller.dispose);
+      late BuildContext listContext;
+      await tester.pumpWidget(
+        app(
+          SizedBox(
+            height: 100,
+            child: Builder(
+              builder: (context) {
+                listContext = context;
+                return ListView(
+                  controller: controller,
+                  children: const [SizedBox(height: 1000)],
+                );
+              },
+            ),
+          ),
+          reducesMotion: reducesMotion,
+        ),
+      );
+
+      final scrolled = controller.scrollTo(
+        listContext,
+        500,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      switch (reducesMotion) {
+        case true:
+          expect(controller.offset, 500);
+        case false:
+          expect(controller.offset, closeTo(250, 1));
+      }
+      await tester.pumpAndSettle();
+      await scrolled;
+      expect(controller.offset, 500);
+    });
+  }
 }

@@ -32,3 +32,20 @@ class ReduceMotionScope extends StatelessWidget {
     );
   }
 }
+
+extension MotionScrollController on ScrollController {
+  /// Scrolls to [offset] as [animateTo] does, or jumps there when motion is
+  /// reduced.
+  Future<void> scrollTo(
+    BuildContext context,
+    double offset, {
+    required Duration duration,
+    required Curve curve,
+  }) {
+    if (context.reducesMotion) {
+      jumpTo(offset);
+      return Future.value();
+    }
+    return animateTo(offset, duration: duration, curve: curve);
+  }
+}
