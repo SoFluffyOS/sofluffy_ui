@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart'
+    show CircularProgressIndicator, LinearProgressIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -185,6 +187,84 @@ void main() {
         true => findsOneWidget,
         false => findsNothing,
       });
+    });
+  }
+
+  for (final reducesMotion in [false, true]) {
+    testWidgets('a spinner spins unless motion is reduced, then pulses a '
+        'still ring (reduced: $reducesMotion)', (tester) async {
+      await tester.pumpWidget(
+        app(
+          const FluffySpinner(strokeWidth: 2),
+          reducesMotion: reducesMotion,
+        ),
+      );
+      final ring = tester.widget<CircularProgressIndicator>(
+        find.byType(CircularProgressIndicator),
+      );
+
+      expect(ring.strokeWidth, 2);
+      switch (reducesMotion) {
+        case true:
+          expect(ring.value, ReducedMotionPulse.stillArc);
+          expect(find.byType(GentlePulse), findsOneWidget);
+        case false:
+          expect(ring.value, isNull);
+          expect(find.byType(GentlePulse), findsNothing);
+      }
+    });
+
+    testWidgets('a bar sweeps unless motion is reduced, then pulses full '
+        '(reduced: $reducesMotion)', (tester) async {
+      await tester.pumpWidget(
+        app(
+          const FluffyProgressBar(minHeight: 1),
+          reducesMotion: reducesMotion,
+        ),
+      );
+      final bar = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      );
+
+      expect(bar.minHeight, 1);
+      expect(bar.value, switch (reducesMotion) {
+        true => 1,
+        false => null,
+      });
+    });
+
+    testWidgets('known progress shows as it is (reduced: $reducesMotion)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        app(
+          const Column(
+            children: [
+              SizedBox.square(dimension: 20, child: FluffySpinner(value: 0.4)),
+              FluffyProgressBar(value: 0.4),
+            ],
+          ),
+          reducesMotion: reducesMotion,
+        ),
+      );
+
+      expect(
+        tester
+            .widget<CircularProgressIndicator>(
+              find.byType(CircularProgressIndicator),
+            )
+            .value,
+        0.4,
+      );
+      expect(
+        tester
+            .widget<LinearProgressIndicator>(
+              find.byType(LinearProgressIndicator),
+            )
+            .value,
+        0.4,
+      );
+      expect(find.byType(GentlePulse), findsNothing);
     });
   }
 }
