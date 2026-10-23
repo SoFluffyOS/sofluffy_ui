@@ -53,6 +53,9 @@ class ReducedMotionPulse extends StatelessWidget {
   final Widget still;
   final Widget child;
 
+  /// How much of a spinner's ring shows in its [still] version.
+  static const stillArc = 0.75;
+
   @override
   Widget build(BuildContext context) {
     if (!context.reducesMotion) return child;
