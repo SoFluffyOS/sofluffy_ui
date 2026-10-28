@@ -88,4 +88,77 @@ void main() {
     expect(changes, [true, false]);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'compact is smaller on desktop and still toggles',
+    (
+      tester,
+    ) async {
+      final changes = <bool>[];
+      await tester.pumpWidget(
+        app(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SwitchToggle(
+                key: const ValueKey('regular'),
+                value: false,
+                onChanged: (_) {},
+              ),
+              SwitchToggle(
+                key: const ValueKey('compact'),
+                value: false,
+                size: SwitchToggleSize.compact,
+                onChanged: changes.add,
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final regular = tester.getSize(find.byKey(const ValueKey('regular')));
+      final compact = tester.getSize(find.byKey(const ValueKey('compact')));
+      expect(compact.width, lessThan(regular.width));
+      expect(compact.height, lessThan(regular.height));
+
+      await tester.tap(find.byKey(const ValueKey('compact')));
+      await tester.pumpAndSettle();
+      expect(changes, [true]);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+  );
+
+  testWidgets(
+    'compact keeps the regular size on touch platforms',
+    (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        app(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SwitchToggle(
+                key: const ValueKey('regular'),
+                value: false,
+                onChanged: (_) {},
+              ),
+              SwitchToggle(
+                key: const ValueKey('compact'),
+                value: false,
+                size: SwitchToggleSize.compact,
+                onChanged: (_) {},
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSize(find.byKey(const ValueKey('compact'))),
+        tester.getSize(find.byKey(const ValueKey('regular'))),
+      );
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+  );
 }

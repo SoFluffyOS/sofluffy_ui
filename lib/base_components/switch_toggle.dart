@@ -4,11 +4,27 @@ import 'dart:ui';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
+/// How large a [SwitchToggle] draws on desktop.
+enum SwitchToggleSize {
+  /// The usual size, for settings and forms.
+  regular,
+
+  /// A smaller one for dense toolbars, in line with small text. Touch
+  /// platforms keep the regular size, so it stays easy to hit.
+  compact,
+}
+
 class SwitchToggle extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
+  final SwitchToggleSize size;
 
-  const SwitchToggle({super.key, required this.value, required this.onChanged});
+  const SwitchToggle({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.size = SwitchToggleSize.regular,
+  });
 
   @override
   State<SwitchToggle> createState() => _SwitchToggleState();
@@ -36,20 +52,56 @@ class _SwitchToggleState extends State<SwitchToggle>
   double _dragPositionX = 0;
   Timer? _tapTimer;
 
-  double _outerPadding(bool isDesktop) => isDesktop ? Spacing.d4 : Spacing.d8;
-  double _innerPadding(bool isDesktop) => isDesktop ? Spacing.d4 : Spacing.d2;
-  double _thumbSize(bool isDesktop) => isDesktop ? Spacing.d16 : Spacing.d24;
+  bool _isCompact(bool isDesktop) =>
+      isDesktop && widget.size == SwitchToggleSize.compact;
+
+  double _outerPadding(bool isDesktop) =>
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Spacing.d2,
+        (true, false) => Spacing.d4,
+        (false, _) => Spacing.d8,
+      };
+  double _innerPadding(bool isDesktop) =>
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Spacing.d3,
+        (true, false) => Spacing.d4,
+        (false, _) => Spacing.d2,
+      };
+  double _thumbSize(bool isDesktop) =>
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Spacing.d10,
+        (true, false) => Spacing.d16,
+        (false, _) => Spacing.d24,
+      };
   double _containerHeight(bool isDesktop) =>
       _thumbSize(isDesktop) +
       (_innerPadding(isDesktop) * 2) +
       (isDesktop ? 0 : Spacing.d4);
   double _containerWidth(bool isDesktop) =>
-      isDesktop ? Spacing.d40 : Spacing.d56;
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Spacing.d28,
+        (true, false) => Spacing.d40,
+        (false, _) => Spacing.d56,
+      };
 
   Radius _sideRadius(bool isDesktop) =>
-      Radius.circular(isDesktop ? Spacing.d12 : Spacing.d48);
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Radius.circular(Spacing.d8),
+        (true, false) => Radius.circular(Spacing.d12),
+        (false, _) => Radius.circular(Spacing.d48),
+      };
   Radius _roomRadius(bool isDesktop) =>
-      Radius.circular(isDesktop ? Spacing.d4 : Spacing.d12);
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Radius.circular(Spacing.d2),
+        (true, false) => Radius.circular(Spacing.d4),
+        (false, _) => Radius.circular(Spacing.d12),
+      };
+  BorderRadius _trackRadius(bool isDesktop) =>
+      switch ((isDesktop, _isCompact(isDesktop))) {
+        (_, true) => Spacing.r6,
+        (true, false) => Spacing.r8,
+        (false, _) => Spacing.r12,
+      };
 
   @override
   void initState() {
@@ -245,7 +297,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                           : _currentValue,
                     ),
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: isDesktop ? Spacing.r8 : Spacing.r12,
+                      borderRadius: _trackRadius(isDesktop),
                       side: BorderSide(
                         color: _getBorderColor(
                           theme: theme,
