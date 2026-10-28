@@ -161,4 +161,23 @@ void main() {
     },
     variant: TargetPlatformVariant.only(TargetPlatform.iOS),
   );
+
+  for (final size in SwitchToggleSize.values) {
+    testWidgets(
+      'a ${size.name} switch moves as quickly as other toggles',
+      (tester) async {
+        await tester.pumpWidget(
+          app(SwitchToggle(value: false, size: size, onChanged: (_) {})),
+        );
+        await tester.tap(find.byType(SwitchToggle));
+        // Its tap delay, then FluffyDurations.toggle.
+        await tester.pump(const Duration(milliseconds: 150));
+        await tester.pump(FluffyDurations.toggle);
+        await tester.pump(const Duration(milliseconds: 50));
+
+        expect(tester.hasRunningAnimations, isFalse);
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.macOS),
+    );
+  }
 }

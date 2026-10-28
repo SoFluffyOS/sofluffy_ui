@@ -35,7 +35,7 @@ class _SwitchToggleState extends State<SwitchToggle>
   final DoughController _doughController = DoughController();
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: FluffyDurations.slow,
+    duration: FluffyDurations.toggle,
   );
   late final Animation<double> _animation = CurvedAnimation(
     parent: _animationController,
@@ -285,7 +285,7 @@ class _SwitchToggleState extends State<SwitchToggle>
               children: [
                 AnimatedContainer(
                   curve: Curves.easeOut,
-                  duration: FluffyDurations.slow,
+                  duration: FluffyDurations.toggle,
                   width: _containerWidth(isDesktop),
                   height: _containerHeight(isDesktop),
                   decoration: ShapeDecoration(
