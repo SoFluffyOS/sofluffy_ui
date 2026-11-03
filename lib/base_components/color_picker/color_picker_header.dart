@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/base_components/color_picker/checkerboard.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The color before and after: a click on [original] goes back to it, one

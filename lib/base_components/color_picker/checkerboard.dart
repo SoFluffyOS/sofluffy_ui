@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+/// The color picker's own, not exported: apps often have one by that name.
+///
 /// The light and dark squares behind a color with alpha, so its
 /// transparency shows.
 class CheckerboardPainter extends CustomPainter {

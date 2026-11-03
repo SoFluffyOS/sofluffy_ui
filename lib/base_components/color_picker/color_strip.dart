@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sofluffy_ui/base_components/color_picker/checkerboard.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A horizontal strip picking a [value] from 0 to 1 along [colors], such as
