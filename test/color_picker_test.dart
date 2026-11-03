@@ -98,6 +98,24 @@ void main() {
       expect(picked.last, const Color(0x80112233));
     });
 
+    testWidgets('the original shows beside the picked color', (tester) async {
+      await tester.pumpWidget(
+        picker(
+          color: const Color(0xff00ff00),
+          original: const Color(0xff0000ff),
+        ),
+      );
+
+      final original = find.byWidgetPredicate(
+        (widget) =>
+            widget is ColoredBox && widget.color == const Color(0xff0000ff),
+      );
+      final header = tester.getRect(find.byType(ColorPickerHeader));
+      final rect = tester.getRect(original);
+      expect(rect.height, header.height);
+      expect(rect.width, closeTo(header.width / 4, 1));
+    });
+
     testWidgets('a click on the original goes back to it', (tester) async {
       await tester.pumpWidget(
         picker(

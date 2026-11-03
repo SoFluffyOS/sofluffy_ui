@@ -56,7 +56,8 @@ class ColorPickerHeader extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     tooltip: 'Original color',
                     enableAnimation: false,
-                    child: ColoredBox(color: original),
+                    // Tappable lays its child out loosely: fill the space.
+                    child: SizedBox.expand(child: ColoredBox(color: original)),
                   ),
                 ),
               Expanded(
