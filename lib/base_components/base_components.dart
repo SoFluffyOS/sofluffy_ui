@@ -2,6 +2,7 @@ export 'bottom_container.dart';
 export 'bottom_spacer.dart';
 export 'buttons.dart';
 export 'check_box.dart';
+export 'color_picker/color_picker.dart';
 export 'date_picker.dart';
 export 'disable_widget.dart';
 export 'empty_widget.dart';
