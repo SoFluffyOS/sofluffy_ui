@@ -24,6 +24,7 @@ export 'progress_bar_painter.dart';
 export 'progress_ring_painter.dart';
 export 'radio_icon.dart';
 export 'round_card.dart';
+export 'shimmer_band.dart';
 export 'shimmer_painter.dart';
 export 'stepper.dart';
 export 'switch_toggle.dart';

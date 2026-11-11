@@ -5,17 +5,18 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 /// The one clock every spinner, progress bar, shimmer and pulse moves to:
-/// seconds since it started, drawn [stepsPerSecond] times a second.
+/// seconds on one stopwatch that never stops, drawn [stepsPerSecond] times
+/// a second.
 ///
 /// A [Ticker] asks for a frame on every vsync, 120 a second on a ProMotion
 /// display, and each frame costs the whole pipeline however small the
 /// change. Stepping on a timer draws a quarter of those frames, and sharing
-/// it draws every loading effect in the same ones. It runs only while
-/// something listens, and starts again from zero.
+/// it draws every loading effect in the same ones, all at the same phase.
 ///
 /// The time is measured, not counted in steps, so a late step on a busy
-/// machine never slows the effects down. It stands still while the window
-/// draws no frames, so they don't jump when it shows again.
+/// machine never slows the effects down, and an effect rebuilt or shown
+/// again carries on where every other one is. The timer runs only while
+/// something listens, and draws nothing while the window draws no frames.
 class LoadingClock extends Animation<double>
     with
         AnimationLazyListenerMixin,
@@ -44,9 +45,12 @@ class LoadingClock extends Animation<double>
       };
 
   Timer? _timer;
-  Stopwatch _elapsed = clock.stopwatch();
+  Stopwatch? _stopwatch;
+  Clock? _stopwatchClock;
 
-  /// Whether the clock steps now: something on screen moves with it.
+  /// Whether the clock steps now. When its last listener goes during a
+  /// frame, as when a rebuild swaps a painter for another, it stops only
+  /// once the frame is done, if nothing listens again by then.
   bool get isRunning => _timer != null;
 
   @override
@@ -56,27 +60,56 @@ class LoadingClock extends Animation<double>
   @override
   AnimationStatus get status => AnimationStatus.forward;
 
+  /// The one stopwatch, made on first use. Only a different [clock], as each
+  /// test's fake time brings, makes another.
+  Stopwatch get _elapsed {
+    final current = clock;
+    final stopwatch = _stopwatch;
+    if (stopwatch != null && identical(_stopwatchClock, current)) {
+      return stopwatch;
+    }
+
+    _stopwatchClock = current;
+    return _stopwatch = current.stopwatch()..start();
+  }
+
   @override
   void didStartListening() {
-    _elapsed = clock.stopwatch()..start();
-    _timer = Timer.periodic(_step, _onStep);
+    _timer ??= Timer.periodic(_step, _onStep);
   }
 
   @override
   void didStopListening() {
-    _timer?.cancel();
-    _timer = null;
-    _elapsed.stop();
-  }
-
-  void _onStep(Timer timer) {
-    final windowShows = SchedulerBinding.instance.framesEnabled;
-    if (!windowShows) {
-      _elapsed.stop();
+    final scheduler = SchedulerBinding.instance;
+    final inFrame = scheduler.schedulerPhase != SchedulerPhase.idle;
+    if (!inFrame) {
+      _stopUnlessListened();
       return;
     }
 
-    _elapsed.start();
+    scheduler.addPostFrameCallback((_) => _stopUnlessListened());
+  }
+
+  void _stopUnlessListened() {
+    if (isListening) {
+      return;
+    }
+
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void _onStep(Timer timer) {
+    if (!isListening) {
+      _stopUnlessListened();
+      return;
+    }
+
+    final windowShows = SchedulerBinding.instance.framesEnabled;
+    if (!windowShows) {
+      return;
+    }
+
     notifyListeners();
   }
 }

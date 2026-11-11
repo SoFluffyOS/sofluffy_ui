@@ -31,34 +31,73 @@ void main() {
     fakeAsync((async) {
       var steps = 0;
       void count() => steps++;
+      final start = LoadingClock.instance.value;
       LoadingClock.instance.addListener(count);
 
       async.elapse(const Duration(milliseconds: 40));
       async.elapseBlocking(const Duration(milliseconds: 500));
 
       expect(steps, 1);
-      expect(LoadingClock.instance.value, closeTo(0.54, 0.001));
+      expect(LoadingClock.instance.value - start, closeTo(0.54, 0.001));
       LoadingClock.instance.removeListener(count);
     });
   });
 
-  testWidgets('stands still while the window draws no frames', (
+  testWidgets('draws nothing while the window draws no frames', (
     tester,
   ) async {
     await tester.pumpWidget(app(const FluffySpinner()));
-    await tester.pump(const Duration(seconds: 1));
-    final shown = LoadingClock.instance.value;
+    var steps = 0;
+    void count() => steps++;
+    LoadingClock.instance.addListener(count);
 
     tester.binding
       ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
       ..handleAppLifecycleStateChanged(AppLifecycleState.hidden);
-    await tester.pump(const Duration(seconds: 5));
-    final hidden = LoadingClock.instance.value;
+    await tester.pump(const Duration(seconds: 1));
     tester.binding
       ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
       ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    LoadingClock.instance.removeListener(count);
 
-    expect(hidden - shown, lessThan(0.1));
+    expect(steps, 0);
+  });
+
+  testWidgets('a rebuild that swaps the painter carries on the turn', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      app(const FluffySpinner(color: Color(0xFF000000))),
+    );
+    await tester.pump(const Duration(milliseconds: 500));
+    final before = LoadingClock.instance.value;
+
+    await tester.pumpWidget(
+      app(const FluffySpinner(color: Color(0xFFFFFFFF))),
+    );
+
+    expect(LoadingClock.instance.isRunning, isTrue);
+    expect(LoadingClock.instance.value, greaterThanOrEqualTo(before));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(LoadingClock.instance.value, closeTo(before + 0.5, 0.05));
+  });
+
+  test('a listener added again within a step carries on the time', () {
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    fakeAsync((async) {
+      void listen() {}
+      LoadingClock.instance.addListener(listen);
+      async.elapse(const Duration(milliseconds: 500));
+      final before = LoadingClock.instance.value;
+
+      LoadingClock.instance.removeListener(listen);
+      async.elapse(const Duration(milliseconds: 10));
+      LoadingClock.instance.addListener(listen);
+
+      expect(LoadingClock.instance.value, closeTo(before + 0.01, 0.001));
+      LoadingClock.instance.removeListener(listen);
+    });
   });
 
   testWidgets('runs only while something moves with it', (tester) async {
@@ -66,6 +105,7 @@ void main() {
     expect(LoadingClock.instance.isRunning, isTrue);
 
     await tester.pumpWidget(app(const FluffySpinner(value: 0.5)));
+    await tester.pump(const Duration(milliseconds: 100));
     expect(LoadingClock.instance.isRunning, isFalse);
   });
 
