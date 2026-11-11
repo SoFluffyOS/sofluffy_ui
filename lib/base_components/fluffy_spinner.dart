@@ -1,78 +1,70 @@
-import 'package:flutter/material.dart'
-    show CircularProgressIndicator, LinearProgressIndicator;
+import 'package:flutter/material.dart' show ProgressIndicatorTheme;
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// A progress ring: spinning while progress is unknown, filled to [value]
 /// otherwise. When motion is reduced, a spinning ring stands still and
 /// pulses gently instead.
+///
+/// It moves with [LoadingClock], so a spinner costs a few frames a second
+/// rather than one per vsync.
 class FluffySpinner extends StatelessWidget {
-  const FluffySpinner({super.key, this.value, this.strokeWidth, this.color})
-    : adaptive = false;
-
-  /// The platform's own indicator: Cupertino's on Apple platforms.
-  const FluffySpinner.adaptive({super.key, this.value})
-    : adaptive = true,
-      strokeWidth = null,
-      color = null;
-
-  final double? value;
-  final double? strokeWidth;
-  final Color? color;
-  final bool adaptive;
-
-  Widget _ring(double? value) => switch (adaptive) {
-    true => CircularProgressIndicator.adaptive(value: value),
-    false => CircularProgressIndicator(
-      value: value,
-      strokeWidth: strokeWidth,
-      color: color,
-    ),
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    final spins = value == null;
-    if (!spins) return _ring(value);
-    return ReducedMotionPulse(
-      // A full Cupertino wheel reads as one at rest.
-      still: _ring(switch (adaptive) {
-        true => 1,
-        false => ReducedMotionPulse.stillArc,
-      }),
-      child: _ring(null),
-    );
-  }
-}
-
-/// A progress bar: sweeping while progress is unknown, filled to [value]
-/// otherwise. When motion is reduced, a sweeping bar fills and pulses
-/// gently instead.
-class FluffyProgressBar extends StatelessWidget {
-  const FluffyProgressBar({
+  const FluffySpinner({
     super.key,
     this.value,
-    this.minHeight,
+    this.size,
+    this.strokeWidth,
     this.color,
-    this.backgroundColor,
+    this.trackColor,
   });
 
+  /// How much is done, from 0 to 1, or null while it isn't known.
   final double? value;
-  final double? minHeight;
-  final Color? color;
-  final Color? backgroundColor;
 
-  Widget _bar(double? value) => LinearProgressIndicator(
-    value: value,
-    minHeight: minHeight,
-    color: color,
-    backgroundColor: backgroundColor,
-  );
+  /// The ring's diameter when its parent leaves it free; the parent's size
+  /// otherwise. Defaults to [Spacing.d20].
+  final double? size;
+
+  /// Defaults to [Spacing.d2].
+  final double? strokeWidth;
+
+  /// Defaults to the theme's primary color.
+  final Color? color;
+
+  /// The circle behind the ring. Known progress shows a neutral one by
+  /// default; a spinner shows none unless given one.
+  final Color? trackColor;
 
   @override
   Widget build(BuildContext context) {
-    final sweeps = value == null;
-    if (!sweeps) return _bar(value);
-    return ReducedMotionPulse(still: _bar(1), child: _bar(null));
+    final color = this.color ?? context.fluffyTheme.colors.primary;
+    final strokeWidth = this.strokeWidth ?? Spacing.d2;
+    final dimension = size ?? Spacing.d20;
+
+    Widget ring(double? value, Color? track) => CustomPaint(
+      size: Size.square(dimension),
+      painter: ProgressRingPainter(
+        clock: LoadingClock.of(context),
+        value: value,
+        color: color,
+        trackColor: track,
+        strokeWidth: strokeWidth,
+      ),
+    );
+
+    if (value case final value?) {
+      return ring(value, trackColor ?? neutralTrack(context));
+    }
+
+    return ReducedMotionPulse(
+      still: ring(ReducedMotionPulse.stillArc, trackColor),
+      child: RepaintBoundary(child: ring(null, trackColor)),
+    );
   }
+
+  /// The track behind known progress when none is given: the theme's, else
+  /// a faint neutral that reads on light and dark backgrounds.
+  static Color neutralTrack(BuildContext context) =>
+      ProgressIndicatorTheme.of(context).circularTrackColor ??
+      context.fluffyTheme.colors.neutral5.withValues(alpha: 0.3);
 }

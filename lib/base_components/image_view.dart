@@ -41,12 +41,9 @@ class ImageView extends StatelessWidget {
       return SizedBox(
         width: size ?? width,
         height: size ?? height,
-        child: FluffyShimmer(
+        child: const FluffyShimmer(
           baseColor: FluffyColors.shimmerBaseLight,
           highlightColor: FluffyColors.shimmerHighlightLight,
-          child: Container(
-            color: FluffyColors.white,
-          ),
         ),
       );
     }
@@ -63,9 +60,6 @@ class ImageView extends StatelessWidget {
           highlightColor: isDark
               ? FluffyColors.shimmerHighlightDark
               : FluffyColors.shimmerHighlightLight,
-          child: Container(
-            color: FluffyColors.white,
-          ),
         ),
       );
     }
@@ -91,10 +85,7 @@ class ImageView extends StatelessWidget {
           fit: fit ?? BoxFit.cover,
           alignment: alignment ?? Alignment.center,
           colorFilter: color != null
-              ? ColorFilter.mode(
-                  color!,
-                  BlendMode.srcIn,
-                )
+              ? ColorFilter.mode(color!, BlendMode.srcIn)
               : null,
           package: assetPackage,
         );
@@ -120,10 +111,7 @@ class ImageView extends StatelessWidget {
         fit: fit ?? BoxFit.cover,
         alignment: alignment ?? Alignment.center,
         colorFilter: color != null
-            ? ColorFilter.mode(
-                color!,
-                BlendMode.srcIn,
-              )
+            ? ColorFilter.mode(color!, BlendMode.srcIn)
             : null,
       );
     }
@@ -144,12 +132,9 @@ class ImageView extends StatelessWidget {
         return SizedBox(
           width: size ?? width,
           height: size ?? height,
-          child: FluffyShimmer(
+          child: const FluffyShimmer(
             baseColor: FluffyColors.shimmerBaseLight,
             highlightColor: FluffyColors.shimmerHighlightLight,
-            child: Container(
-              color: FluffyColors.white,
-            ),
           ),
         );
       },

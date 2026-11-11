@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart'
-    show CircularProgressIndicator, LinearProgressIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -190,6 +188,30 @@ void main() {
     });
   }
 
+  ProgressRingPainter ringOf(WidgetTester tester) =>
+      tester
+              .widget<CustomPaint>(
+                find.byWidgetPredicate(
+                  (widget) =>
+                      widget is CustomPaint &&
+                      widget.painter is ProgressRingPainter,
+                ),
+              )
+              .painter
+          as ProgressRingPainter;
+
+  ProgressBarPainter barOf(WidgetTester tester) =>
+      tester
+              .widget<CustomPaint>(
+                find.byWidgetPredicate(
+                  (widget) =>
+                      widget is CustomPaint &&
+                      widget.painter is ProgressBarPainter,
+                ),
+              )
+              .painter
+          as ProgressBarPainter;
+
   for (final reducesMotion in [false, true]) {
     testWidgets('a spinner spins unless motion is reduced, then pulses a '
         'still ring (reduced: $reducesMotion)', (tester) async {
@@ -199,9 +221,7 @@ void main() {
           reducesMotion: reducesMotion,
         ),
       );
-      final ring = tester.widget<CircularProgressIndicator>(
-        find.byType(CircularProgressIndicator),
-      );
+      final ring = ringOf(tester);
 
       expect(ring.strokeWidth, 2);
       switch (reducesMotion) {
@@ -218,52 +238,40 @@ void main() {
         '(reduced: $reducesMotion)', (tester) async {
       await tester.pumpWidget(
         app(
-          const FluffyProgressBar(minHeight: 1),
+          const SizedBox(width: 100, child: FluffyProgressBar(minHeight: 1)),
           reducesMotion: reducesMotion,
         ),
       );
-      final bar = tester.widget<LinearProgressIndicator>(
-        find.byType(LinearProgressIndicator),
-      );
 
-      expect(bar.minHeight, 1);
-      expect(bar.value, switch (reducesMotion) {
+      expect(tester.getSize(find.byType(FluffyProgressBar)).height, 1);
+      expect(barOf(tester).value, switch (reducesMotion) {
         true => 1,
         false => null,
       });
     });
 
-    testWidgets('known progress shows as it is (reduced: $reducesMotion)', (
-      tester,
-    ) async {
+    testWidgets('known progress shows as it is, over a track '
+        '(reduced: $reducesMotion)', (tester) async {
       await tester.pumpWidget(
         app(
-          const Column(
-            children: [
-              SizedBox.square(dimension: 20, child: FluffySpinner(value: 0.4)),
-              FluffyProgressBar(value: 0.4),
-            ],
+          const SizedBox(
+            width: 100,
+            child: Column(
+              children: [
+                FluffySpinner(value: 0.4, size: 12),
+                FluffyProgressBar(value: 0.4),
+              ],
+            ),
           ),
           reducesMotion: reducesMotion,
         ),
       );
+      final ring = ringOf(tester);
 
-      expect(
-        tester
-            .widget<CircularProgressIndicator>(
-              find.byType(CircularProgressIndicator),
-            )
-            .value,
-        0.4,
-      );
-      expect(
-        tester
-            .widget<LinearProgressIndicator>(
-              find.byType(LinearProgressIndicator),
-            )
-            .value,
-        0.4,
-      );
+      expect(ring.value, 0.4);
+      expect(ring.trackColor, isNotNull);
+      expect(tester.getSize(find.byType(FluffySpinner)), const Size(12, 12));
+      expect(barOf(tester).value, 0.4);
       expect(find.byType(GentlePulse), findsNothing);
     });
   }

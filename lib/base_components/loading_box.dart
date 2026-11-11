@@ -28,16 +28,7 @@ class LoadingBox extends StatelessWidget {
         highlightColor: isDark
             ? FluffyColors.shimmerHighlightDark
             : FluffyColors.shimmerHighlightLightAlt,
-        child: Container(
-          decoration: ShapeDecoration(
-            color: FluffyColors.white,
-            shape: RoundedSuperellipseBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(shimmerBorderRadius ?? Spacing.d12),
-              ),
-            ),
-          ),
-        ),
+        borderRadius: shimmerBorderRadius ?? Spacing.d12,
       ),
     );
   }

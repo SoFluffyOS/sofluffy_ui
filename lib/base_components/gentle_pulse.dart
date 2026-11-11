@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Fades [child] slowly in and out, for progress shown without movement.
-class GentlePulse extends StatefulWidget {
+///
+/// It fades with [LoadingClock], so every pulse on screen keeps time.
+class GentlePulse extends StatelessWidget {
   const GentlePulse({super.key, required this.child});
 
   final Widget child;
@@ -14,30 +16,32 @@ class GentlePulse extends StatefulWidget {
   static const lowestOpacity = 0.35;
 
   @override
-  State<GentlePulse> createState() => _GentlePulseState();
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: LoadingClock.of(context).drive(const _PulseOpacity()),
+      child: child,
+    );
+  }
 }
 
-class _GentlePulseState extends State<GentlePulse>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: GentlePulse.halfPeriod,
-  )..repeat(reverse: true);
+/// Seconds on [LoadingClock] to opacity: from 1 down to
+/// [GentlePulse.lowestOpacity] and back, easing each way.
+class _PulseOpacity extends Animatable<double> {
+  const _PulseOpacity();
 
-  late final Animation<double> _opacity = Tween<double>(
-    begin: 1,
-    end: GentlePulse.lowestOpacity,
-  ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  static final _halfPeriodSeconds =
+      GentlePulse.halfPeriod.inMicroseconds / Duration.microsecondsPerSecond;
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  double transform(double seconds) {
+    final phase = (seconds / _halfPeriodSeconds) % 2;
+    final fading = switch (phase <= 1) {
+      true => phase,
+      false => 2 - phase,
+    };
+    final eased = Curves.easeInOut.transform(fading);
 
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(opacity: _opacity, child: widget.child);
+    return 1 - (1 - GentlePulse.lowestOpacity) * eased;
   }
 }
 
@@ -58,7 +62,10 @@ class ReducedMotionPulse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!context.reducesMotion) return child;
+    if (!context.reducesMotion) {
+      return child;
+    }
+
     return GentlePulse(child: still);
   }
 }
