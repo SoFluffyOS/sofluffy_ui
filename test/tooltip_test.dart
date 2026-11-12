@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -390,6 +391,49 @@ void main() {
         matchesSemantics(tooltip: 'Close'),
       );
       semantics.dispose();
+    });
+    testWidgets('Escape hides it without reaching the focused widget', (
+      tester,
+    ) async {
+      final focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
+      var escapesReachingFocus = 0;
+      await tester.pumpWidget(
+        buildApp(
+          child: Center(
+            child: Focus(
+              focusNode: focusNode,
+              autofocus: true,
+              onKeyEvent: (node, event) {
+                if (event is KeyDownEvent &&
+                    event.logicalKey == LogicalKeyboardKey.escape) {
+                  escapesReachingFocus++;
+                }
+                return KeyEventResult.ignored;
+              },
+              child: const FluffyTooltip(
+                message: 'Escapable',
+                child: Text('Hover target'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.text('Hover target')));
+      await tester.pump(FluffyDurations.tooltip);
+      expect(find.text('Escapable'), findsOneWidget);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pump();
+      expect(find.text('Escapable'), findsNothing);
+      expect(escapesReachingFocus, 0);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      expect(escapesReachingFocus, 1);
     });
   });
 }

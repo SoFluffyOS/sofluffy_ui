@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// Shows [message] by [child] while a mouse rests on it, and names
-/// [child] with it for screen readers. A press hides it.
+/// [child] with it for screen readers. A press hides it, and so does
+/// Escape, which it keeps from also reaching the focused widget.
 class FluffyTooltip extends StatefulWidget {
   const FluffyTooltip({
     super.key,
@@ -46,6 +47,7 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
     final entry = _entry;
     if (entry == null) return;
     _entry = null;
+    _stopListeningForEscape();
     try {
       entry.remove();
     } catch (_) {}
@@ -157,6 +159,44 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
 
     _entry = entry;
     overlay.insert(entry);
+    _listenForEscape();
+  }
+
+  // The early handler runs before the focused widget sees the key, so
+  // Escape hides the tooltip without also closing a dialog or clearing a
+  // field. With nothing focused, only the keyboard handler hears it.
+  void _listenForEscape() {
+    FocusManager.instance.addEarlyKeyEventHandler(_handleEarlyKeyEvent);
+    HardwareKeyboard.instance.addHandler(_handleUnfocusedKeyEvent);
+  }
+
+  void _stopListeningForEscape() {
+    FocusManager.instance.removeEarlyKeyEventHandler(_handleEarlyKeyEvent);
+    HardwareKeyboard.instance.removeHandler(_handleUnfocusedKeyEvent);
+  }
+
+  bool _isEscapeDown(KeyEvent event) {
+    final isDown = event is KeyDownEvent || event is KeyRepeatEvent;
+    return isDown && event.logicalKey == LogicalKeyboardKey.escape;
+  }
+
+  KeyEventResult _handleEarlyKeyEvent(KeyEvent event) {
+    if (!_isEscapeDown(event) || _entry == null) {
+      return KeyEventResult.ignored;
+    }
+
+    _hide();
+    return KeyEventResult.handled;
+  }
+
+  bool _handleUnfocusedKeyEvent(KeyEvent event) {
+    final hasFocus = FocusManager.instance.primaryFocus != null;
+    if (hasFocus || !_isEscapeDown(event) || _entry == null) {
+      return false;
+    }
+
+    _hide();
+    return true;
   }
 
   @override
