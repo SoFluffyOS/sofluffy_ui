@@ -22,6 +22,14 @@ class FluffyColors {
   static const Color info = Color(0xFF2196F3);
   static const Color grey = Color(0xFF9E9E9E);
 
+  /// A brighter red than [error], for what needs attention now.
+  static const Color errorAccent = Color(0xFFFF5252);
+
+  // Accent colors
+  static const Color amber = Color(0xFFFFC107);
+  static const Color amberLight = Color(0xFFFFCA28);
+  static const Color purple = Color(0xFF9C27B0);
+
   // Shimmer colors
   static const Color shimmerBaseLight = Color(0xFFE0E0E0);
   static const Color shimmerHighlightLight = Color(0xFFEEEEEE);
