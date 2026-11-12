@@ -296,5 +296,100 @@ void main() {
 
       expect(find.text('Fast message'), findsNothing);
     });
+    testWidgets('waits for its wait duration', (tester) async {
+      await tester.pumpWidget(
+        buildApp(
+          child: const Center(
+            child: FluffyTooltip(
+              message: 'Slow',
+              waitDuration: Duration(milliseconds: 600),
+              child: Text('Hover target'),
+            ),
+          ),
+        ),
+      );
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.text('Hover target')));
+
+      await tester.pump(FluffyDurations.tooltip);
+      expect(find.text('Slow'), findsNothing);
+
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('Slow'), findsOneWidget);
+    });
+
+    testWidgets('a press hides it', (tester) async {
+      await tester.pumpWidget(
+        buildApp(
+          child: const Center(
+            child: FluffyTooltip(
+              message: 'Pressed',
+              child: Text('Hover target'),
+            ),
+          ),
+        ),
+      );
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.text('Hover target')));
+      await tester.pump(FluffyDurations.tooltip);
+      expect(find.text('Pressed'), findsOneWidget);
+
+      await gesture.down(tester.getCenter(find.text('Hover target')));
+      await tester.pump();
+      expect(find.text('Pressed'), findsNothing);
+      await gesture.up();
+    });
+
+    testWidgets('shows below when it prefers below', (tester) async {
+      await tester.pumpWidget(
+        buildApp(
+          child: const Align(
+            alignment: Alignment(0, 0.5),
+            child: FluffyTooltip(
+              message: 'Below',
+              preferBelow: true,
+              child: Text('Hover target'),
+            ),
+          ),
+        ),
+      );
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.text('Hover target')));
+      await tester.pump(FluffyDurations.tooltip);
+
+      expect(
+        tester.getTopLeft(find.text('Below')).dy,
+        greaterThan(tester.getBottomLeft(find.text('Hover target')).dy),
+      );
+    });
+
+    testWidgets('names its child for screen readers', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(
+        buildApp(
+          child: const Center(
+            child: FluffyTooltip(
+              message: 'Close',
+              child: SizedBox.square(dimension: 20),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.byType(FluffyTooltip)),
+        matchesSemantics(tooltip: 'Close'),
+      );
+      semantics.dispose();
+    });
   });
 }

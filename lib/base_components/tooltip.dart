@@ -5,15 +5,26 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
+/// Shows [message] by [child] while a mouse rests on it, and names
+/// [child] with it for screen readers. A press hides it.
 class FluffyTooltip extends StatefulWidget {
   const FluffyTooltip({
     super.key,
     required this.message,
     required this.child,
+    this.waitDuration = FluffyDurations.tooltip,
+    this.preferBelow,
   });
 
   final String message;
   final Widget child;
+
+  /// How long the mouse rests on [child] before the tooltip shows.
+  final Duration waitDuration;
+
+  /// Whether to show below [child] when it fits both above and below.
+  /// Null picks the side with more room.
+  final bool? preferBelow;
 
   @override
   State<FluffyTooltip> createState() => _FluffyTooltipState();
@@ -26,7 +37,7 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
   void _show(PointerEnterEvent event) {
     if (widget.message.isEmpty) return;
     _showTimer?.cancel();
-    _showTimer = Timer(FluffyDurations.tooltip, _showTooltip);
+    _showTimer = Timer(widget.waitDuration, _showTooltip);
   }
 
   void _hide() {
@@ -92,6 +103,7 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
               delegate: _TooltipLayoutDelegate(
                 targetRect: currentRect,
                 margin: Spacing.d8,
+                preferBelow: widget.preferBelow,
               ),
               child: DecoratedBox(
                 decoration: ShapeDecoration(
@@ -173,10 +185,16 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
   Widget build(BuildContext context) {
     if (widget.message.isEmpty) return widget.child;
 
-    return MouseRegion(
-      onEnter: _show,
-      onExit: (_) => _hide(),
-      child: widget.child,
+    return Semantics(
+      tooltip: widget.message,
+      child: Listener(
+        onPointerDown: (_) => _hide(),
+        child: MouseRegion(
+          onEnter: _show,
+          onExit: (_) => _hide(),
+          child: widget.child,
+        ),
+      ),
     );
   }
 }
@@ -185,10 +203,12 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
   const _TooltipLayoutDelegate({
     required this.targetRect,
     required this.margin,
+    required this.preferBelow,
   });
 
   final Rect targetRect;
   final double margin;
+  final bool? preferBelow;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
@@ -216,7 +236,8 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
     final fitsAbove = targetRect.top - margin - childSize.height >= margin;
     final fitsBelow =
         targetRect.bottom + margin + childSize.height <= size.height - margin;
-    final preferBelow = targetRect.center.dy <= size.height / 2;
+    final preferBelow =
+        this.preferBelow ?? targetRect.center.dy <= size.height / 2;
 
     final showBelow = switch ((fitsAbove, fitsBelow)) {
       (true, true) => preferBelow,
@@ -237,6 +258,8 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
 
   @override
   bool shouldRelayout(_TooltipLayoutDelegate oldDelegate) {
-    return targetRect != oldDelegate.targetRect || margin != oldDelegate.margin;
+    return targetRect != oldDelegate.targetRect ||
+        margin != oldDelegate.margin ||
+        preferBelow != oldDelegate.preferBelow;
   }
 }
