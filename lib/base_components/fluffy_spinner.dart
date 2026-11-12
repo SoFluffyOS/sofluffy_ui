@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show ProgressIndicatorTheme;
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -62,9 +61,8 @@ class FluffySpinner extends StatelessWidget {
     );
   }
 
-  /// The track behind known progress when none is given: the theme's, else
-  /// a faint neutral that reads on light and dark backgrounds.
+  /// The track behind known progress when none is given: a faint neutral
+  /// that reads on light and dark backgrounds.
   static Color neutralTrack(BuildContext context) =>
-      ProgressIndicatorTheme.of(context).circularTrackColor ??
       context.fluffyTheme.colors.neutral5.withValues(alpha: 0.3);
 }

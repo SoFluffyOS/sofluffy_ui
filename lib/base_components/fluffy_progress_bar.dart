@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show ProgressIndicatorTheme;
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -26,21 +25,19 @@ class FluffyProgressBar extends StatelessWidget {
   /// Defaults to the theme's primary color.
   final Color? color;
 
-  /// The track. Defaults to the theme's, else a faint neutral.
+  /// The track. Defaults to a neutral that reads on the theme's background.
   final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    final theme = ProgressIndicatorTheme.of(context);
-    final color = this.color ?? context.fluffyTheme.colors.primary;
+    final colors = context.fluffyTheme.colors;
+    final color = this.color ?? colors.primary;
     final trackColor =
         backgroundColor ??
-        theme.linearTrackColor ??
-        FluffySpinner.neutralTrack(context);
-    final borderRadius = switch (theme.borderRadius) {
-      final BorderRadius radius => radius,
-      _ => BorderRadius.zero,
-    };
+        switch (context.isDark) {
+          true => colors.neutral5,
+          false => colors.neutral3,
+        };
 
     Widget bar(double? value) => ConstrainedBox(
       constraints: BoxConstraints(
@@ -53,7 +50,7 @@ class FluffyProgressBar extends StatelessWidget {
           value: value,
           color: color,
           trackColor: trackColor,
-          borderRadius: borderRadius,
+          borderRadius: Spacing.r12,
         ),
       ),
     );
