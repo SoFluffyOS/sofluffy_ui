@@ -6,6 +6,7 @@ export 'color_picker/color_picker.dart';
 export 'date_picker.dart';
 export 'disable_widget.dart';
 export 'empty_widget.dart';
+export 'fluffy_divider.dart';
 export 'fluffy_progress_bar.dart';
 export 'fluffy_shimmer.dart';
 export 'fluffy_slider.dart';
