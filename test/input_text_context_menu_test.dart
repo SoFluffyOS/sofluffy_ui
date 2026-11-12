@@ -1,25 +1,34 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 void main() {
+  const touchMenu = ValueKey('input-text-touch-menu');
+  const overflowMenu = ValueKey('input-text-touch-menu-overflow');
+  const moreButton = ValueKey('input-text-touch-menu-more');
+  const backButton = ValueKey('input-text-touch-menu-back');
+  const desktopMenu = ValueKey('input-text-context-menu');
+
   Future<void> openMenu(WidgetTester tester) async {
     final controller = TextEditingController(text: 'hello world');
     addTearDown(controller.dispose);
     await tester.pumpWidget(
-      MaterialApp(
+      WidgetsApp(
+        color: const Color(0xFF000000),
         // Above the overlay the menu is drawn in, as in an app.
         builder: (context, child) => FluffyTheme(
           data: FluffyThemeData.fallback(),
           child: child ?? const SizedBox.shrink(),
         ),
-        home: Scaffold(
-          body: Center(
-            child: SizedBox(
-              width: Spacing.d280,
-              child: InputText(controller: controller),
-            ),
+        pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (context, _, _) => builder(context),
+        ),
+        home: Center(
+          child: SizedBox(
+            width: Spacing.d280,
+            child: InputText(controller: controller),
           ),
         ),
       ),
@@ -33,26 +42,49 @@ void main() {
   }
 
   for (final platform in [TargetPlatform.android, TargetPlatform.iOS]) {
-    testWidgets('$platform: the platform text menu', (tester) async {
+    testWidgets('$platform: a row of buttons sized for touch', (tester) async {
       debugDefaultTargetPlatformOverride = platform;
       await openMenu(tester);
-      expect(find.byType(AdaptiveTextSelectionToolbar), findsOneWidget);
+
+      expect(find.byKey(touchMenu), findsOneWidget);
+      expect(find.byKey(desktopMenu), findsNothing);
       expect(
-        find.byKey(const ValueKey('input-text-context-menu')),
-        findsNothing,
+        find.descendant(of: find.byKey(touchMenu), matching: find.text('Copy')),
+        findsOneWidget,
       );
       debugDefaultTargetPlatformOverride = null;
     });
   }
 
+  testWidgets('buttons that do not fit wait behind the more button', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    tester.view.physicalSize = const Size(200, 600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await openMenu(tester);
+
+    expect(find.byKey(moreButton), findsOneWidget);
+    expect(find.text('Select all'), findsNothing);
+
+    await tester.tap(find.byKey(moreButton));
+    await tester.pumpAndSettle();
+    expect(find.byKey(overflowMenu), findsOneWidget);
+    expect(find.text('Select all'), findsOneWidget);
+
+    await tester.tap(find.byKey(backButton));
+    await tester.pumpAndSettle();
+    expect(find.byKey(touchMenu), findsOneWidget);
+    debugDefaultTargetPlatformOverride = null;
+  });
+
   testWidgets('desktop: the Fluffy text menu', (tester) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
     await openMenu(tester);
-    expect(find.byType(AdaptiveTextSelectionToolbar), findsNothing);
-    expect(
-      find.byKey(const ValueKey('input-text-context-menu')),
-      findsOneWidget,
-    );
+
+    expect(find.byKey(desktopMenu), findsOneWidget);
+    expect(find.byKey(touchMenu), findsNothing);
     debugDefaultTargetPlatformOverride = null;
   });
 }

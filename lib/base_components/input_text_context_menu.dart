@@ -39,44 +39,11 @@ class _InputTextContextMenuPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.fluffyTheme;
-    final isDark = context.isDark;
-    final backgroundColor = switch (isDark) {
-      true => theme.colors.neutral6,
-      false => theme.colors.neutral2,
-    };
-    final borderColor = switch (isDark) {
-      true => theme.colors.neutral5,
-      false => theme.colors.neutral3,
-    };
-
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: Spacing.d200),
       child: DecoratedBox(
         key: const ValueKey('input-text-context-menu'),
-        decoration: ShapeDecoration(
-          color: backgroundColor,
-          shape: RoundedSuperellipseBorder(
-            borderRadius: Spacing.r8,
-            side: BorderSide(
-              color: borderColor,
-              width: Spacing.d1,
-              strokeAlign: BorderSide.strokeAlignInside,
-            ),
-          ),
-          shadows: [
-            BoxShadow(
-              color: borderColor.withValues(alpha: 0.1),
-              blurRadius: Spacing.d1,
-              spreadRadius: Spacing.d1,
-            ),
-            BoxShadow(
-              color: FluffyColors.shadowMedium,
-              blurRadius: Spacing.d12,
-              offset: Offset(0, Spacing.d4),
-            ),
-          ],
-        ),
+        decoration: _contextMenuDecoration(context),
         child: ClipRSuperellipse(
           borderRadius: Spacing.r8,
           child: Padding(
@@ -169,4 +136,42 @@ class _InputTextContextMenuItemState extends State<_InputTextContextMenuItem> {
       ContextMenuButtonType.custom => '',
     };
   }
+}
+
+/// The panel both text menus are drawn on.
+ShapeDecoration _contextMenuDecoration(BuildContext context) {
+  final theme = context.fluffyTheme;
+  final isDark = context.isDark;
+  final backgroundColor = switch (isDark) {
+    true => theme.colors.neutral6,
+    false => theme.colors.neutral2,
+  };
+  final borderColor = switch (isDark) {
+    true => theme.colors.neutral5,
+    false => theme.colors.neutral3,
+  };
+
+  return ShapeDecoration(
+    color: backgroundColor,
+    shape: RoundedSuperellipseBorder(
+      borderRadius: Spacing.r8,
+      side: BorderSide(
+        color: borderColor,
+        width: Spacing.d1,
+        strokeAlign: BorderSide.strokeAlignInside,
+      ),
+    ),
+    shadows: [
+      BoxShadow(
+        color: borderColor.withValues(alpha: 0.1),
+        blurRadius: Spacing.d1,
+        spreadRadius: Spacing.d1,
+      ),
+      BoxShadow(
+        color: FluffyColors.shadowMedium,
+        blurRadius: Spacing.d12,
+        offset: Offset(0, Spacing.d4),
+      ),
+    ],
+  );
 }

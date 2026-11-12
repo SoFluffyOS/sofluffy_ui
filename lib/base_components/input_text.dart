@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart' show defaultTargetPlatform;
-import 'package:flutter/material.dart' show AdaptiveTextSelectionToolbar;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 part 'input_text_context_menu.dart';
+part 'input_text_touch_menu.dart';
 
 typedef DecorationBuilder =
     Decoration Function(
@@ -175,10 +175,9 @@ class _InputTextState extends State<InputText>
     super.didUpdateWidget(oldWidget);
   }
 
-  /// Phones and tablets get the platform's own text menu (the system menu
-  /// on iOS 16+, with Look Up and Translate; Flutter's adaptive toolbar
-  /// on Android), so text fields behave like every other app there.
-  /// Desktop keeps the Fluffy menu.
+  /// Phones and tablets get the system menu where there is one (iOS 16+,
+  /// with Look Up and Translate), else a Fluffy row of buttons sized for
+  /// touch. Desktop gets the Fluffy menu.
   Widget _buildContextMenu(
     BuildContext context,
     EditableTextState editableTextState,
@@ -190,8 +189,10 @@ class _InputTextState extends State<InputText>
             editableTextState: editableTextState,
           );
         }
-        return AdaptiveTextSelectionToolbar.editableText(
-          editableTextState: editableTextState,
+        return _InputTextTouchMenu(
+          theme: context.fluffyTheme,
+          anchors: editableTextState.contextMenuAnchors,
+          buttonItems: editableTextState.contextMenuButtonItems,
         );
       case _:
         return _InputTextContextMenu(
