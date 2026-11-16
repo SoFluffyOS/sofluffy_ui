@@ -243,11 +243,11 @@ class _ButtonState extends State<Button> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
+    final fillsRow = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
+      TargetPlatform.linux => false,
+      _ => true,
     };
 
     late final Widget child;
@@ -257,7 +257,7 @@ class _ButtonState extends State<Button> {
       final typography = context.fluffyTheme.typography;
       child = Text(
         label,
-        style: (isDesktop ? typography.caption1 : typography.base1).copyWith(
+        style: typography.caption1.copyWith(
           color: widget.variant.getForegroundColor(
             context,
             stateNotifier.value,
@@ -325,21 +325,16 @@ class _ButtonState extends State<Button> {
                   width: widget.width,
                   height: widget.height,
                   constraints: BoxConstraints(
-                    minHeight: isDesktop ? Spacing.d32 : Spacing.d36,
+                    minHeight: Spacing.d32,
                   ),
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeOut,
                   padding:
                       widget.padding ??
-                      (isDesktop
-                          ? EdgeInsets.symmetric(
-                              horizontal: Spacing.d12,
-                              vertical: Spacing.d8,
-                            )
-                          : EdgeInsets.symmetric(
-                              horizontal: Spacing.d24,
-                              vertical: Spacing.d12,
-                            )),
+                      EdgeInsets.symmetric(
+                        horizontal: Spacing.d12,
+                        vertical: Spacing.d8,
+                      ),
                   decoration: ShapeDecoration(
                     color: widget.variant.getBackgroundColor(
                       context,
@@ -375,7 +370,10 @@ class _ButtonState extends State<Button> {
                       child: Row(
                         mainAxisSize:
                             widget.mainAxisSize ??
-                            (isDesktop ? MainAxisSize.min : MainAxisSize.max),
+                            switch (fillsRow) {
+                              true => MainAxisSize.max,
+                              false => MainAxisSize.min,
+                            },
                         mainAxisAlignment:
                             widget.mainAxisAlignment ??
                             MainAxisAlignment.center,

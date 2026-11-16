@@ -32,3 +32,4 @@ export 'switch_toggle.dart';
 export 'tag.dart';
 export 'tappable.dart';
 export 'tooltip.dart';
+export 'touch_target.dart';

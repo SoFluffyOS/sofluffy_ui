@@ -38,15 +38,9 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typography = context.fluffyTheme.typography;
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
     final spacer = switch (style) {
       ListItemStyle.compact => const SizedBox.shrink(),
-      ListItemStyle.standard => isDesktop ? Spacing.h4 : Spacing.h8,
+      ListItemStyle.standard => Spacing.h4,
     };
     final titleWidget = switch (title) {
       String title when title.isNotEmpty => Column(
@@ -57,14 +51,13 @@ class ListItem extends StatelessWidget {
             title,
             style: switch (style) {
               ListItemStyle.compact => typography.caption1,
-              ListItemStyle.standard =>
-                isDesktop ? typography.base2 : typography.base1,
+              ListItemStyle.standard => typography.base2,
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Text(
               subtitle,
-              style: isDesktop ? typography.caption2 : typography.caption1,
+              style: typography.caption2,
             ),
           ],
         ],
@@ -83,11 +76,11 @@ class ListItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: switch (style) {
             ListItemStyle.compact => Spacing.d4,
-            ListItemStyle.standard => isDesktop ? Spacing.d4 : Spacing.d8,
+            ListItemStyle.standard => Spacing.d4,
           },
           horizontal: switch (style) {
             ListItemStyle.compact => 0.0,
-            ListItemStyle.standard => isDesktop ? Spacing.d12 : Spacing.d16,
+            ListItemStyle.standard => Spacing.d12,
           },
         ),
         child: Row(

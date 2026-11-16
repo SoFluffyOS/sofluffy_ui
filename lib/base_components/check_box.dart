@@ -39,12 +39,6 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
     return Tappable(
       enableAnimation: true,
       enableHover: true,
@@ -55,7 +49,7 @@ class _CheckBoxState extends State<CheckBox> {
       },
       onTap: () => _onChanged(!_currentValue),
       child: Padding(
-        padding: EdgeInsets.all(isDesktop ? Spacing.d4 : Spacing.d8),
+        padding: EdgeInsets.all(Spacing.d4),
         child: CheckBoxIcon(
           state: _currentValue
               ? CheckBoxIconState.checked
@@ -87,18 +81,12 @@ class CheckBoxIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
     final isDark = context.isDark;
     final theme = context.fluffyTheme;
     final markColor = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     return AnimatedContainer(
-      width: isDesktop ? Spacing.d16 : Spacing.d24,
-      height: isDesktop ? Spacing.d16 : Spacing.d24,
+      width: Spacing.d16,
+      height: Spacing.d16,
       curve: Curves.easeOut,
       duration: FluffyDurations.normal,
       decoration: ShapeDecoration(
@@ -116,13 +104,13 @@ class CheckBoxIcon extends StatelessWidget {
       child: switch (state) {
         CheckBoxIconState.checked => ImageView(
           FluffyAssets.icons.tick02Solid,
-          width: isDesktop ? Spacing.d12 : Spacing.d18,
-          height: isDesktop ? Spacing.d12 : Spacing.d18,
+          width: Spacing.d12,
+          height: Spacing.d12,
           color: markColor,
           assetPackage: kSofluffyUiPackageName,
         ),
         CheckBoxIconState.mixed => Container(
-          width: isDesktop ? Spacing.d8 : Spacing.d12,
+          width: Spacing.d8,
           height: Spacing.d2,
           decoration: BoxDecoration(
             color: markColor,

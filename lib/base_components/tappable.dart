@@ -394,12 +394,16 @@ class _TappableState extends State<Tappable> {
         ),
       ),
     );
+    final target = switch (_isInteractive) {
+      true => TouchTarget(child: content),
+      false => content,
+    };
     final tooltip = widget.tooltip;
-    if (tooltip == null || tooltip.isEmpty) return content;
+    if (tooltip == null || tooltip.isEmpty) return target;
 
     return FluffyTooltip(
       message: tooltip,
-      child: content,
+      child: target,
     );
   }
 }

@@ -16,20 +16,9 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
     final resolvedPadding =
         padding ??
-        (isDesktop
-            ? EdgeInsets.symmetric(horizontal: Spacing.d6, vertical: Spacing.d2)
-            : EdgeInsets.symmetric(
-                horizontal: Spacing.d8,
-                vertical: Spacing.d4,
-              ));
+        EdgeInsets.symmetric(horizontal: Spacing.d6, vertical: Spacing.d2);
 
     return Container(
       padding: resolvedPadding,

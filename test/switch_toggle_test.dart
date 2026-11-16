@@ -90,7 +90,7 @@ void main() {
   });
 
   testWidgets(
-    'compact is smaller on desktop and still toggles',
+    'compact is smaller and still toggles',
     (
       tester,
     ) async {
@@ -128,13 +128,13 @@ void main() {
     variant: TargetPlatformVariant.only(TargetPlatform.macOS),
   );
 
-  testWidgets(
-    'compact keeps the regular size on touch platforms',
-    (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        app(
+  testWidgets('compact stays compact for a finger, in a 48 target', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      FluffyDensityScope(
+        density: FluffyDensity.touch,
+        child: app(
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -152,15 +152,23 @@ void main() {
             ],
           ),
         ),
-      );
+      ),
+    );
 
-      expect(
-        tester.getSize(find.byKey(const ValueKey('compact'))),
-        tester.getSize(find.byKey(const ValueKey('regular'))),
-      );
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.iOS),
-  );
+    Size trackOf(String key) => tester.getSize(
+      find
+          .descendant(
+            of: find.byKey(ValueKey(key)),
+            matching: find.byType(AnimatedContainer),
+          )
+          .first,
+    );
+    expect(trackOf('compact').width, lessThan(trackOf('regular').width));
+    expect(
+      tester.getSize(find.byKey(const ValueKey('compact'))).height,
+      greaterThanOrEqualTo(Spacing.d48),
+    );
+  });
 
   for (final size in SwitchToggleSize.values) {
     testWidgets(

@@ -204,18 +204,13 @@ class _InputTextState extends State<InputText>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      TouchTarget(child: _buildField(context));
+
+  Widget _buildField(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
-    final baseTextStyle =
-        widget.textStyle ??
-        (isDesktop ? theme.typography.caption1 : theme.typography.base2);
+    final baseTextStyle = widget.textStyle ?? theme.typography.caption1;
     final textStyle = baseTextStyle.copyWith(
       color: getTextColor(context),
     );
@@ -225,23 +220,14 @@ class _InputTextState extends State<InputText>
 
     final resolvedPadding =
         widget.inputPadding ??
-        (isDesktop
-            ? EdgeInsets.only(
-                left: widget.prefixIcon == null && widget.prefix == null
-                    ? Spacing.d12
-                    : Spacing.d8,
-                right: Spacing.d12,
-                top: Spacing.d8,
-                bottom: Spacing.d8,
-              )
-            : EdgeInsets.only(
-                left: widget.prefixIcon == null && widget.prefix == null
-                    ? Spacing.d16
-                    : Spacing.d12,
-                right: Spacing.d16,
-                top: Spacing.d14,
-                bottom: Spacing.d14,
-              ));
+        EdgeInsets.only(
+          left: widget.prefixIcon == null && widget.prefix == null
+              ? Spacing.d12
+              : Spacing.d8,
+          right: Spacing.d12,
+          top: Spacing.d8,
+          bottom: Spacing.d8,
+        );
     final inputPadding = resolvedPadding.resolve(Directionality.of(context));
 
     return AnimatedSize(
@@ -330,7 +316,7 @@ class _InputTextState extends State<InputText>
                               widget.prefix ??
                               ImageView(
                                 widget.prefixIcon,
-                                size: isDesktop ? Spacing.d18 : Spacing.d24,
+                                size: Spacing.d18,
                                 fit: BoxFit.contain,
                                 color: getIconColor(context),
                               ),
@@ -419,7 +405,7 @@ class _InputTextState extends State<InputText>
                                 onTap: widget.onSuffixTap,
                                 child: ImageView(
                                   widget.suffixIcon,
-                                  size: isDesktop ? Spacing.d18 : Spacing.d24,
+                                  size: Spacing.d18,
                                   fit: BoxFit.contain,
                                   color: getIconColor(context),
                                 ),
