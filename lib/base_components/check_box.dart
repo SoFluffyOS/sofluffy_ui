@@ -45,6 +45,13 @@ class _CheckBoxState extends State<CheckBox> {
       TargetPlatform.linux => true,
       _ => false,
     };
+    return Semantics(
+      checked: _currentValue,
+      child: _buildBox(isDesktop),
+    );
+  }
+
+  Widget _buildBox(bool isDesktop) {
     return Tappable(
       enableAnimation: true,
       enableHover: true,

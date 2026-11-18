@@ -27,46 +27,55 @@ class MenuOverlay extends StatelessWidget {
       bindings: {const SingleActivator(LogicalKeyboardKey.escape): onClose},
       child: Focus(
         autofocus: true,
+        skipTraversal: true,
         child: Stack(
           children: [
             Positioned.fill(
+              // A screen reader closes the menu with its own dismiss
+              // gesture, on the card below, not by finding this layer.
               child: GestureDetector(
+                excludeFromSemantics: true,
                 behavior: HitTestBehavior.opaque,
                 onTap: onClose,
                 onSecondaryTap: onClose,
               ),
             ),
             placement(
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: palette.surface,
-                  borderRadius: BorderRadius.circular(Spacing.d12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _shadow,
-                      blurRadius: Spacing.d24,
-                      offset: Offset(0, Spacing.d8),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: Spacing.d6),
-                  child: IntrinsicWidth(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (final entry in entries) ...[
-                          if (entry.startsGroup) const _Divider(),
-                          _MenuRow(
-                            entry: entry,
-                            keepsIconSpace: entries.any(
-                              (other) => other.icon != null,
+              Semantics(
+                container: true,
+                explicitChildNodes: true,
+                onDismiss: onClose,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.surface,
+                    borderRadius: BorderRadius.circular(Spacing.d12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _shadow,
+                        blurRadius: Spacing.d24,
+                        offset: Offset(0, Spacing.d8),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: Spacing.d6),
+                    child: IntrinsicWidth(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (final entry in entries) ...[
+                            if (entry.startsGroup) const _Divider(),
+                            _MenuRow(
+                              entry: entry,
+                              keepsIconSpace: entries.any(
+                                (other) => other.icon != null,
+                              ),
+                              onClose: onClose,
                             ),
-                            onClose: onClose,
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -97,6 +106,7 @@ class _MenuRow extends StatelessWidget {
     final palette = MenuColors.of(context);
 
     return Tappable(
+      semanticButton: true,
       onTap: () {
         onClose();
         entry.onSelected();

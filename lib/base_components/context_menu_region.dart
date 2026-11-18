@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/base_components/menu_overlay.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -43,11 +44,20 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
           ),
         ),
       ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onSecondaryTapUp: (details) => _open(details.globalPosition),
-        onLongPressStart: (details) => _open(details.globalPosition),
-        child: widget.child,
+      // To a screen reader the entries are actions of the child itself,
+      // in its actions menu: there is no pointer to open the menu at.
+      child: Semantics(
+        customSemanticsActions: {
+          for (final entry in widget.entries)
+            CustomSemanticsAction(label: entry.label): entry.onSelected,
+        },
+        child: GestureDetector(
+          excludeFromSemantics: true,
+          behavior: HitTestBehavior.translucent,
+          onSecondaryTapUp: (details) => _open(details.globalPosition),
+          onLongPressStart: (details) => _open(details.globalPosition),
+          child: widget.child,
+        ),
       ),
     );
   }

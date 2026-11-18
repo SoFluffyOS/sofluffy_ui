@@ -57,7 +57,8 @@ class Tappable extends StatefulWidget {
 
   /// What a screen reader says here; [tooltip] when left out. Give one of
   /// the two to anything that shows only an icon: text inside [child] is
-  /// read without it.
+  /// read without it. Pass an empty string when that text is the name
+  /// and the tooltip only adds to it.
   final String? semanticLabel;
 
   /// Whether a screen reader calls this a button. Left out, it does when
@@ -282,8 +283,8 @@ class _TappableState extends State<Tappable> {
       tooltip: spokenLabel == widget.tooltip ? null : widget.tooltip,
       button: isButton ? true : null,
       child: FocusableActionDetector(
-        enabled:
-            _isInteractive || widget.enableHover || widget.enableFocusBorder,
+        // Something nobody can press is not a stop for Tab.
+        enabled: _isInteractive || widget.enableHover,
         focusNode: widget.focusNode,
         mouseCursor: _isInteractive
             ? SystemMouseCursors.click
