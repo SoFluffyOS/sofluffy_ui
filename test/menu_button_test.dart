@@ -105,6 +105,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Forget'), findsOneWidget);
 
+    final pointer = tester.getCenter(find.text('Pixel'));
+    final menu = tester.getRect(find.text('Forget'));
+    expect(menu.top, greaterThan(pointer.dy));
+    expect(menu.top - pointer.dy, lessThan(40));
+
     await tester.tap(find.text('Forget'));
     await tester.pumpAndSettle();
     expect(picked, ['forget']);
