@@ -123,6 +123,25 @@ void main() {
     );
   });
 
+  testWidgets('a Button whose tooltip repeats its label says it once', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      app(
+        Button(
+          variant: ButtonVariant.ghost,
+          label: 'More',
+          tooltip: 'More',
+          onPressed: () {},
+        ),
+      ),
+    );
+
+    expect(tester.getSemantics(find.bySemanticsLabel('More')).label, 'More');
+    semantics.dispose();
+  });
+
   testWidgets('a Button is one stop: its text, button, enabled', (
     tester,
   ) async {
