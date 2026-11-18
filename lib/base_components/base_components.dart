@@ -20,6 +20,8 @@ export 'list_item.dart';
 export 'loading_box.dart';
 export 'loading_spinner.dart';
 export 'loading_text.dart';
+export 'menu_button.dart';
+export 'menu_entry.dart';
 export 'multi_select_dropdown.dart';
 export 'progress_bar_painter.dart';
 export 'progress_ring_painter.dart';
