@@ -1,3 +1,4 @@
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -97,6 +98,29 @@ void main() {
       ),
     );
     semantics.dispose();
+  });
+
+  testWidgets('a Tappable nobody can press is not a stop for Tab', (
+    tester,
+  ) async {
+    await tester.pumpWidget(app(const Tappable(child: Text('Just text'))));
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.byType(Tappable),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Focus && widget.focusNode?.hasFocus == true,
+        ),
+      ),
+      findsNothing,
+    );
+    expect(
+      Focus.of(tester.element(find.text('Just text'))).hasPrimaryFocus,
+      isFalse,
+    );
   });
 
   testWidgets('a Button is one stop: its text, button, enabled', (
@@ -217,5 +241,82 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(changes, [true]);
+  });
+
+  testWidgets('a context menu is the row\'s own actions to a screen reader', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final picked = <String>[];
+    await tester.pumpWidget(
+      app(
+        ContextMenuRegion(
+          entries: [
+            MenuEntry(label: 'Forget', onSelected: () => picked.add('forget')),
+          ],
+          child: Tappable(
+            semanticButton: true,
+            onTap: () {},
+            child: const Text('Pixel'),
+          ),
+        ),
+      ),
+    );
+
+    final node = tester.getSemantics(find.text('Pixel'));
+    expect(
+      node,
+      isSemantics(
+        label: 'Pixel',
+        isButton: true,
+        hasTapAction: true,
+        isFocusable: true,
+        hasFocusAction: true,
+        customActions: [const CustomSemanticsAction(label: 'Forget')],
+      ),
+    );
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+
+    final actionId = CustomSemanticsAction.getIdentifier(
+      const CustomSemanticsAction(label: 'Forget'),
+    );
+    tester.binding.renderViews.first.owner?.semanticsOwner?.performAction(
+      node.id,
+      SemanticsAction.customAction,
+      actionId,
+    );
+    expect(picked, ['forget']);
+    semantics.dispose();
+  });
+
+  testWidgets('a radio says whether it is the picked one', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      app(
+        MergeSemantics(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('All apps'),
+              RadioIcon<int>(value: 1, groupValue: 1, onChanged: (_) {}),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      tester.getSemantics(find.text('All apps')),
+      isSemantics(
+        label: 'All apps',
+        hasCheckedState: true,
+        isChecked: true,
+        isInMutuallyExclusiveGroup: true,
+        hasTapAction: true,
+        isFocusable: true,
+        hasFocusAction: true,
+      ),
+    );
+    semantics.dispose();
   });
 }

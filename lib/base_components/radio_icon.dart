@@ -38,6 +38,14 @@ class _RadioIconState<T> extends State<RadioIcon<T>> {
 
   @override
   Widget build(BuildContext context) {
+    return Semantics(
+      checked: _isSelected,
+      inMutuallyExclusiveGroup: true,
+      child: _buildRadio(context),
+    );
+  }
+
+  Widget _buildRadio(BuildContext context) {
     return Tappable(
       enableAnimation: true,
       enableHover: true,
