@@ -53,6 +53,7 @@ class MenuOverlay extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: Spacing.d6),
                   child: IntrinsicWidth(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         for (final entry in entries) ...[
