@@ -12,6 +12,7 @@ class MenuButton extends StatefulWidget {
     required this.tooltip,
     required this.entries,
     this.label,
+    this.opensRight = false,
   });
 
   final IconData icon;
@@ -21,6 +22,10 @@ class MenuButton extends StatefulWidget {
   /// sits in a row of buttons, such as "More".
   final String? label;
   final List<MenuEntry> entries;
+
+  /// Starts the menu at the icon's left edge instead of its right, for an
+  /// icon near the left of the screen, such as at the end of a sidebar.
+  final bool opensRight;
 
   @override
   State<MenuButton> createState() => _MenuButtonState();
@@ -60,10 +65,11 @@ class _MenuButtonState extends State<MenuButton> {
   /// An icon sits at the end of a toolbar, so its menu grows back from the
   /// icon's right edge. A labelled button sits among others, so its menu
   /// starts at the button's left edge.
-  (Alignment, Alignment) get _side => switch (widget.label) {
-    null => (Alignment.bottomRight, Alignment.topRight),
-    _ => (Alignment.bottomLeft, Alignment.topLeft),
-  };
+  (Alignment, Alignment) get _side =>
+      switch ((widget.label, widget.opensRight)) {
+        (null, false) => (Alignment.bottomRight, Alignment.topRight),
+        _ => (Alignment.bottomLeft, Alignment.topLeft),
+      };
 
   Widget _button(BuildContext context) {
     final label = widget.label;
