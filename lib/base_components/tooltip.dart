@@ -24,7 +24,8 @@ class FluffyTooltip extends StatefulWidget {
   final Duration waitDuration;
 
   /// Whether to show below [child] when it fits both above and below.
-  /// Null picks the side with more room.
+  /// Null shows it above, where the pointer can't cover it, and below
+  /// only when there is no room above.
   final bool? preferBelow;
 
   @override
@@ -35,7 +36,12 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
   OverlayEntry? _entry;
   Timer? _showTimer;
 
+  /// Where the mouse last was over [FluffyTooltip.child], so a tooltip
+  /// shown below starts under the cursor rather than beneath it.
+  Offset? _pointer;
+
   void _show(PointerEnterEvent event) {
+    _pointer = event.position;
     if (widget.message.isEmpty) return;
     _showTimer?.cancel();
     _showTimer = Timer(widget.waitDuration, _showTooltip);
@@ -106,6 +112,7 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
                 targetRect: currentRect,
                 margin: Spacing.d8,
                 preferBelow: widget.preferBelow,
+                pointer: _pointer,
               ),
               child: DecoratedBox(
                 decoration: ShapeDecoration(
@@ -231,6 +238,7 @@ class _FluffyTooltipState extends State<FluffyTooltip> {
         onPointerDown: (_) => _hide(),
         child: MouseRegion(
           onEnter: _show,
+          onHover: (event) => _pointer = event.position,
           onExit: (_) => _hide(),
           child: widget.child,
         ),
@@ -244,11 +252,16 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
     required this.targetRect,
     required this.margin,
     required this.preferBelow,
+    required this.pointer,
   });
 
   final Rect targetRect;
   final double margin;
   final bool? preferBelow;
+  final Offset? pointer;
+
+  /// How far the arrow cursor reaches below its tip, with a little room.
+  static double get cursorExtent => Spacing.d24;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
@@ -276,8 +289,7 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
     final fitsAbove = targetRect.top - margin - childSize.height >= margin;
     final fitsBelow =
         targetRect.bottom + margin + childSize.height <= size.height - margin;
-    final preferBelow =
-        this.preferBelow ?? targetRect.center.dy <= size.height / 2;
+    final preferBelow = this.preferBelow ?? false;
 
     final showBelow = switch ((fitsAbove, fitsBelow)) {
       (true, true) => preferBelow,
@@ -287,8 +299,12 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
     };
 
     final maxY = math.max(margin, size.height - margin - childSize.height);
+    final belowCursor = switch (pointer) {
+      final pointer? => pointer.dy + cursorExtent,
+      null => Spacing.d0,
+    };
     final idealY = switch (showBelow) {
-      true => targetRect.bottom + margin,
+      true => math.max(targetRect.bottom + margin, belowCursor),
       false => targetRect.top - margin - childSize.height,
     };
     final y = idealY.clamp(margin, maxY);
@@ -300,6 +316,7 @@ class _TooltipLayoutDelegate extends SingleChildLayoutDelegate {
   bool shouldRelayout(_TooltipLayoutDelegate oldDelegate) {
     return targetRect != oldDelegate.targetRect ||
         margin != oldDelegate.margin ||
-        preferBelow != oldDelegate.preferBelow;
+        preferBelow != oldDelegate.preferBelow ||
+        pointer != oldDelegate.pointer;
   }
 }

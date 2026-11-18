@@ -435,5 +435,52 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       expect(escapesReachingFocus, 1);
     });
+
+    Future<Rect> hover(
+      WidgetTester tester,
+      Widget child,
+      String message,
+    ) async {
+      await tester.pumpWidget(buildApp(child: child));
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: const Offset(400, 590));
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.text('Target')));
+      await tester.pump(FluffyDurations.tooltip);
+      await tester.pumpAndSettle();
+      return tester.getRect(find.text(message));
+    }
+
+    testWidgets('shows above the control, where the pointer cannot cover it', (
+      tester,
+    ) async {
+      final tooltip = await hover(
+        tester,
+        const Align(
+          alignment: Alignment(0, -0.5),
+          child: FluffyTooltip(message: 'Above', child: Text('Target')),
+        ),
+        'Above',
+      );
+
+      expect(tooltip.bottom, lessThan(tester.getRect(find.text('Target')).top));
+    });
+
+    testWidgets('below, for want of room above, it starts under the cursor', (
+      tester,
+    ) async {
+      final tooltip = await hover(
+        tester,
+        const Align(
+          alignment: Alignment.topCenter,
+          child: FluffyTooltip(message: 'Below', child: Text('Target')),
+        ),
+        'Below',
+      );
+
+      final pointer = tester.getCenter(find.text('Target'));
+      // The arrow cursor reaches about 20 px below where it points.
+      expect(tooltip.top, greaterThanOrEqualTo(pointer.dy + 20));
+    });
   });
 }

@@ -118,12 +118,13 @@ void main() {
     final tooltipShape = tooltipDecoration.shape as RoundedSuperellipseBorder;
     expect(tooltipShape.side.color, FluffyThemeData.fallback().colors.neutral3);
     expect(tooltipDecoration.shadows, isNotEmpty);
-    final targetBottom = tester
-        .getBottomLeft(find.byKey(const ValueKey('tooltip-target')))
+    // Above the target, where the pointer can't cover it.
+    final targetTop = tester
+        .getTopLeft(find.byKey(const ValueKey('tooltip-target')))
         .dy;
-    final tooltipTop = tester.getTopLeft(find.text('Open in editor')).dy;
-    expect(tooltipTop, greaterThan(targetBottom));
-    expect(tooltipTop - targetBottom, lessThanOrEqualTo(Spacing.d16));
+    final tooltipBottom = tester.getBottomLeft(find.text('Open in editor')).dy;
+    expect(tooltipBottom, lessThan(targetTop));
+    expect(targetTop - tooltipBottom, lessThanOrEqualTo(Spacing.d16));
   });
 
   testWidgets('shows the tooltip near and above a lower target', (
