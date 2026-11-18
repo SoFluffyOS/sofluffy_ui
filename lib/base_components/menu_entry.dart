@@ -8,6 +8,7 @@ class MenuEntry {
     required this.onSelected,
     this.icon,
     this.startsGroup = false,
+    this.shortcut,
   });
 
   final String label;
@@ -16,4 +17,7 @@ class MenuEntry {
 
   /// Draws a thin line above this entry, to set a new group apart.
   final bool startsGroup;
+
+  /// The keys that do the same, shown after the label, such as "Ctrl+N".
+  final String? shortcut;
 }
