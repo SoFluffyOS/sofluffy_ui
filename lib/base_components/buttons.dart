@@ -258,6 +258,8 @@ class _ButtonState extends State<Button> {
       _ => false,
     };
 
+    // A tooltip that repeats the label would be read twice.
+    final spokenLabel = widget.semanticLabel ?? widget.tooltip;
     late final Widget child;
     if (widget.child case final thisChild?) {
       child = thisChild;
@@ -265,6 +267,7 @@ class _ButtonState extends State<Button> {
       final typography = context.fluffyTheme.typography;
       child = Text(
         label,
+        semanticsLabel: label == spokenLabel ? '' : null,
         style: (isDesktop ? typography.caption1 : typography.base1).copyWith(
           color: widget.variant.getForegroundColor(
             context,
