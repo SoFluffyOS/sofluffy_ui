@@ -241,6 +241,14 @@ class _ButtonState extends State<Button> {
     }
   }
 
+  /// A ring that stands out from the button's own fill: the accent around
+  /// an outlined or dark button, the text colour around an accent one.
+  Color _focusRingColor(BuildContext context) {
+    final theme = context.fluffyTheme;
+    if (widget.variant != ButtonVariant.primary) return theme.colors.primary;
+    return context.isDark ? theme.colors.neutral1 : theme.colors.neutral7;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDesktop = switch (context.fluffyTargetPlatform) {
@@ -272,13 +280,14 @@ class _ButtonState extends State<Button> {
       child = const SizedBox.shrink();
     }
     return Semantics(
-      label: widget.semanticLabel ?? widget.tooltip,
       button: true,
       enabled: widget.enable,
       child: ValueListenableBuilder(
         valueListenable: stateNotifier,
         builder: (context, state, _) {
           return Tappable(
+            semanticLabel: widget.semanticLabel,
+            semanticButton: false,
             onStateChanged: (newState) {
               if (!widget.enable) {
                 stateNotifier.value = ButtonState.disabled;
@@ -322,6 +331,20 @@ class _ButtonState extends State<Button> {
                   widget.color,
                 );
                 return AnimatedContainer(
+                  foregroundDecoration: state == ButtonState.focus
+                      ? ShapeDecoration(
+                          shape: RoundedSuperellipseBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(widget.radius ?? 12.0),
+                            ),
+                            side: BorderSide(
+                              color: _focusRingColor(context),
+                              width: Spacing.d2,
+                              strokeAlign: BorderSide.strokeAlignOutside,
+                            ),
+                          ),
+                        )
+                      : null,
                   width: widget.width,
                   height: widget.height,
                   constraints: BoxConstraints(
