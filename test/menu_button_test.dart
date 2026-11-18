@@ -73,6 +73,27 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('opensRight starts the menu at the icon', (tester) async {
+    await tester.pumpWidget(
+      app(
+        MenuButton(
+          icon: const IconData(0x2026),
+          tooltip: 'More',
+          opensRight: true,
+          entries: [MenuEntry(label: 'A long entry here', onSelected: () {})],
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(MenuButton));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getTopLeft(find.text('A long entry here')).dx,
+      greaterThan(tester.getTopLeft(find.byType(MenuButton)).dx),
+    );
+  });
+
   testWidgets('closes on a tap outside without picking', (tester) async {
     final picked = <String>[];
     await tester.pumpWidget(
