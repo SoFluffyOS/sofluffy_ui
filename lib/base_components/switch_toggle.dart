@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
 
@@ -8,7 +9,16 @@ class SwitchToggle extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
 
-  const SwitchToggle({super.key, required this.value, required this.onChanged});
+  /// What a screen reader says before "switch, on" or "off". Leave it out
+  /// when the switch sits in a row merged with its title (`MergeSemantics`).
+  final String? semanticLabel;
+
+  const SwitchToggle({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.semanticLabel,
+  });
 
   @override
   State<SwitchToggle> createState() => _SwitchToggleState();
@@ -31,6 +41,7 @@ class _SwitchToggleState extends State<SwitchToggle>
 
   bool _isPointerDown = false;
   bool _isHovered = false;
+  bool _isFocused = false;
   bool _isDragging = false;
   double _dragPositionX = 0;
   Timer? _tapTimer;
@@ -122,6 +133,46 @@ class _SwitchToggleState extends State<SwitchToggle>
     final overboundXOffset = thumbRadius / 2;
     final overboundYOffset = thumbRadius;
 
+    return Semantics(
+      label: widget.semanticLabel,
+      toggled: _currentValue,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        onShowFocusHighlight: (isFocused) {
+          if (_isFocused == isFocused || !mounted) return;
+          setState(() => _isFocused = isFocused);
+        },
+        shortcuts: {
+          LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
+          LogicalKeySet(LogicalKeyboardKey.space): const ActivateIntent(),
+        },
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) => _handleTap(),
+          ),
+        },
+        child: _buildSwitch(
+          theme: theme,
+          isDark: isDark,
+          isDesktop: isDesktop,
+          minX: minX,
+          maxX: maxX,
+          overboundXOffset: overboundXOffset,
+          overboundYOffset: overboundYOffset,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitch({
+    required FluffyThemeData theme,
+    required bool isDark,
+    required bool isDesktop,
+    required double minX,
+    required double maxX,
+    required double overboundXOffset,
+    required double overboundYOffset,
+  }) {
     return Listener(
       onPointerDown: (_) {
         if (!_isPointerDown) {
@@ -217,8 +268,20 @@ class _SwitchToggleState extends State<SwitchToggle>
               _animationController.reverse();
             }
           },
-          child: Padding(
+          child: Container(
             padding: EdgeInsets.all(_outerPadding(isDesktop)),
+            foregroundDecoration: ShapeDecoration(
+              shape: RoundedSuperellipseBorder(
+                borderRadius: isDesktop ? Spacing.r12 : Spacing.r16,
+                side: BorderSide(
+                  color: _isFocused
+                      ? theme.colors.primary
+                      : FluffyColors.transparent,
+                  width: Spacing.d2,
+                  strokeAlign: BorderSide.strokeAlignInside,
+                ),
+              ),
+            ),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -352,10 +415,18 @@ class _SwitchToggleState extends State<SwitchToggle>
     if (isOn) {
       return theme.colors.primary;
     }
-    if (_isHovered) {
-      return theme.colors.neutral4;
+    return _offColor(theme: theme, isDark: isDark);
+  }
+
+  /// The outline and thumb of a switch that is off: a grey that stands
+  /// 3:1 against a light page, so it is still seen as a switch.
+  Color _offColor({required FluffyThemeData theme, required bool isDark}) {
+    if (isDark) {
+      return _isHovered ? theme.colors.neutral4 : theme.colors.neutral5;
     }
-    return isDark ? theme.colors.neutral5 : theme.colors.neutral3;
+    return _isHovered
+        ? theme.colors.neutral5.withValues(alpha: 0.8)
+        : theme.colors.neutral5;
   }
 
   Color _getThumbColor({
@@ -369,9 +440,6 @@ class _SwitchToggleState extends State<SwitchToggle>
     if (isOn) {
       return theme.colors.primary;
     }
-    if (_isHovered) {
-      return theme.colors.neutral4;
-    }
-    return isDark ? theme.colors.neutral5 : theme.colors.neutral3;
+    return _offColor(theme: theme, isDark: isDark);
   }
 }

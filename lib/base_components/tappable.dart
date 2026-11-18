@@ -55,6 +55,17 @@ class Tappable extends StatefulWidget {
   final HitTestBehavior? behavior;
   final String? tooltip;
 
+  /// What a screen reader says here; [tooltip] when left out. Give one of
+  /// the two to anything that shows only an icon: text inside [child] is
+  /// read without it.
+  final String? semanticLabel;
+
+  /// Whether a screen reader calls this a button. Left out, it does when
+  /// this has a name of its own ([semanticLabel] or [tooltip]) and can be
+  /// tapped. Pass false under a `Semantics` that already says `button`: two
+  /// of them split one control into two stops.
+  final bool? semanticButton;
+
   final bool enableAnimation;
   final bool enableFocusBorder;
   final bool enableHover;
@@ -77,6 +88,8 @@ class Tappable extends StatefulWidget {
     this.onTapCancel,
     this.behavior,
     this.tooltip,
+    this.semanticLabel,
+    this.semanticButton,
     this.enableAnimation = true,
     this.enableFocusBorder = true,
     this.enableHover = false,
@@ -108,7 +121,7 @@ class _TappableState extends State<Tappable> {
 
   TappableState get _state {
     if (_isPressed) return TappableState.pressed;
-    if (_isFocused && widget.enableFocusBorder) return TappableState.focus;
+    if (_isFocused) return TappableState.focus;
     if (_isHovered && widget.enableHover) return TappableState.hover;
     return TappableState.normal;
   }
@@ -259,8 +272,15 @@ class _TappableState extends State<Tappable> {
   @override
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
+    // A tooltip is the only name an icon has, and not every screen reader
+    // speaks one, so it doubles as the label.
+    final spokenLabel = widget.semanticLabel ?? widget.tooltip;
+    final isButton =
+        widget.semanticButton ?? (spokenLabel != null && widget.onTap != null);
     final content = Semantics(
-      tooltip: widget.tooltip,
+      label: spokenLabel,
+      tooltip: spokenLabel == widget.tooltip ? null : widget.tooltip,
+      button: isButton ? true : null,
       child: FocusableActionDetector(
         enabled:
             _isInteractive || widget.enableHover || widget.enableFocusBorder,
@@ -369,14 +389,12 @@ class _TappableState extends State<Tappable> {
                         margin: widget.hoverOverlayPadding,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: theme.colors.primary.withValues(alpha: 0.5),
+                            color: theme.colors.primary,
                             width: Spacing.d2,
                           ),
-                          borderRadius: widget.hoverOverlayBorderRadius != null
-                              ? BorderRadius.circular(
-                                  widget.hoverOverlayBorderRadius!,
-                                )
-                              : null,
+                          borderRadius: BorderRadius.circular(
+                            widget.hoverOverlayBorderRadius ?? Spacing.d8,
+                          ),
                         ),
                       ),
                     ),
