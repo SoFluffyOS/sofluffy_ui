@@ -44,6 +44,35 @@ void main() {
     expect(find.text('Quit'), findsNothing);
   });
 
+  testWidgets('an entry shows its shortcut after the label', (tester) async {
+    await tester.pumpWidget(
+      app(
+        MenuButton(
+          icon: const IconData(0x2026),
+          tooltip: 'More',
+          entries: [
+            MenuEntry(
+              label: 'Add a device',
+              shortcut: 'Ctrl+N',
+              onSelected: () {},
+            ),
+            MenuEntry(label: 'Quit', onSelected: () {}),
+          ],
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(MenuButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ctrl+N'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.text('Ctrl+N')).dx,
+      greaterThan(tester.getTopRight(find.text('Add a device')).dx),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('closes on a tap outside without picking', (tester) async {
     final picked = <String>[];
     await tester.pumpWidget(

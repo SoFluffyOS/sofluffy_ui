@@ -129,6 +129,18 @@ class _MenuRow extends StatelessWidget {
                 color: palette.text,
               ),
             ),
+            if (entry.shortcut case final shortcut?) ...[
+              const Spacer(),
+              Spacing.h24,
+              ExcludeSemantics(
+                child: Text(
+                  shortcut,
+                  style: context.fluffyTheme.typography.base2.copyWith(
+                    color: palette.mutedText,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
