@@ -199,7 +199,9 @@ class _InputTextState extends State<InputText>
       color: getTextColor(context),
     );
     final placeholderStyle = baseTextStyle.copyWith(
-      color: theme.colors.neutral4.withValues(alpha: 0.5),
+      color: context.isDark
+          ? theme.colors.neutral4.withValues(alpha: 0.5)
+          : theme.colors.neutral5,
     );
 
     final resolvedPadding =
@@ -436,6 +438,10 @@ class _InputTextState extends State<InputText>
 
   Color getIconColor(BuildContext context) {
     final theme = context.fluffyTheme;
+    if (!context.isDark) {
+      return theme.colors.neutral5;
+    }
+
     if (hasContent) {
       return theme.colors.neutral4;
     }
@@ -473,6 +479,7 @@ class _InputTextState extends State<InputText>
       return isDark ? theme.colors.neutral1 : theme.colors.neutral7;
     }
 
-    return theme.colors.neutral4;
+    // Light backgrounds need a darker grey to stay readable.
+    return isDark ? theme.colors.neutral4 : theme.colors.neutral6;
   }
 }
