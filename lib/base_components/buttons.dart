@@ -267,7 +267,10 @@ class _ButtonState extends State<Button> {
       final typography = context.fluffyTheme.typography;
       child = Text(
         label,
-        semanticsLabel: label == spokenLabel ? '' : null,
+        // A label of its own replaces the visible one for screen readers.
+        semanticsLabel: widget.semanticLabel != null || label == spokenLabel
+            ? ''
+            : null,
         style: (isDesktop ? typography.caption1 : typography.base1).copyWith(
           color: widget.variant.getForegroundColor(
             context,

@@ -18,6 +18,26 @@ void main() {
         FocusHighlightStrategy.alwaysTraditional;
   });
 
+  testWidgets('a Button with a label of its own is read only by that', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      app(
+        Button(
+          variant: ButtonVariant.primary,
+          label: 'Pair',
+          semanticLabel: 'Pair with Galaxy S24',
+          onPressed: () {},
+        ),
+      ),
+    );
+
+    expect(find.bySemanticsLabel('Pair with Galaxy S24'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Pair$')), findsNothing);
+    semantics.dispose();
+  });
+
   testWidgets('an icon-only Tappable is a labelled button', (tester) async {
     final semantics = tester.ensureSemantics();
     await tester.pumpWidget(
