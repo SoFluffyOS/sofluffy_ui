@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sofluffy_ui/sofluffy_ui.dart';
@@ -41,6 +42,64 @@ void main() {
     await tester.tap(find.text('Quit'));
     await tester.pumpAndSettle();
     expect(picked, ['b']);
+    expect(find.text('Quit'), findsNothing);
+  });
+
+  testWidgets('arrow keys walk the entries and Enter picks one', (
+    tester,
+  ) async {
+    final picked = <String>[];
+    await tester.pumpWidget(
+      app(
+        MenuButton(
+          icon: const IconData(0x2026),
+          tooltip: 'More',
+          entries: [
+            for (final label in ['Add', 'Settings', 'Quit'])
+              MenuEntry(label: label, onSelected: () => picked.add(label)),
+          ],
+        ),
+      ),
+    );
+    await tester.tap(find.byType(MenuButton));
+    await tester.pumpAndSettle();
+
+    String? focused() {
+      final focus = FocusManager.instance.primaryFocus?.context;
+      if (focus == null) {
+        return null;
+      }
+
+      final label = find.descendant(
+        of: find.byElementPredicate((element) => element == focus),
+        matching: find.byType(Text),
+      );
+      return tester.widget<Text>(label.first).data;
+    }
+
+    Future<void> press(LogicalKeyboardKey key) async {
+      await tester.sendKeyEvent(key);
+      await tester.pump();
+    }
+
+    await press(LogicalKeyboardKey.arrowDown);
+    expect(focused(), 'Add');
+    await press(LogicalKeyboardKey.arrowDown);
+    expect(focused(), 'Settings');
+    await press(LogicalKeyboardKey.arrowUp);
+    await press(LogicalKeyboardKey.arrowUp);
+    expect(focused(), 'Quit', reason: 'up from the first goes to the last');
+    await press(LogicalKeyboardKey.arrowDown);
+    expect(focused(), 'Add', reason: 'down from the last goes to the first');
+    await press(LogicalKeyboardKey.end);
+    expect(focused(), 'Quit');
+    await press(LogicalKeyboardKey.home);
+    await press(LogicalKeyboardKey.arrowDown);
+    expect(focused(), 'Settings');
+
+    await press(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(picked, ['Settings']);
     expect(find.text('Quit'), findsNothing);
   });
 

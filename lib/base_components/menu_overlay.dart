@@ -4,6 +4,8 @@ import 'package:sofluffy_ui/sofluffy_ui.dart';
 
 /// The open menu of a [MenuButton] or a [ContextMenuRegion]: its entries
 /// on a card, over a layer that closes it on a tap anywhere else or Escape.
+/// ↑ and ↓ walk the entries and go round at either end, Home and End jump
+/// to the first and the last, as menus do on every desktop.
 class MenuOverlay extends StatelessWidget {
   const MenuOverlay({
     super.key,
@@ -19,6 +21,37 @@ class MenuOverlay extends StatelessWidget {
 
   static const _shadow = Color(0x33000000);
 
+  static KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent) {
+      return KeyEventResult.ignored;
+    }
+
+    final rows = node.traversalDescendants.toList()
+      ..sort((a, b) => a.rect.top.compareTo(b.rect.top));
+    if (rows.isEmpty) {
+      return KeyEventResult.ignored;
+    }
+
+    final current = rows.indexWhere((row) => row.hasPrimaryFocus);
+    final last = rows.length - 1;
+    final target = switch (event.logicalKey) {
+      LogicalKeyboardKey.arrowDown => (current + 1) % rows.length,
+      LogicalKeyboardKey.arrowUp => switch (current <= 0) {
+        true => last,
+        false => current - 1,
+      },
+      LogicalKeyboardKey.home => 0,
+      LogicalKeyboardKey.end => last,
+      _ => null,
+    };
+    if (target == null) {
+      return KeyEventResult.ignored;
+    }
+
+    rows[target].requestFocus();
+    return KeyEventResult.handled;
+  }
+
   @override
   Widget build(BuildContext context) {
     final palette = MenuColors.of(context);
@@ -28,6 +61,7 @@ class MenuOverlay extends StatelessWidget {
       child: Focus(
         autofocus: true,
         skipTraversal: true,
+        onKeyEvent: _onKey,
         child: Stack(
           children: [
             Positioned.fill(
