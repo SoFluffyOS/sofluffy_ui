@@ -251,11 +251,12 @@ class _ButtonState extends State<Button> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
+    final isCompact = !context.fluffyDensity.drawsLarge;
+    final fillsRow = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
+      TargetPlatform.linux => false,
+      _ => true,
     };
 
     // A tooltip that repeats the label would be read twice.
@@ -271,7 +272,7 @@ class _ButtonState extends State<Button> {
         semanticsLabel: widget.semanticLabel != null || label == spokenLabel
             ? ''
             : null,
-        style: (isDesktop ? typography.caption1 : typography.base1).copyWith(
+        style: (isCompact ? typography.caption1 : typography.base1).copyWith(
           color: widget.variant.getForegroundColor(
             context,
             stateNotifier.value,
@@ -354,13 +355,13 @@ class _ButtonState extends State<Button> {
                   width: widget.width,
                   height: widget.height,
                   constraints: BoxConstraints(
-                    minHeight: isDesktop ? Spacing.d32 : Spacing.d36,
+                    minHeight: isCompact ? Spacing.d32 : Spacing.d36,
                   ),
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeOut,
                   padding:
                       widget.padding ??
-                      (isDesktop
+                      (isCompact
                           ? EdgeInsets.symmetric(
                               horizontal: Spacing.d12,
                               vertical: Spacing.d8,
@@ -404,7 +405,10 @@ class _ButtonState extends State<Button> {
                       child: Row(
                         mainAxisSize:
                             widget.mainAxisSize ??
-                            (isDesktop ? MainAxisSize.min : MainAxisSize.max),
+                            switch (fillsRow) {
+                              true => MainAxisSize.max,
+                              false => MainAxisSize.min,
+                            },
                         mainAxisAlignment:
                             widget.mainAxisAlignment ??
                             MainAxisAlignment.center,

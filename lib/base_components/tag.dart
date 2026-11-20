@@ -16,15 +16,10 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final resolvedPadding =
         padding ??
-        (isDesktop
+        (isCompact
             ? EdgeInsets.symmetric(horizontal: Spacing.d6, vertical: Spacing.d2)
             : EdgeInsets.symmetric(
                 horizontal: Spacing.d8,

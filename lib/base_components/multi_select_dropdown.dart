@@ -143,12 +143,7 @@ class _MultiSelectDropdownState<T> extends State<MultiSelectDropdown<T>> {
   Widget build(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final backgroundColor = switch (isDark) {
       true => theme.colors.neutral6,
       false => theme.colors.neutral2,
@@ -186,11 +181,11 @@ class _MultiSelectDropdownState<T> extends State<MultiSelectDropdown<T>> {
                 duration: FluffyDurations.fast,
                 curve: Curves.easeOut,
                 padding: EdgeInsets.symmetric(
-                  horizontal: switch (isDesktop) {
+                  horizontal: switch (isCompact) {
                     true => Spacing.d12,
                     false => Spacing.d16,
                   },
-                  vertical: switch (isDesktop) {
+                  vertical: switch (isCompact) {
                     true => Spacing.d8,
                     false => Spacing.d14,
                   },
@@ -209,7 +204,7 @@ class _MultiSelectDropdownState<T> extends State<MultiSelectDropdown<T>> {
                         widget.label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: switch (isDesktop) {
+                        style: switch (isCompact) {
                           true => theme.typography.caption1,
                           false => theme.typography.base2,
                         }.copyWith(color: foregroundColor),

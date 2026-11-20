@@ -38,15 +38,10 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typography = context.fluffyTheme.typography;
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final spacer = switch (style) {
       ListItemStyle.compact => const SizedBox.shrink(),
-      ListItemStyle.standard => isDesktop ? Spacing.h4 : Spacing.h8,
+      ListItemStyle.standard => isCompact ? Spacing.h4 : Spacing.h8,
     };
     final titleWidget = switch (title) {
       String title when title.isNotEmpty => Column(
@@ -58,13 +53,13 @@ class ListItem extends StatelessWidget {
             style: switch (style) {
               ListItemStyle.compact => typography.caption1,
               ListItemStyle.standard =>
-                isDesktop ? typography.base2 : typography.base1,
+                isCompact ? typography.base2 : typography.base1,
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Text(
               subtitle,
-              style: isDesktop ? typography.caption2 : typography.caption1,
+              style: isCompact ? typography.caption2 : typography.caption1,
             ),
           ],
         ],
@@ -83,11 +78,11 @@ class ListItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: switch (style) {
             ListItemStyle.compact => Spacing.d4,
-            ListItemStyle.standard => isDesktop ? Spacing.d4 : Spacing.d8,
+            ListItemStyle.standard => isCompact ? Spacing.d4 : Spacing.d8,
           },
           horizontal: switch (style) {
             ListItemStyle.compact => 0.0,
-            ListItemStyle.standard => isDesktop ? Spacing.d12 : Spacing.d16,
+            ListItemStyle.standard => isCompact ? Spacing.d12 : Spacing.d16,
           },
         ),
         child: Row(

@@ -39,19 +39,14 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
+    final isCompact = !context.fluffyDensity.drawsLarge;
     return Semantics(
       checked: _currentValue,
-      child: _buildBox(isDesktop),
+      child: _buildBox(isCompact),
     );
   }
 
-  Widget _buildBox(bool isDesktop) {
+  Widget _buildBox(bool isCompact) {
     return Tappable(
       enableAnimation: true,
       enableHover: true,
@@ -62,7 +57,7 @@ class _CheckBoxState extends State<CheckBox> {
       },
       onTap: () => _onChanged(!_currentValue),
       child: Padding(
-        padding: EdgeInsets.all(isDesktop ? Spacing.d4 : Spacing.d8),
+        padding: EdgeInsets.all(isCompact ? Spacing.d4 : Spacing.d8),
         child: CheckBoxIcon(
           state: _currentValue
               ? CheckBoxIconState.checked
@@ -94,18 +89,13 @@ class CheckBoxIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final isDark = context.isDark;
     final theme = context.fluffyTheme;
     final markColor = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     return AnimatedContainer(
-      width: isDesktop ? Spacing.d16 : Spacing.d24,
-      height: isDesktop ? Spacing.d16 : Spacing.d24,
+      width: isCompact ? Spacing.d16 : Spacing.d24,
+      height: isCompact ? Spacing.d16 : Spacing.d24,
       curve: Curves.easeOut,
       duration: FluffyDurations.normal,
       decoration: ShapeDecoration(
@@ -123,13 +113,13 @@ class CheckBoxIcon extends StatelessWidget {
       child: switch (state) {
         CheckBoxIconState.checked => ImageView(
           FluffyAssets.icons.tick02Solid,
-          width: isDesktop ? Spacing.d12 : Spacing.d18,
-          height: isDesktop ? Spacing.d12 : Spacing.d18,
+          width: isCompact ? Spacing.d12 : Spacing.d18,
+          height: isCompact ? Spacing.d12 : Spacing.d18,
           color: markColor,
           assetPackage: kSofluffyUiPackageName,
         ),
         CheckBoxIconState.mixed => Container(
-          width: isDesktop ? Spacing.d8 : Spacing.d12,
+          width: isCompact ? Spacing.d8 : Spacing.d12,
           height: Spacing.d2,
           decoration: BoxDecoration(
             color: markColor,

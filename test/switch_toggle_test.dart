@@ -162,6 +162,48 @@ void main() {
     variant: TargetPlatformVariant.only(TargetPlatform.iOS),
   );
 
+  testWidgets('compact stays compact for a finger on a dense screen', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      FluffyDensityScope(
+        density: FluffyDensity.compactTouch,
+        child: app(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SwitchToggle(
+                key: const ValueKey('regular'),
+                value: false,
+                onChanged: (_) {},
+              ),
+              SwitchToggle(
+                key: const ValueKey('compact'),
+                value: false,
+                size: SwitchToggleSize.compact,
+                onChanged: (_) {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    Size trackOf(String key) => tester.getSize(
+      find
+          .descendant(
+            of: find.byKey(ValueKey(key)),
+            matching: find.byType(AnimatedContainer),
+          )
+          .first,
+    );
+    expect(trackOf('compact').width, lessThan(trackOf('regular').width));
+    expect(
+      tester.getSize(find.byKey(const ValueKey('compact'))).height,
+      greaterThanOrEqualTo(Spacing.d48),
+    );
+  });
+
   for (final size in SwitchToggleSize.values) {
     testWidgets(
       'a ${size.name} switch moves as quickly as other toggles',

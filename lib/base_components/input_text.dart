@@ -204,18 +204,16 @@ class _InputTextState extends State<InputText>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      TouchTarget(child: _buildField(context));
+
+  Widget _buildField(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
-    final isDesktop = switch (context.fluffyTargetPlatform) {
-      TargetPlatform.macOS ||
-      TargetPlatform.windows ||
-      TargetPlatform.linux => true,
-      _ => false,
-    };
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final baseTextStyle =
         widget.textStyle ??
-        (isDesktop ? theme.typography.caption1 : theme.typography.base2);
+        (isCompact ? theme.typography.caption1 : theme.typography.base2);
     final textStyle = baseTextStyle.copyWith(
       color: getTextColor(context),
     );
@@ -227,7 +225,7 @@ class _InputTextState extends State<InputText>
 
     final resolvedPadding =
         widget.inputPadding ??
-        (isDesktop
+        (isCompact
             ? EdgeInsets.only(
                 left: widget.prefixIcon == null && widget.prefix == null
                     ? Spacing.d12
@@ -332,7 +330,7 @@ class _InputTextState extends State<InputText>
                               widget.prefix ??
                               ImageView(
                                 widget.prefixIcon,
-                                size: isDesktop ? Spacing.d18 : Spacing.d24,
+                                size: isCompact ? Spacing.d18 : Spacing.d24,
                                 fit: BoxFit.contain,
                                 color: getIconColor(context),
                               ),
@@ -421,7 +419,7 @@ class _InputTextState extends State<InputText>
                                 onTap: widget.onSuffixTap,
                                 child: ImageView(
                                   widget.suffixIcon,
-                                  size: isDesktop ? Spacing.d18 : Spacing.d24,
+                                  size: isCompact ? Spacing.d18 : Spacing.d24,
                                   fit: BoxFit.contain,
                                   color: getIconColor(context),
                                 ),
