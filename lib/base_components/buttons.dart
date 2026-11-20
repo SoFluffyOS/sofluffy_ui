@@ -243,6 +243,7 @@ class _ButtonState extends State<Button> {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final fillsRow = switch (context.fluffyTargetPlatform) {
       TargetPlatform.macOS ||
       TargetPlatform.windows ||
@@ -257,7 +258,7 @@ class _ButtonState extends State<Button> {
       final typography = context.fluffyTheme.typography;
       child = Text(
         label,
-        style: typography.caption1.copyWith(
+        style: (isCompact ? typography.caption1 : typography.base1).copyWith(
           color: widget.variant.getForegroundColor(
             context,
             stateNotifier.value,
@@ -325,16 +326,21 @@ class _ButtonState extends State<Button> {
                   width: widget.width,
                   height: widget.height,
                   constraints: BoxConstraints(
-                    minHeight: Spacing.d32,
+                    minHeight: isCompact ? Spacing.d32 : Spacing.d36,
                   ),
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeOut,
                   padding:
                       widget.padding ??
-                      EdgeInsets.symmetric(
-                        horizontal: Spacing.d12,
-                        vertical: Spacing.d8,
-                      ),
+                      (isCompact
+                          ? EdgeInsets.symmetric(
+                              horizontal: Spacing.d12,
+                              vertical: Spacing.d8,
+                            )
+                          : EdgeInsets.symmetric(
+                              horizontal: Spacing.d24,
+                              vertical: Spacing.d12,
+                            )),
                   decoration: ShapeDecoration(
                     color: widget.variant.getBackgroundColor(
                       context,

@@ -52,38 +52,53 @@ class _SwitchToggleState extends State<SwitchToggle>
   double _dragPositionX = 0;
   Timer? _tapTimer;
 
-  bool get _isCompact => widget.size == SwitchToggleSize.compact;
+  bool _isCompact(bool isDense) =>
+      isDense && widget.size == SwitchToggleSize.compact;
 
-  double get _outerPadding => switch (_isCompact) {
-    true => Spacing.d2,
-    false => Spacing.d4,
+  double _outerPadding(bool isDense) =>
+      switch ((isDense, _isCompact(isDense))) {
+        (_, true) => Spacing.d2,
+        (true, false) => Spacing.d4,
+        (false, _) => Spacing.d8,
+      };
+  double _innerPadding(bool isDense) =>
+      switch ((isDense, _isCompact(isDense))) {
+        (_, true) => Spacing.d3,
+        (true, false) => Spacing.d4,
+        (false, _) => Spacing.d2,
+      };
+  double _thumbSize(bool isDense) => switch ((isDense, _isCompact(isDense))) {
+    (_, true) => Spacing.d10,
+    (true, false) => Spacing.d16,
+    (false, _) => Spacing.d24,
   };
-  double get _innerPadding => switch (_isCompact) {
-    true => Spacing.d3,
-    false => Spacing.d4,
-  };
-  double get _thumbSize => switch (_isCompact) {
-    true => Spacing.d10,
-    false => Spacing.d16,
-  };
-  double get _containerHeight => _thumbSize + (_innerPadding * 2);
-  double get _containerWidth => switch (_isCompact) {
-    true => Spacing.d28,
-    false => Spacing.d40,
-  };
+  double _containerHeight(bool isDense) =>
+      _thumbSize(isDense) +
+      (_innerPadding(isDense) * 2) +
+      (isDense ? 0 : Spacing.d4);
+  double _containerWidth(bool isDense) =>
+      switch ((isDense, _isCompact(isDense))) {
+        (_, true) => Spacing.d28,
+        (true, false) => Spacing.d40,
+        (false, _) => Spacing.d56,
+      };
 
-  Radius get _sideRadius => switch (_isCompact) {
-    true => Radius.circular(Spacing.d8),
-    false => Radius.circular(Spacing.d12),
+  Radius _sideRadius(bool isDense) => switch ((isDense, _isCompact(isDense))) {
+    (_, true) => Radius.circular(Spacing.d8),
+    (true, false) => Radius.circular(Spacing.d12),
+    (false, _) => Radius.circular(Spacing.d48),
   };
-  Radius get _roomRadius => switch (_isCompact) {
-    true => Radius.circular(Spacing.d2),
-    false => Radius.circular(Spacing.d4),
+  Radius _roomRadius(bool isDense) => switch ((isDense, _isCompact(isDense))) {
+    (_, true) => Radius.circular(Spacing.d2),
+    (true, false) => Radius.circular(Spacing.d4),
+    (false, _) => Radius.circular(Spacing.d12),
   };
-  BorderRadius get _trackRadius => switch (_isCompact) {
-    true => Spacing.r6,
-    false => Spacing.r8,
-  };
+  BorderRadius _trackRadius(bool isDense) =>
+      switch ((isDense, _isCompact(isDense))) {
+        (_, true) => Spacing.r6,
+        (true, false) => Spacing.r8,
+        (false, _) => Spacing.r12,
+      };
 
   @override
   void initState() {
@@ -156,9 +171,14 @@ class _SwitchToggleState extends State<SwitchToggle>
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
 
-    final thumbRadius = _thumbSize / 2;
-    final minX = _innerPadding + thumbRadius;
-    final maxX = _containerWidth - _innerPadding - thumbRadius;
+    final isDense = !context.fluffyDensity.drawsLarge;
+
+    final thumbRadius = _thumbSize(isDense) / 2;
+    final minX = _innerPadding(isDense) * (isDense ? 1 : 2) + thumbRadius;
+    final maxX =
+        _containerWidth(isDense) -
+        _innerPadding(isDense) * (isDense ? 1 : 2) -
+        thumbRadius;
     final overboundXOffset = thumbRadius / 2;
     final overboundYOffset = thumbRadius;
 
@@ -194,7 +214,8 @@ class _SwitchToggleState extends State<SwitchToggle>
         child: GestureDetector(
           onTap: _handleTap,
           onHorizontalDragStart: (details) {
-            final dragStartX = details.localPosition.dx - _outerPadding;
+            final dragStartX =
+                details.localPosition.dx - _outerPadding(isDense);
             _animationController.stop();
             if (!_isDragging) setState(() => _isDragging = true);
             final originOffset = overboundXOffset * (_currentValue ? -1 : 1);
@@ -205,19 +226,22 @@ class _SwitchToggleState extends State<SwitchToggle>
             _doughController.start(
               origin: Offset(
                 lerpDouble(minX, maxX, _animation.value)! + originOffset,
-                _containerHeight / 2,
+                _containerHeight(isDense) / 2,
               ),
               target: Offset(
                 _dragPositionX,
                 details.localPosition.dy.clamp(
-                  -overboundYOffset - _outerPadding,
-                  _containerHeight + _outerPadding + overboundYOffset,
+                  -overboundYOffset - _outerPadding(isDense),
+                  _containerHeight(isDense) +
+                      _outerPadding(isDense) +
+                      overboundYOffset,
                 ),
               ),
             );
           },
           onHorizontalDragUpdate: (details) {
-            final dragUpdateX = details.localPosition.dx - _outerPadding;
+            final dragUpdateX =
+                details.localPosition.dx - _outerPadding(isDense);
             final newDragPositionX = dragUpdateX.clamp(
               minX - overboundXOffset,
               maxX + overboundXOffset,
@@ -231,15 +255,18 @@ class _SwitchToggleState extends State<SwitchToggle>
               target: Offset(
                 _dragPositionX,
                 details.localPosition.dy.clamp(
-                  -overboundYOffset - _outerPadding,
-                  _containerHeight + _outerPadding + overboundYOffset,
+                  -overboundYOffset - _outerPadding(isDense),
+                  _containerHeight(isDense) +
+                      _outerPadding(isDense) +
+                      overboundYOffset,
                 ),
               ),
             );
           },
           onHorizontalDragEnd: (details) {
             if (_isDragging) setState(() => _isDragging = false);
-            final bool newTargetValue = _dragPositionX > (_containerWidth / 2);
+            final bool newTargetValue =
+                _dragPositionX > (_containerWidth(isDense) / 2);
             _doughController.stop();
             final dragProgress = (_dragPositionX - minX) / (maxX - minX);
             _animationController.value = dragProgress.clamp(0.0, 1.0);
@@ -247,31 +274,31 @@ class _SwitchToggleState extends State<SwitchToggle>
             _moveThumb(on: newTargetValue);
           },
           child: Padding(
-            padding: EdgeInsets.all(_outerPadding),
+            padding: EdgeInsets.all(_outerPadding(isDense)),
             child: Stack(
               alignment: Alignment.center,
               children: [
                 AnimatedContainer(
                   curve: Curves.easeOut,
                   duration: FluffyDurations.toggle,
-                  width: _containerWidth,
-                  height: _containerHeight,
+                  width: _containerWidth(isDense),
+                  height: _containerHeight(isDense),
                   decoration: ShapeDecoration(
                     color: _getBackgroundColor(
                       theme: theme,
                       isDark: isDark,
                       isOn: _isDragging
-                          ? _dragPositionX > (_containerWidth / 2)
+                          ? _dragPositionX > (_containerWidth(isDense) / 2)
                           : _currentValue,
                     ),
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: _trackRadius,
+                      borderRadius: _trackRadius(isDense),
                       side: BorderSide(
                         color: _getBorderColor(
                           theme: theme,
                           isDark: isDark,
                           isOn: _isDragging
-                              ? _dragPositionX > (_containerWidth / 2)
+                              ? _dragPositionX > (_containerWidth(isDense) / 2)
                               : _currentValue,
                         ),
                         width: Spacing.d2,
@@ -287,7 +314,7 @@ class _SwitchToggleState extends State<SwitchToggle>
                         ? _dragPositionX
                         : lerpDouble(minX, maxX, _animation.value)!;
                     final showingValue = _isDragging
-                        ? _dragPositionX > (_containerWidth / 2)
+                        ? _dragPositionX > (_containerWidth(isDense) / 2)
                         : _currentValue;
                     final thumbColor = _getThumbColor(
                       theme: theme,
@@ -295,27 +322,31 @@ class _SwitchToggleState extends State<SwitchToggle>
                       isDark: isDark,
                     );
                     final realThumbHeight = _isPointerDown
-                        ? (_isDragging ? _thumbSize * 1.0 : _thumbSize * 1.3)
-                        : _thumbSize;
+                        ? (_isDragging
+                              ? _thumbSize(isDense) * 1.0
+                              : _thumbSize(isDense) * 1.3)
+                        : _thumbSize(isDense);
                     final realThumbWidth = _isPointerDown
-                        ? (_isDragging ? _thumbSize * 1.4 : _thumbSize * 1.3)
-                        : _thumbSize;
+                        ? (_isDragging
+                              ? _thumbSize(isDense) * 1.4
+                              : _thumbSize(isDense) * 1.3)
+                        : _thumbSize(isDense);
                     final thumbBorderRadius = _isPointerDown
                         ? (_isDragging
-                              ? Spacing.r12
+                              ? (isDense ? Spacing.r12 : Spacing.r24)
                               : (showingValue
                                     ? BorderRadius.horizontal(
-                                        left: _sideRadius,
-                                        right: _roomRadius,
+                                        left: _sideRadius(isDense),
+                                        right: _roomRadius(isDense),
                                       )
                                     : BorderRadius.horizontal(
-                                        left: _roomRadius,
-                                        right: _sideRadius,
+                                        left: _roomRadius(isDense),
+                                        right: _sideRadius(isDense),
                                       )))
-                        : Spacing.r4;
+                        : (isDense ? Spacing.r4 : Spacing.r8);
                     return Transform.translate(
                       offset: Offset(
-                        thumbX - (_containerWidth / 2),
+                        thumbX - (_containerWidth(isDense) / 2),
                         0,
                       ),
                       child: DoughRecipe(

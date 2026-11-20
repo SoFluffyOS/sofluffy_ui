@@ -27,7 +27,9 @@ void main() {
   testWidgets('a pointer keeps targets the size of what they show', (
     tester,
   ) async {
-    await tester.pumpWidget(app(icon(onTap: () {})));
+    await tester.pumpWidget(
+      app(icon(onTap: () {}), density: FluffyDensity.pointer),
+    );
 
     expect(tester.getSize(find.byKey(const Key('target'))), const Size(16, 16));
   });
@@ -36,7 +38,7 @@ void main() {
       'still draws at its own size', (tester) async {
     var taps = 0;
     await tester.pumpWidget(
-      app(icon(onTap: () => taps++), density: FluffyDensity.touch),
+      app(icon(onTap: () => taps++), density: FluffyDensity.compactTouch),
     );
 
     final target = tester.getRect(find.byKey(const Key('target')));
@@ -52,7 +54,7 @@ void main() {
   });
 
   testWidgets('a target that does nothing is not grown', (tester) async {
-    await tester.pumpWidget(app(icon(), density: FluffyDensity.touch));
+    await tester.pumpWidget(app(icon(), density: FluffyDensity.compactTouch));
 
     expect(tester.getSize(find.byKey(const Key('target'))), const Size(16, 16));
   });
@@ -63,7 +65,7 @@ void main() {
     await tester.pumpWidget(
       app(
         SizedBox(height: 22, width: 100, child: icon(onTap: () {})),
-        density: FluffyDensity.touch,
+        density: FluffyDensity.compactTouch,
       ),
     );
 
@@ -73,8 +75,8 @@ void main() {
     );
   });
 
-  testWidgets('a switch looks the same for a finger and takes taps around '
-      'it', (tester) async {
+  testWidgets('a switch looks the same for a finger on a dense screen and '
+      'takes taps around it', (tester) async {
     var value = false;
     Widget toggle() => SwitchToggle(
       key: const Key('switch'),
@@ -82,10 +84,10 @@ void main() {
       onChanged: (newValue) => value = newValue,
     );
 
-    await tester.pumpWidget(app(toggle()));
+    await tester.pumpWidget(app(toggle(), density: FluffyDensity.pointer));
     final pointerTrack = tester.getSize(find.byType(AnimatedContainer).first);
 
-    await tester.pumpWidget(app(toggle(), density: FluffyDensity.touch));
+    await tester.pumpWidget(app(toggle(), density: FluffyDensity.compactTouch));
     final touchTrack = tester.getSize(find.byType(AnimatedContainer).first);
     final target = tester.getRect(find.byKey(const Key('switch')));
 
@@ -99,9 +101,56 @@ void main() {
     expect(value, isTrue);
   });
 
+  testWidgets('a finger gets the larger look and a 48 target', (
+    tester,
+  ) async {
+    Widget toggle() => SwitchToggle(
+      key: const Key('switch'),
+      value: false,
+      onChanged: (_) {},
+    );
+
+    await tester.pumpWidget(app(toggle(), density: FluffyDensity.pointer));
+    final pointerTrack = tester.getSize(find.byType(AnimatedContainer).first);
+
+    await tester.pumpWidget(app(toggle(), density: FluffyDensity.touch));
+    final touchTrack = tester.getSize(find.byType(AnimatedContainer).first);
+    final target = tester.getRect(find.byKey(const Key('switch')));
+
+    expect(touchTrack.width, greaterThan(pointerTrack.width));
+    expect(target.height, greaterThanOrEqualTo(Spacing.d48));
+  });
+
+  for (final (platform, density) in [
+    (TargetPlatform.android, FluffyDensity.touch),
+    (TargetPlatform.iOS, FluffyDensity.touch),
+    (TargetPlatform.macOS, FluffyDensity.pointer),
+    (TargetPlatform.windows, FluffyDensity.pointer),
+    (TargetPlatform.linux, FluffyDensity.pointer),
+  ]) {
+    testWidgets('without a scope, ${platform.name} gets ${density.name}', (
+      tester,
+    ) async {
+      late FluffyDensity found;
+      await tester.pumpWidget(
+        app(
+          Builder(
+            builder: (context) {
+              found = context.fluffyDensity;
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(found, density);
+    }, variant: TargetPlatformVariant.only(platform));
+  }
+
   test('extents grow only for a finger', () {
     expect(FluffyDensity.pointer.extent(22), 22);
     expect(FluffyDensity.touch.extent(22), Spacing.d48);
-    expect(FluffyDensity.touch.extent(60), 60);
+    expect(FluffyDensity.compactTouch.extent(22), Spacing.d48);
+    expect(FluffyDensity.compactTouch.extent(60), 60);
   });
 }

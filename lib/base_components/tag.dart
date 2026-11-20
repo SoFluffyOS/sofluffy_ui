@@ -16,9 +16,15 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final resolvedPadding =
         padding ??
-        EdgeInsets.symmetric(horizontal: Spacing.d6, vertical: Spacing.d2);
+        (isCompact
+            ? EdgeInsets.symmetric(horizontal: Spacing.d6, vertical: Spacing.d2)
+            : EdgeInsets.symmetric(
+                horizontal: Spacing.d8,
+                vertical: Spacing.d4,
+              ));
 
     return Container(
       padding: resolvedPadding,

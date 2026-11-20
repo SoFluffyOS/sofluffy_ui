@@ -39,6 +39,7 @@ class _CheckBoxState extends State<CheckBox> {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = !context.fluffyDensity.drawsLarge;
     return Tappable(
       enableAnimation: true,
       enableHover: true,
@@ -49,7 +50,7 @@ class _CheckBoxState extends State<CheckBox> {
       },
       onTap: () => _onChanged(!_currentValue),
       child: Padding(
-        padding: EdgeInsets.all(Spacing.d4),
+        padding: EdgeInsets.all(isCompact ? Spacing.d4 : Spacing.d8),
         child: CheckBoxIcon(
           state: _currentValue
               ? CheckBoxIconState.checked
@@ -81,12 +82,13 @@ class CheckBoxIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final isDark = context.isDark;
     final theme = context.fluffyTheme;
     final markColor = isDark ? theme.colors.neutral7 : theme.colors.neutral1;
     return AnimatedContainer(
-      width: Spacing.d16,
-      height: Spacing.d16,
+      width: isCompact ? Spacing.d16 : Spacing.d24,
+      height: isCompact ? Spacing.d16 : Spacing.d24,
       curve: Curves.easeOut,
       duration: FluffyDurations.normal,
       decoration: ShapeDecoration(
@@ -104,13 +106,13 @@ class CheckBoxIcon extends StatelessWidget {
       child: switch (state) {
         CheckBoxIconState.checked => ImageView(
           FluffyAssets.icons.tick02Solid,
-          width: Spacing.d12,
-          height: Spacing.d12,
+          width: isCompact ? Spacing.d12 : Spacing.d18,
+          height: isCompact ? Spacing.d12 : Spacing.d18,
           color: markColor,
           assetPackage: kSofluffyUiPackageName,
         ),
         CheckBoxIconState.mixed => Container(
-          width: Spacing.d8,
+          width: isCompact ? Spacing.d8 : Spacing.d12,
           height: Spacing.d2,
           decoration: BoxDecoration(
             color: markColor,

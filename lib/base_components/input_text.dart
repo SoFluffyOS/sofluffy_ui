@@ -210,7 +210,10 @@ class _InputTextState extends State<InputText>
   Widget _buildField(BuildContext context) {
     final theme = context.fluffyTheme;
     final isDark = context.isDark;
-    final baseTextStyle = widget.textStyle ?? theme.typography.caption1;
+    final isCompact = !context.fluffyDensity.drawsLarge;
+    final baseTextStyle =
+        widget.textStyle ??
+        (isCompact ? theme.typography.caption1 : theme.typography.base2);
     final textStyle = baseTextStyle.copyWith(
       color: getTextColor(context),
     );
@@ -220,14 +223,23 @@ class _InputTextState extends State<InputText>
 
     final resolvedPadding =
         widget.inputPadding ??
-        EdgeInsets.only(
-          left: widget.prefixIcon == null && widget.prefix == null
-              ? Spacing.d12
-              : Spacing.d8,
-          right: Spacing.d12,
-          top: Spacing.d8,
-          bottom: Spacing.d8,
-        );
+        (isCompact
+            ? EdgeInsets.only(
+                left: widget.prefixIcon == null && widget.prefix == null
+                    ? Spacing.d12
+                    : Spacing.d8,
+                right: Spacing.d12,
+                top: Spacing.d8,
+                bottom: Spacing.d8,
+              )
+            : EdgeInsets.only(
+                left: widget.prefixIcon == null && widget.prefix == null
+                    ? Spacing.d16
+                    : Spacing.d12,
+                right: Spacing.d16,
+                top: Spacing.d14,
+                bottom: Spacing.d14,
+              ));
     final inputPadding = resolvedPadding.resolve(Directionality.of(context));
 
     return AnimatedSize(
@@ -316,7 +328,7 @@ class _InputTextState extends State<InputText>
                               widget.prefix ??
                               ImageView(
                                 widget.prefixIcon,
-                                size: Spacing.d18,
+                                size: isCompact ? Spacing.d18 : Spacing.d24,
                                 fit: BoxFit.contain,
                                 color: getIconColor(context),
                               ),
@@ -405,7 +417,7 @@ class _InputTextState extends State<InputText>
                                 onTap: widget.onSuffixTap,
                                 child: ImageView(
                                   widget.suffixIcon,
-                                  size: Spacing.d18,
+                                  size: isCompact ? Spacing.d18 : Spacing.d24,
                                   fit: BoxFit.contain,
                                   color: getIconColor(context),
                                 ),

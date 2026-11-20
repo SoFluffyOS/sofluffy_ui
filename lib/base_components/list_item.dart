@@ -38,9 +38,10 @@ class ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typography = context.fluffyTheme.typography;
+    final isCompact = !context.fluffyDensity.drawsLarge;
     final spacer = switch (style) {
       ListItemStyle.compact => const SizedBox.shrink(),
-      ListItemStyle.standard => Spacing.h4,
+      ListItemStyle.standard => isCompact ? Spacing.h4 : Spacing.h8,
     };
     final titleWidget = switch (title) {
       String title when title.isNotEmpty => Column(
@@ -51,13 +52,14 @@ class ListItem extends StatelessWidget {
             title,
             style: switch (style) {
               ListItemStyle.compact => typography.caption1,
-              ListItemStyle.standard => typography.base2,
+              ListItemStyle.standard =>
+                isCompact ? typography.base2 : typography.base1,
             },
           ),
           if (subtitle case String subtitle when subtitle.isNotEmpty) ...[
             Text(
               subtitle,
-              style: typography.caption2,
+              style: isCompact ? typography.caption2 : typography.caption1,
             ),
           ],
         ],
@@ -76,11 +78,11 @@ class ListItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: switch (style) {
             ListItemStyle.compact => Spacing.d4,
-            ListItemStyle.standard => Spacing.d4,
+            ListItemStyle.standard => isCompact ? Spacing.d4 : Spacing.d8,
           },
           horizontal: switch (style) {
             ListItemStyle.compact => 0.0,
-            ListItemStyle.standard => Spacing.d12,
+            ListItemStyle.standard => isCompact ? Spacing.d12 : Spacing.d16,
           },
         ),
         child: Row(
