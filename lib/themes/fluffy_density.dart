@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sofluffy_ui/themes/app_theme_data.dart';
 import 'package:sofluffy_ui/themes/spacing.dart';
@@ -67,7 +68,9 @@ class FluffyDensityScope extends InheritedWidget {
       context
           .dependOnInheritedWidgetOfExactType<FluffyDensityScope>()
           ?.density ??
-      FluffyDensity.forPlatform(context.fluffyTargetPlatform);
+      FluffyDensity.forPlatform(
+        context.maybeFluffyTheme?.platform ?? defaultTargetPlatform,
+      );
 
   @override
   bool updateShouldNotify(FluffyDensityScope oldWidget) =>

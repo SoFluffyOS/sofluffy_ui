@@ -147,6 +147,22 @@ void main() {
     }, variant: TargetPlatformVariant.only(platform));
   }
 
+  testWidgets('without a theme, the density follows the device', (
+    tester,
+  ) async {
+    late FluffyDensity found;
+    await tester.pumpWidget(
+      Builder(
+        builder: (context) {
+          found = context.fluffyDensity;
+          return const SizedBox();
+        },
+      ),
+    );
+
+    expect(found, FluffyDensity.pointer);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.macOS));
+
   test('extents grow only for a finger', () {
     expect(FluffyDensity.pointer.extent(22), 22);
     expect(FluffyDensity.touch.extent(22), Spacing.d48);
