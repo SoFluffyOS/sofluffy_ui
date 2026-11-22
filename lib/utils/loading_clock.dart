@@ -16,7 +16,10 @@ import 'package:flutter/widgets.dart';
 /// The time is measured, not counted in steps, so a late step on a busy
 /// machine never slows the effects down, and an effect rebuilt or shown
 /// again carries on where every other one is. The timer runs only while
-/// something listens, and draws nothing while the window draws no frames.
+/// something listens, and stops while the window draws no frames, such as
+/// a closed menubar popover or an app in the background, until the next
+/// frame: a spinner left mounted there would otherwise wake the app 30
+/// times a second for nothing.
 class LoadingClock extends Animation<double>
     with
         AnimationLazyListenerMixin,
@@ -45,6 +48,7 @@ class LoadingClock extends Animation<double>
       };
 
   Timer? _timer;
+  bool _waitingForFrames = false;
   Stopwatch? _stopwatch;
   Clock? _stopwatchClock;
 
@@ -75,6 +79,10 @@ class LoadingClock extends Animation<double>
 
   @override
   void didStartListening() {
+    if (_waitingForFrames) {
+      return;
+    }
+
     _timer ??= Timer.periodic(_step, _onStep);
   }
 
@@ -105,11 +113,26 @@ class LoadingClock extends Animation<double>
       return;
     }
 
-    final windowShows = SchedulerBinding.instance.framesEnabled;
-    if (!windowShows) {
+    final scheduler = SchedulerBinding.instance;
+    if (!scheduler.framesEnabled) {
+      _waitForFrames(scheduler);
       return;
     }
 
     notifyListeners();
+  }
+
+  /// A frame callback runs once frames are drawn again, which the window
+  /// asks for itself when it shows.
+  void _waitForFrames(SchedulerBinding scheduler) {
+    _timer?.cancel();
+    _timer = null;
+    _waitingForFrames = true;
+    scheduler.scheduleFrameCallback((_) {
+      _waitingForFrames = false;
+      if (isListening) {
+        didStartListening();
+      }
+    });
   }
 }

@@ -63,6 +63,33 @@ void main() {
     expect(steps, 0);
   });
 
+  testWidgets('its timer stops while the window draws no frames and comes '
+      'back with the next frame', (tester) async {
+    await tester.pumpWidget(app(const FluffySpinner()));
+    expect(LoadingClock.instance.isRunning, isTrue);
+
+    tester.binding
+      ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+      ..handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(LoadingClock.instance.isRunning, isFalse);
+    await tester.pump(const Duration(seconds: 5));
+    expect(LoadingClock.instance.isRunning, isFalse);
+
+    tester.binding
+      ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+      ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(LoadingClock.instance.isRunning, isTrue);
+
+    var steps = 0;
+    void count() => steps++;
+    LoadingClock.instance.addListener(count);
+    await tester.pump(const Duration(seconds: 1));
+    LoadingClock.instance.removeListener(count);
+    expect(steps, LoadingClock.stepsPerSecond);
+  });
+
   testWidgets('a rebuild that swaps the painter carries on the turn', (
     tester,
   ) async {
