@@ -1,5 +1,6 @@
 export 'bottom_container.dart';
 export 'bottom_spacer.dart';
+export 'button_label_row.dart';
 export 'buttons.dart';
 export 'check_box.dart';
 export 'color_picker/color_picker.dart';
