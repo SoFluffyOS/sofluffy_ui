@@ -321,111 +321,122 @@ class _InputTextState extends State<InputText>
                     left: inputPadding.left,
                     right: inputPadding.right,
                   ),
-                  child: Row(
-                    children: [
-                      if (widget.prefix != null || widget.prefixIcon != null)
-                        Padding(
-                          padding: EdgeInsets.only(right: Spacing.d8),
-                          child:
-                              widget.prefix ??
-                              ImageView(
-                                widget.prefixIcon,
-                                size: isCompact ? Spacing.d18 : Spacing.d24,
-                                fit: BoxFit.contain,
-                                color: getIconColor(context),
-                              ),
-                        ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            top: inputPadding.top,
-                            bottom: inputPadding.bottom,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Row(
+                      children: [
+                        if (widget.prefix != null || widget.prefixIcon != null)
+                          _sideLimit(
+                            constraints,
+                            Padding(
+                              padding: EdgeInsets.only(right: Spacing.d8),
+                              child:
+                                  widget.prefix ??
+                                  ImageView(
+                                    widget.prefixIcon,
+                                    size: isCompact ? Spacing.d18 : Spacing.d24,
+                                    fit: BoxFit.contain,
+                                    color: getIconColor(context),
+                                  ),
+                            ),
                           ),
-                          child: Stack(
-                            alignment: switch (widget.maxLines) {
-                              1 => Alignment.centerLeft,
-                              _ => Alignment.topLeft,
-                            },
-                            children: [
-                              if (_controller.text.isEmpty &&
-                                  widget.hintText != null)
-                                IgnorePointer(
-                                  child: Text(
-                                    widget.hintText!,
-                                    style: placeholderStyle,
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: inputPadding.top,
+                              bottom: inputPadding.bottom,
+                            ),
+                            child: Stack(
+                              alignment: switch (widget.maxLines) {
+                                1 => Alignment.centerLeft,
+                                _ => Alignment.topLeft,
+                              },
+                              children: [
+                                if (_controller.text.isEmpty &&
+                                    widget.hintText != null)
+                                  IgnorePointer(
+                                    child: Text(
+                                      widget.hintText!,
+                                      style: placeholderStyle,
+                                      maxLines: widget.maxLines,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                _selectionGestureBuilder.buildGestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  child: EditableText(
+                                    key: _editableTextKey,
+                                    controller: _controller,
+                                    focusNode: _focusNode,
+                                    style: textStyle,
+                                    cursorColor: theme.colors.primary,
+                                    selectionColor: theme.colors.primary
+                                        .withValues(
+                                          alpha: 0.3,
+                                        ),
+                                    backgroundCursorColor: isDark
+                                        ? theme.colors.neutral5
+                                        : theme.colors.neutral3,
+                                    cursorHeight: widget.cursorHeight,
+                                    cursorWidth: widget.cursorWidth,
+                                    obscureText: widget.obscureText,
+                                    autocorrect: !widget.isPasswordField,
+                                    enableIMEPersonalizedLearning:
+                                        switch (widget.isPasswordField) {
+                                          true => false,
+                                          false => true,
+                                        },
+                                    enableSuggestions: !widget.isPasswordField,
+                                    enableInteractiveSelection:
+                                        selectionEnabled,
+                                    autofillHints: widget.isPasswordField
+                                        ? [AutofillHints.password]
+                                        : widget.autoFillHints,
+                                    keyboardType: widget.isPasswordField
+                                        ? TextInputType.visiblePassword
+                                        : widget.keyboardType,
+                                    inputFormatters: [
+                                      if (widget.maxLength != null)
+                                        LengthLimitingTextInputFormatter(
+                                          widget.maxLength,
+                                        ),
+                                    ],
                                     maxLines: widget.maxLines,
-                                    overflow: TextOverflow.ellipsis,
+                                    minLines: widget.minLines,
+                                    readOnly: widget.readOnly,
+                                    rendererIgnoresPointer: true,
+                                    contextMenuBuilder: _buildContextMenu,
+                                    onChanged: widget.onChanged,
+                                    onSubmitted: widget.onSubmitted,
+                                    onEditingComplete: widget.onEditingComplete,
+                                    textInputAction: widget.textInputAction,
                                   ),
                                 ),
-                              _selectionGestureBuilder.buildGestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                child: EditableText(
-                                  key: _editableTextKey,
-                                  controller: _controller,
-                                  focusNode: _focusNode,
-                                  style: textStyle,
-                                  cursorColor: theme.colors.primary,
-                                  selectionColor: theme.colors.primary
-                                      .withValues(
-                                        alpha: 0.3,
-                                      ),
-                                  backgroundCursorColor: isDark
-                                      ? theme.colors.neutral5
-                                      : theme.colors.neutral3,
-                                  cursorHeight: widget.cursorHeight,
-                                  cursorWidth: widget.cursorWidth,
-                                  obscureText: widget.obscureText,
-                                  autocorrect: !widget.isPasswordField,
-                                  enableIMEPersonalizedLearning:
-                                      switch (widget.isPasswordField) {
-                                        true => false,
-                                        false => true,
-                                      },
-                                  enableSuggestions: !widget.isPasswordField,
-                                  enableInteractiveSelection: selectionEnabled,
-                                  autofillHints: widget.isPasswordField
-                                      ? [AutofillHints.password]
-                                      : widget.autoFillHints,
-                                  keyboardType: widget.isPasswordField
-                                      ? TextInputType.visiblePassword
-                                      : widget.keyboardType,
-                                  inputFormatters: [
-                                    if (widget.maxLength != null)
-                                      LengthLimitingTextInputFormatter(
-                                        widget.maxLength,
-                                      ),
-                                  ],
-                                  maxLines: widget.maxLines,
-                                  minLines: widget.minLines,
-                                  readOnly: widget.readOnly,
-                                  rendererIgnoresPointer: true,
-                                  contextMenuBuilder: _buildContextMenu,
-                                  onChanged: widget.onChanged,
-                                  onSubmitted: widget.onSubmitted,
-                                  onEditingComplete: widget.onEditingComplete,
-                                  textInputAction: widget.textInputAction,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      if (widget.suffix != null || widget.suffixIcon != null)
-                        Padding(
-                          padding: EdgeInsets.only(left: Spacing.d8),
-                          child:
-                              widget.suffix ??
-                              Tappable(
-                                onTap: widget.onSuffixTap,
-                                child: ImageView(
-                                  widget.suffixIcon,
-                                  size: isCompact ? Spacing.d18 : Spacing.d24,
-                                  fit: BoxFit.contain,
-                                  color: getIconColor(context),
-                                ),
-                              ),
-                        ),
-                    ],
+                        if (widget.suffix != null || widget.suffixIcon != null)
+                          _sideLimit(
+                            constraints,
+                            Padding(
+                              padding: EdgeInsets.only(left: Spacing.d8),
+                              child:
+                                  widget.suffix ??
+                                  Tappable(
+                                    onTap: widget.onSuffixTap,
+                                    child: ImageView(
+                                      widget.suffixIcon,
+                                      size: isCompact
+                                          ? Spacing.d18
+                                          : Spacing.d24,
+                                      fit: BoxFit.contain,
+                                      color: getIconColor(context),
+                                    ),
+                                  ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -502,4 +513,21 @@ class _InputTextState extends State<InputText>
     // Light backgrounds need a darker grey to stay readable.
     return isDark ? theme.colors.neutral4 : theme.colors.neutral6;
   }
+}
+
+/// How much of a field's width a prefix or suffix may take.
+const _maxSideShare = 0.4;
+
+/// [side], a prefix or suffix, at most [_maxSideShare] of the field's width
+/// where it has one, so a long one, such as a translated label, leaves room
+/// to type.
+Widget _sideLimit(BoxConstraints constraints, Widget side) {
+  if (!constraints.hasBoundedWidth) {
+    return side;
+  }
+
+  return ConstrainedBox(
+    constraints: BoxConstraints(maxWidth: constraints.maxWidth * _maxSideShare),
+    child: side,
+  );
 }
