@@ -402,30 +402,43 @@ class _ButtonState extends State<Button> {
                     data: IconThemeData(color: fgColor),
                     child: DefaultTextStyle.merge(
                       style: TextStyle(color: fgColor),
-                      child: Row(
-                        mainAxisSize:
-                            widget.mainAxisSize ??
-                            switch (fillsRow) {
-                              true => MainAxisSize.max,
-                              false => MainAxisSize.min,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => Row(
+                          mainAxisSize:
+                              widget.mainAxisSize ??
+                              switch (fillsRow) {
+                                true => MainAxisSize.max,
+                                false => MainAxisSize.min,
+                              },
+                          mainAxisAlignment:
+                              widget.mainAxisAlignment ??
+                              MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (widget.icon != null) widget.icon!,
+                            if (widget.icon != null)
+                              SizedBox(width: Spacing.d8),
+                            switch (widget.titleExpand) {
+                              ButtonTitleExpand.shrink => Flexible(
+                                child: child,
+                              ),
+                              ButtonTitleExpand.expand => Expanded(
+                                child: child,
+                              ),
+                              // A long label, such as a translation, shortens
+                              // with an ellipsis where the button has a width
+                              // to keep to; Flexible needs a bounded row.
+                              ButtonTitleExpand.none
+                                  when constraints.hasBoundedWidth =>
+                                Flexible(child: child),
+                              ButtonTitleExpand.none => child,
                             },
-                        mainAxisAlignment:
-                            widget.mainAxisAlignment ??
-                            MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (widget.icon != null) widget.icon!,
-                          if (widget.icon != null) SizedBox(width: Spacing.d8),
-                          switch (widget.titleExpand) {
-                            ButtonTitleExpand.shrink => Flexible(child: child),
-                            ButtonTitleExpand.expand => Expanded(child: child),
-                            ButtonTitleExpand.none => child,
-                          },
-                          if (widget.trailingIcon != null) ...[
-                            SizedBox(width: Spacing.d8),
-                            widget.trailingIcon!,
+                            if (widget.trailingIcon != null) ...[
+                              SizedBox(width: Spacing.d8),
+                              widget.trailingIcon!,
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ),
                   ),
