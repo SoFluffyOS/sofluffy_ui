@@ -4,6 +4,7 @@
 - 🖱️ `ContextMenuRegion`: the same menu on a right-click or a long press, where the pointer is.
 - ♿️ Screen readers and keyboards: `Tappable` takes a `semanticLabel` (its `tooltip` when left out) and says "button" for anything with a name; `SwitchToggle` says on or off, takes the focus and flips on Space or Enter; `Button` shows a focus ring; an off switch has an outline you can see on a light page.
 - ♿️ Menus and choices: a `ContextMenuRegion`'s entries are the child's own actions to a screen reader, an open menu closes on its dismiss gesture and is walked with ↑ and ↓, `RadioIcon` and `CheckBox` say whether they are picked, and a `Tappable` nobody can press is no longer a stop for Tab.
+- 🪟 `DialogNavigatorScope`: dialogs opened under it show in its navigator, not the root one, so an app with more than one window opens each dialog in the window it was asked from. `ConfirmDialog`, `ContentDialog`, the input, choice and search dialogs and the date pickers follow it.
 
 ## 1.0.0
 

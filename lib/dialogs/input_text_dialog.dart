@@ -28,8 +28,12 @@ class InputTextDialog {
     final fluffyTheme = context.fluffyTheme;
 
     try {
+      final route = DialogNavigatorScope.routeOf(context);
       final result = await showGeneralDialog(
-        context: context,
+        context: route.context,
+        useRootNavigator: DialogNavigatorScope.routeOf(
+          context,
+        ).useRootNavigator,
         barrierDismissible: false,
         barrierLabel: barrierLabel,
         barrierColor: FluffyColors.barrier,

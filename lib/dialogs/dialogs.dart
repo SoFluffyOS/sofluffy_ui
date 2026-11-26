@@ -1,6 +1,7 @@
 export 'confirm_dialog.dart';
 export 'content_dialog.dart';
 export 'dialog_card.dart';
+export 'dialog_navigator_scope.dart';
 export 'fluffy_dialog_transition.dart';
 export 'input_slider_dialog.dart';
 export 'input_text_dialog.dart';

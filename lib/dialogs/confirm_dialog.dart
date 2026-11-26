@@ -16,8 +16,10 @@ class ConfirmDialog {
     String barrierLabel = 'Dismiss',
   }) async {
     final fluffyTheme = context.fluffyTheme;
+    final route = DialogNavigatorScope.routeOf(context);
     final result = await showGeneralDialog(
-      context: context,
+      context: route.context,
+      useRootNavigator: route.useRootNavigator,
       barrierDismissible: barrierDismissible,
       barrierLabel: barrierLabel,
       barrierColor: FluffyColors.barrier,

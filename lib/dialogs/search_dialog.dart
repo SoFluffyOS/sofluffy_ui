@@ -32,8 +32,10 @@ class SearchDialog<T> extends StatefulWidget {
     String barrierLabel = 'Dismiss',
   }) {
     final fluffyTheme = context.fluffyTheme;
+    final route = DialogNavigatorScope.routeOf(context);
     return showGeneralDialog(
-      context: context,
+      context: route.context,
+      useRootNavigator: route.useRootNavigator,
       barrierDismissible: true,
       barrierLabel: barrierLabel,
       barrierColor: FluffyColors.barrier,
